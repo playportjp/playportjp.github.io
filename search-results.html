@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - PlayPortJP</title>
+    <meta name="description" content="Premium Japanese games, books, music, and collectibles delivered worldwide.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Additional styles for search results page */
+        .search-info {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+        
+        .search-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .search-info p {
+            color: var(--text-secondary);
+        }
+        
+        .filters {
+            background-color: var(--surface);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+        
+        .filters h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+        
+        .filter-heading {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .filter-option {
+            background-color: var(--card);
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+        }
+        
+        .filter-option:hover, .filter-option.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .sort {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+        
+        .sort label {
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .sort select {
+            padding: 0.5rem;
+            background-color: var(--surface-lighter);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .image-placeholder {
+            height: 180px;
+            background-color: var(--surface-lighter);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-secondary);
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .image-placeholder svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 0.5rem;
+            opacity: 0.7;
+        }
+        
+        .search-image-link {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: background-color 0.2s;
+        }
+        
+        .search-image-link:hover {
+            background-color: var(--primary-hover);
+            color: white;
+        }
+        
+        .product-meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            background-color: var(--surface);
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+        
+        .product-condition {
+            margin-bottom: 0.75rem;
+        }
+        
+        .condition-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .condition-meter {
+            height: 6px;
+            background-color: var(--surface);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .condition-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+        }
+        
+        .condition-grade {
+            position: absolute;
+            right: 0;
+            top: -18px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            background-color: var(--surface);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+        }
+        
+        .product-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .stock-status {
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .in-stock {
+            color: #4CAF50;
+        }
+        
+        .shipping-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--surface);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .pagination-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .pagination-btn:hover, .pagination-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .search-info h1 {
+                font-size: 1.2rem;
+            }
+            
+            .sort {
+                justify-content: flex-start;
+                margin-top: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-option {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>PlayPortJP</h1>
+            </div>
+            <div class="search-container">
+                <form action="search-results.html" method="get">
+                    <input type="search" placeholder="Search products..." aria-label="Search" value="Final Fantasy">
+                    <button type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#order-history">Order History</a></li>
+                    <li><a href="#account" id="account-link">Account</a></li>
+                    <li class="cart-icon">
+                        <a href="#cart">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span class="cart-count">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="search-info">
+                <h1>Search results for "Final Fantasy"</h1>
+                <p>Showing 1-12 of 1,253 results</p>
+            </div>
+
+            <div class="filters">
+                <h2>Filters</h2>
+                <div class="filter-group">
+                    <div class="filter-heading">Category</div>
+                    <div class="filter-options">
+                        <div class="filter-option active">All</div>
+                        <div class="filter-option">Games</div>
+                        <div class="filter-option">Books</div>
+                        <div class="filter-option">Music</div>
+                        <div class="filter-option">Collectibles</div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-heading">Condition</div>
+                    <div class="filter-options">
+                        <div class="filter-option">A+ (Mint)</div>
+                        <div class="filter-option">A (Excellent)</div>
+                        <div class="filter-option">B+ (Very Good)</div>
+                        <div class="filter-option">B (Good)</div>
+                        <div class="filter-option">C (Fair)</div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-heading">Price Range</div>
+                    <div class="filter-options">
+                        <div class="filter-option">Under $25</div>
+                        <div class="filter-option">$25-$50</div>
+                        <div class="filter-option">$50-$100</div>
+                        <div class="filter-option">$100-$200</div>
+                        <div class="filter-option">$200+</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sort">
+                <label for="sort-select">Sort by:</label>
+                <select id="sort-select">
+                    <option>Relevance</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Newest Arrivals</option>
+                    <option>Most Popular</option>
+                </select>
+            </div>
+
+            <div class="results-grid">
+                <!-- Product Card 1 -->
+                <div class="product-card">
+                    <div class="image-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <div>Image coming soon</div>
+                        <a href="#" class="search-image-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Google Images
+                        </a>
+                    </div>
+                    <div class="product-details">
+                        <h3>Final Fantasy VII Remake - PS4 Japanese Edition</h3>
+                        <div class="product-meta">
+                            <span class="meta-tag">Game</span>
+                            <span class="meta-tag">PS4</span>
+                            <span class="meta-tag">RPG</span>
+                        </div>
+                        <div class="product-condition">
+                            <div class="condition-label">Condition</div>
+                            <div class="condition-meter">
+                                <div class="condition-fill" style="width: 92%"></div>
+                                <div class="condition-grade">A+</div>
+                            </div>
+                        </div>
+                        <div class="stock-status in-stock">In Stock</div>
+                        <div class="shipping-time">Ships within 1-2 business days</div>
+                        <p class="product-description">Japanese version of Final Fantasy VII Remake. Complete with original box and all inserts. Disc is in pristine condition with no scratches.</p>
+                        <p class="product-price">64.99 CAD</p>
+                        <div class="product-actions">
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-secondary">Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="product-card">
+                    <div class="image-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <div>Image coming soon</div>
+                        <a href="#" class="search-image-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Google Images
+                        </a>
+                    </div>
+                    <div class="product-details">
+                        <h3>Final Fantasy X/X-2 HD Remaster - Nintendo Switch</h3>
+                        <div class="product-meta">
+                            <span class="meta-tag">Game</span>
+                            <span class="meta-tag">Switch</span>
+                            <span class="meta-tag">RPG</span>
+                        </div>
+                        <div class="product-condition">
+                            <div class="condition-label">Condition</div>
+                            <div class="condition-meter">
+                                <div class="condition-fill" style="width: 85%"></div>
+                                <div class="condition-grade">A</div>
+                            </div>
+                        </div>
+                        <div class="stock-status in-stock">In Stock</div>
+                        <div class="shipping-time">Ships within 1-2 business days</div>
+                        <p class="product-description">Japanese version of Final Fantasy X/X-2 HD Remaster for Nintendo Switch. Box has minor shelf wear but game cartridge is like new.</p>
+                        <p class="product-price">49.99 CAD</p>
+                        <div class="product-actions">
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-secondary">Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="product-card">
+                    <div class="image-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <div>Image coming soon</div>
+                        <a href="#" class="search-image-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Google Images
+                        </a>
+                    </div>
+                    <div class="product-details">
+                        <h3>Final Fantasy XIV: Endwalker Expansion - PS5</h3>
+                        <div class="product-meta">
+                            <span class="meta-tag">Game</span>
+                            <span class="meta-tag">PS5</span>
+                            <span class="meta-tag">MMORPG</span>
+                        </div>
+                        <div class="product-condition">
+                            <div class="condition-label">Condition</div>
+                            <div class="condition-meter">
+                                <div class="condition-fill" style="width: 100%"></div>
+                                <div class="condition-grade">A+</div>
+                            </div>
+                        </div>
+                        <div class="stock-status in-stock">In Stock</div>
+                        <div class="shipping-time">Ships within 1-2 business days</div>
+                        <p class="product-description">Japanese version of Final Fantasy XIV: Endwalker expansion for PS5. Brand new, sealed in original packaging.</p>
+                        <p class="product-price">39.99 CAD</p>
+                        <div class="product-actions">
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-secondary">Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 4 -->
+                <div class="product-card">
+                    <div class="image-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <div>Image coming soon</div>
+                        <a href="#" class="search-image-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Google Images
+                        </a>
+                    </div>
+                    <div class="product-details">
+                        <h3>Final Fantasy VII Cloud Strife Figurine - Play Arts Kai</h3>
+                        <div class="product-meta">
+                            <span class="meta-tag">Collectible</span>
+                            <span class="meta-tag">Figure</span>
+                            <span class="meta-tag">Square Enix</span>
+                        </div>
+                        <div class="product-condition">
+                            <div class="condition-label">Condition</div>
+                            <div class="condition-meter">
+                                <div class="condition-fill" style="width: 78%"></div>
+                                <div class="condition-grade">B+</div>
+                            </div>
+                        </div>
+                        <div class="stock-status in-stock">In Stock</div>
+                        <div class="shipping-time">Ships within 1-2 business days</div>
+                        <p class="product-description">Play Arts Kai Cloud Strife action figure from Final Fantasy VII. Figure is in very good condition with minor paint wear. Comes with original accessories and stand.</p>
+                        <p class="product-price">129.99 CAD</p>
+                        <div class="product-actions">
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-secondary">Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 5 -->
+                <div class="product-card">
+                    <div class="image-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <div>Image coming soon</div>
+                        <a href="#" class="search-image-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Google Images
+                        </a>
+                    </div>
+                    <div class="product-details">
+                        <h3>Final Fantasy VIII Original Soundtrack (Limited Edition)</h3>
+                        <div class="product-meta">
+                            <span class="meta-tag">Music</span>
+                            <span class="meta-tag">CD</span>
+                            <span class="meta-tag">Soundtrack</span>
+                        </div>
+                        <div class="product-condition">
+                            <div class="condition-label">Condition</div>
+                            <div class="condition-meter">
+                                <div class="condition-fill" style="width: 70%"></div>
+                                <div class="condition-grade">B</div>
+                            </div>
+                        </div>
+                        <div class="stock-status in-stock">In Stock</div>
+                        <div class="shipping-time">Ships within 1-2 business days</div>
+                        <p class="product-description">Original 4-CD soundtrack for Final Fantasy VIII, composed by Nobuo Uematsu. Limited edition with artbook. Box has some corner wear but CDs are in good condition with minimal scratches.</p>
+                        <p class="product-price">89.99 CAD</p>
+                        <div class="product-actions">
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-secondary">Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 6 -->
+                <div class="product-card">
+                    <div class="image-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <div>Image coming soon</div>
+                        <a href="#" class="search-image-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Google Images
+                        </a>
+                    </div>
+                    <div class="product-details">
+                        <h3>Final Fantasy IX - Original PS1 (2000)</h3>
+                        <div class="product-meta">
+                            <span class="meta-tag">Game</span>
+                            <span class="meta-tag">PS1</span>
+                            <span class="meta-tag">Rare</span>
+                        </div>
+                        <div class="product-condition">
+                            <div class="condition-label">Condition</div>
+                            <div class="condition-meter">
+                                <div class="condition-fill" style="width: 65%"></div>
+                                <div class="condition-grade">B</div>
+                            </div>
+                        </div>
+                        <div class="stock-status in-stock">In Stock</div>
+                        <div class="shipping-time">Ships within 3-5 business days</div>
+                        <p class="product-description">Original PlayStation release of Final Fantasy IX. Japanese version with manual. Discs show some light scratches but tested and working perfectly. Case has light wear consistent with age.</p>
+                        <p class="product-price">75.99 CAD</p>
+                        <div class="product-actions">
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-secondary">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn">2</button>
+                <button class="pagination-btn">3</button>
+                <button class="pagination-btn">4</button>
+                <button class="pagination-btn">5</button>
+                <button class="pagination-btn">Next →</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-nav">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="#games">Games</a></li>
+                        <li><a href="#books">Books</a></li>
+                        <li><a href="#music">Music</a></li>
+                        <li><a href="#collectibles">Collectibles</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav">
+                    <h3>Information</h3>
+                    <ul>
+                        <li><a href="#shipping">Shipping</a></li>
+                        <li><a href="#returns">Returns</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe for updates on new arrivals and special offers.</p>
+                    <form>
+                        <input type="email" placeholder="Your email" aria-label="Email for newsletter">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 PlayPortJP. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
