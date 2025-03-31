@@ -102,25 +102,24 @@
         }
         
         .image-placeholder {
-            height: 160px;
+            height: 180px;
             background-color: var(--surface-lighter);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: var(--text-secondary);
-            padding: 0.75rem;
+            padding: 1rem;
             text-align: center;
             position: relative;
             border-bottom: 1px solid var(--border);
-            flex-shrink: 0; /* 画像領域が縮まないようにする */
         }
         
         .image-placeholder svg {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 0.75rem;
-            opacity: 0.7;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.8;
         }
         
         .image-placeholder.game {
@@ -140,9 +139,9 @@
         
         .search-image-link {
             position: absolute;
-            top: 10px;
+            bottom: 10px;
             right: 10px;
-            background-color: rgba(187, 0, 0, 0.8);
+            background-color: var(--primary);
             color: white;
             padding: 0.3rem 0.6rem;
             border-radius: 4px;
@@ -152,11 +151,10 @@
             align-items: center;
             gap: 0.3rem;
             transition: background-color 0.2s;
-            z-index: 2;
         }
         
         .search-image-link:hover {
-            background-color: var(--primary);
+            background-color: var(--primary-hover);
             color: white;
         }
         
@@ -486,97 +484,7 @@
                             <span class="stock-status in-stock">In Stock</span>
                         </div>
                         <div class="shipping-time">Ships within 1-2 business days</div>
-                        <div class="specs-badges">
-                            <div class="spec-badge">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <path d="M12 8v4"></path>
-                                    <path d="M12 16h.01"></path>
-                                </svg>
-                                Region: JP
-                            </div>
-                            <div class="spec-badge">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="2" y="6" width="20" height="12" rx="2"></rect>
-                                    <path d="M12 12h.01"></path>
-                                </svg>
-                                Language: JP
-                            </div>
-                        </div>
-                        <div class="trust-indicators">
-                            <div class="trust-indicator">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                </svg>
-                                Authenticity Verified
-                            </div>
-                        </div>
-                        <div class="review-stars">
-                            <div class="stars">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                            </div>
-                            <span class="review-count">(48)</span>
-                        </div>
                         <p class="product-description">Japanese version of Final Fantasy VII Remake. Complete with original box and all inserts. Disc is in pristine condition with no scratches.</p>
-                        <div class="specs-badges">
-                            <div class="spec-badge">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <path d="M12 8v4"></path>
-                                    <path d="M12 16h.01"></path>
-                                </svg>
-                                Region: JP
-                            </div>
-                            <div class="spec-badge">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="2" y="6" width="20" height="12" rx="2"></rect>
-                                    <path d="M12 12h.01"></path>
-                                </svg>
-                                Language: JP
-                            </div>
-                        </div>
-                        <div class="trust-indicators">
-                            <div class="trust-indicator">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                </svg>
-                                Authenticity Verified
-                            </div>
-                        </div>
-                        <div class="review-stars">
-                            <div class="stars">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                            </div>
-                            <span class="review-count">(48)</span>
-                        </div>
                         <p class="product-price">64.99 CAD</p>
                         <div class="product-actions">
                             <a href="#" class="btn btn-primary">Add to Cart</a>
