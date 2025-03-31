@@ -9,12 +9,54 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ロゴスタイリング */
+        .logo a {
+            text-decoration: none;
+        }
+        
+        .logo h1 {
+            color: white;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            font-size: 1.6rem;
+            text-transform: none;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .logo h1 span {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .logo h1::after {
+            content: "";
+            position: absolute;
+            height: 3px;
+            background-color: var(--primary);
+            width: 100%;
+            left: 0;
+            bottom: -2px;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            transform-origin: right;
+        }
+        
+        .logo a:hover h1::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+    </style>
 </head>
 <body>
     <header>
         <div class="container header-container">
             <div class="logo">
-                <h1>PlayPortJP</h1>
+                <a href="index.html">
+                    <h1>Play<span>Port</span>JP</h1>
+                </a>
             </div>
             <div class="search-container">
                 <form action="search-results.html" method="get">
