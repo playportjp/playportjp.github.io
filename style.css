@@ -97,10 +97,43 @@ header {
     align-items: center;
 }
 
+/* ロゴスタイリング */
+.logo a {
+    text-decoration: none;
+}
+
 .logo h1 {
-    color: var(--primary);
+    color: white;
     margin: 0;
-    font-weight: 500;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    font-size: 1.6rem;
+    text-transform: none;
+    position: relative;
+    display: inline-block;
+}
+
+.logo h1 span {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.logo h1::after {
+    content: "";
+    position: absolute;
+    height: 3px;
+    background-color: var(--primary);
+    width: 100%;
+    left: 0;
+    bottom: -2px;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: right;
+}
+
+.logo a:hover h1::after {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
 .search-container {
@@ -245,27 +278,46 @@ nav ul li a {
     background-color: var(--card);
     border-radius: 4px;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .product-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    border-color: rgba(187, 0, 0, 0.3);
 }
 
 .product-image {
     height: 180px;
     background-color: var(--surface-lighter);
+    flex-shrink: 0;
 }
 
 .product-details {
     padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-details h3 {
     font-size: 1rem;
     margin-bottom: 0.5rem;
     font-weight: 500;
+    line-height: 1.4;
+    min-height: 2.8rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-card:hover .product-details h3 {
+    color: var(--primary);
 }
 
 .product-condition {
@@ -279,6 +331,7 @@ nav ul li a {
     font-weight: 500;
     margin-bottom: 1rem;
     color: var(--text-primary);
+    margin-top: auto;
 }
 
 .add-to-cart {
