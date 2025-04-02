@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - PlayPortJP</title>
+    <meta name="description" content="Your shopping cart at PlayPortJP - Premium Japanese games, books, music, and collectibles.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* カートページ用スタイル */
+        .page-title {
+            margin: 2rem 0;
+            font-size: 1.8rem;
+            font-weight: 500;
+        }
+        
+        .cart-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .cart-empty {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+        
+        .cart-empty svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .cart-empty h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+        
+        .cart-empty p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-continue-shopping {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-continue-shopping:hover {
+            background-color: var(--primary-hover);
+            color: white;
+        }
+        
+        .cart-items {
+            background-color: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        
+        .cart-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-header h2 {
+            font-size: 1.2rem;
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .cart-count {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .cart-item {
+            display: flex;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-image {
+            width: 100px;
+            height: 100px;
+            background-color: var(--surface-lighter);
+            border-radius: 4px;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .item-image svg {
+            width: 48px;
+            height: 48px;
+            opacity: 0.8;
+        }
+        
+        .item-details {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .item-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: white;
+            position: relative;
+            padding-right: 32px;
+        }
+        
+        .item-title a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .item-title a:hover {
+            color: var(--primary);
+        }
+        
+        .remove-item {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+        
+        .remove-item:hover {
+            color: var(--primary);
+        }
+        
+        .item-meta {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .meta-tag.game {
+            background-color: #5755d9;
+        }
+        
+        .meta-tag.book {
+            background-color: #2e7d32;
+        }
+        
+        .meta-tag.music {
+            background-color: #9c27b0;
+        }
+        
+        .meta-tag.collectible {
+            background-color: #e65100;
+        }
+        
+        .meta-tag.other {
+            background-color: var(--surface-lighter);
+            color: var(--text-secondary);
+        }
+        
+        .condition-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .condition-badge.new {
+            background-color: #3a9e4e;
+            color: white;
+        }
+        
+        .condition-badge.used {
+            background-color: #2c7cb0;
+            color: white;
+        }
+        
+        .item-attributes {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+        
+        .item-price-qty {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .item-price {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+        
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            background-color: var(--surface-lighter);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            padding: 0;
+        }
+        
+        .quantity-btn:hover {
+            background-color: var(--card);
+        }
+        
+        .quantity-btn.minus {
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .quantity-btn.plus {
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            height: 28px;
+            border: 1px solid var(--border);
+            border-left: none;
+            border-right: none;
+            background-color: var(--surface-lighter);
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .quantity-input:focus {
+            outline: none;
+        }
+        
+        .cart-order-summary {
+            background-color: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            align-self: start;
+        }
+        
+        .summary-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            color: white;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .summary-row.total {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: white;
+            padding-top: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .summary-label {
+            color: var(--text-secondary);
+        }
+        
+        .summary-value {
+            font-weight: 500;
+        }
+        
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 0.9rem 0;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .checkout-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .promo-code {
+            margin-top: 1.5rem;
+        }
+        
+        .promo-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .promo-input-group {
+            display: flex;
+        }
+        
+        .promo-input {
+            flex-grow: 1;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px 0 0 4px;
+            background-color: var(--surface-lighter);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .promo-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--focus-ring);
+        }
+        
+        .promo-btn {
+            padding: 0.6rem 1rem;
+            background-color: var(--surface-lighter);
+            border: 1px solid var(--border);
+            border-left: none;
+            border-radius: 0 4px 4px 0;
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .promo-btn:hover {
+            background-color: var(--card);
+        }
+        
+        .payment-methods {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .payment-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .payment-icons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .payment-icon {
+            width: 40px;
+            height: 24px;
+            background-color: var(--surface-lighter);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+        }
+        
+        .recently-viewed {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .recently-viewed h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        /* ショッピングカートが空の場合のレイアウト */
+        .cart-section-empty .cart-container {
+            display: block;
+        }
+        
+        /* モバイル対応 */
+        @media (max-width: 992px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-items {
+                margin-bottom: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+            }
+            
+            .item-image {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .item-price-qty {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>Play<span>Port</span>JP</h1>
+                </a>
+            </div>
+            <div class="search-container">
+                <form action="search-results.html" method="get">
+                    <input type="search" placeholder="Search products..." aria-label="Search">
+                    <button type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#order-history">Order History</a></li>
+                    <li><a href="#account" id="account-link">Account</a></li>
+                    <li class="cart-icon">
+                        <a href="cart.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span class="cart-count">3</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="page-title">Shopping Cart</h1>
+
+            <!-- カート内容 -->
+            <section class="cart-section">
+                <div class="cart-container">
+                    <div class="cart-items">
+                        <div class="cart-header">
+                            <h2>Cart Items</h2>
+                            <span class="cart-count">3 items</span>
+                        </div>
+                        
+                        <!-- カートアイテム1 -->
+                        <div class="cart-item">
+                            <div class="item-image">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01M17.32 5H6.68a4 4 0 00-3.978 3.59c-.006.052-.01.101-.01.15v6.52c0 1.66 1.34 3 3 3h14.64c1.66 0 3-1.34 3-3v-6.52c0-.049-.004-.098-.01-.15A4 4 0 0017.32 5z"></path>
+                                </svg>
+                            </div>
+                            <div class="item-details">
+                                <h3 class="item-title">
+                                    <a href="product-detail.html">Final Fantasy VII Remake - PS4 Japanese Edition</a>
+                                    <button class="remove-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </h3>
+                                <div class="item-meta">
+                                    <span class="meta-tag game">Game</span>
+                                    <span class="meta-tag other">PS4</span>
+                                    <span class="condition-badge used">USED</span>
+                                </div>
+                                <div class="item-attributes">
+                                    Region: Japan (NTSC-J) | Language: Japanese
+                                </div>
+                                <div class="item-price-qty">
+                                    <div class="item-price">64.99 CAD</div>
+                                    <div class="quantity-control">
+                                        <button class="quantity-btn minus">-</button>
+                                        <input type="number" class="quantity-input" value="1" min="1" max="10">
+                                        <button class="quantity-btn plus">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- カートアイテム2 -->
+                        <div class="cart-item">
+                            <div class="item-image">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e65100" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                    <path d="M3.27 6.96L12 12.01l8.73-5.05"></path>
+                                    <path d="M12 22.08V12"></path>
+                                </svg>
+                            </div>
+                            <div class="item-details">
+                                <h3 class="item-title">
+                                    <a href="#product">Cloud Strife Figurine - Play Arts Kai</a>
+                                    <button class="remove-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </h3>
+                                <div class="item-meta">
+                                    <span class="meta-tag collectible">Collectible</span>
+                                    <span class="meta-tag other">Figure</span>
+                                    <span class="condition-badge used">USED</span>
+                                </div>
+                                <div class="item-attributes">
+                                    Condition: Very Good | Includes original accessories
+                                </div>
+                                <div class="item-price-qty">
+                                    <div class="item-price">129.99 CAD</div>
+                                    <div class="quantity-control">
+                                        <button class="quantity-btn minus">-</button>
+                                        <input type="number" class="quantity-input" value="1" min="1" max="10">
+                                        <button class="quantity-btn plus">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- カートアイテム3 -->
+                        <div class="cart-item">
+                            <div class="item-image">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#9c27b0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 18V5l12-2v13"></path>
+                                    <circle cx="6" cy="18" r="3"></circle>
+                                    <circle cx="18" cy="16" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div class="item-details">
+                                <h3 class="item-title">
+                                    <a href="#product">Final Fantasy VIII Original Soundtrack</a>
+                                    <button class="remove-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </h3>
+                                <div class="item-meta">
+                                    <span class="meta-tag music">Music</span>
+                                    <span class="meta-tag other">CD</span>
+                                    <span class="condition-badge used">USED</span>
+                                </div>
+                                <div class="item-attributes">
+                                    4-CD Set | Limited Edition with Artbook
+                                </div>
+                                <div class="item-price-qty">
+                                    <div class="item-price">89.99 CAD</div>
+                                    <div class="quantity-control">
+                                        <button class="quantity-btn minus">-</button>
+                                        <input type="number" class="quantity-input" value="1" min="1" max="10">
+                                        <button class="quantity-btn plus">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 注文サマリー -->
+                    <div class="cart-order-summary">
+                        <h2 class="summary-title">Order Summary</h2>
+                        <div class="summary-row">
+                            <span class="summary-label">Subtotal (3 items)</span>
+                            <span class="summary-value">284.97 CAD</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Shipping</span>
+                            <span class="summary-value">Free</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Estimated Tax</span>
+                            <span class="summary-value">28.50 CAD</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span class="summary-label">Total</span>
+                            <span class="summary-value">313.47 CAD</span>
+                        </div>
+                        
+                        <button class="checkout-btn">Proceed to Checkout</button>
+                        
+                        <div class="promo-code">
+                            <div class="promo-label">Have a promo code?</div>
+                            <div class="promo-input-group">
+                                <input type="text" class="promo-input" placeholder="Enter code">
+                                <button class="promo-btn">Apply</button>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-methods">
+                            <div class="payment-title">Accepted Payment Methods</div>
+                            <div class="payment-icons">
+                                <div class="payment-icon">Visa</div>
+                                <div class="payment-icon">MC</div>
+                                <div class="payment-icon">Amex</div>
+                                <div class="payment-icon">PP</div>
+                                <div class="payment-icon">Apple</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 最近見た商品 -->
+            <section class="recently-viewed">
+                <h2>Recently Viewed</h2>
+                <div class="product-grid">
+                    <!-- 製品1 -->
+                    <div class="product-card">
+                        <div class="image-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5755d9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(87, 85, 217, 0.5));">
+                                <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                                <path d="M12 12h.01"></path>
+                                <path d="M17 12h.01"></path>
+                                <path d="M7 12h.01"></path>
+                            </svg>
+                            <div>Nintendo Switch Game</div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Final Fantasy IX - Original PS1 (2000)</h3>
+                            <p class="product-condition">Used - Good</p>
+                            <p class="product-price">75.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 製品4 -->
+                    <div class="product-card">
+                        <div class="image-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e65100" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(230, 81, 0, 0.5));">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                <path d="M3.27 6.96L12 12.01l8.73-5.05"></path>
+                                <path d="M12 22.08V12"></path>
+                            </svg>
+                            <div>Collectible Figure</div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Final Fantasy VII Remake Tifa Lockhart Play Arts Kai Figure</h3>
+                            <p class="product-condition">New</p>
+                            <p class="product-price">149.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 空のカートの表示（通常は非表示・JavaScriptで切り替え） -->
+            <section class="cart-section-empty" style="display: none;">
+                <div class="cart-container">
+                    <div class="cart-empty">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <h2>Your cart is empty</h2>
+                        <p>Looks like you haven't added any items to your cart yet.</p>
+                        <a href="index.html" class="btn-continue-shopping">Continue Shopping</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-nav">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="#games">Games</a></li>
+                        <li><a href="#books">Books</a></li>
+                        <li><a href="#music">Music</a></li>
+                        <li><a href="#collectibles">Collectibles</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav">
+                    <h3>Information</h3>
+                    <ul>
+                        <li><a href="#shipping">Shipping</a></li>
+                        <li><a href="#returns">Returns</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe for updates on new arrivals and special offers.</p>
+                    <form>
+                        <input type="email" placeholder="Your email" aria-label="Email for newsletter">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 PlayPortJP. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 数量の増減機能
+            const minusBtns = document.querySelectorAll('.quantity-btn.minus');
+            const plusBtns = document.querySelectorAll('.quantity-btn.plus');
+            
+            minusBtns.forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.nextElementSibling;
+                    let value = parseInt(input.value);
+                    if (value > 1) {
+                        input.value = value - 1;
+                        updateCartTotals();
+                    }
+                });
+            });
+            
+            plusBtns.forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    let value = parseInt(input.value);
+                    if (value < 10) {
+                        input.value = value + 1;
+                        updateCartTotals();
+                    }
+                });
+            });
+            
+            // 商品削除機能
+            const removeButtons = document.querySelectorAll('.remove-item');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const cartItem = this.closest('.cart-item');
+                    cartItem.style.opacity = '0';
+                    setTimeout(() => {
+                        cartItem.remove();
+                        updateCartCount();
+                        updateCartTotals();
+                        
+                        // カートが空になった場合の処理
+                        const cartItems = document.querySelectorAll('.cart-item');
+                        if (cartItems.length === 0) {
+                            document.querySelector('.cart-section').style.display = 'none';
+                            document.querySelector('.cart-section-empty').style.display = 'block';
+                        }
+                    }, 300);
+                });
+            });
+            
+            // カートの数量更新
+            function updateCartCount() {
+                const cartItems = document.querySelectorAll('.cart-item');
+                const cartCount = cartItems.length;
+                document.querySelector('.cart-count').textContent = cartCount;
+                document.querySelector('.cart-header .cart-count').textContent = `${cartCount} item${cartCount !== 1 ? 's' : ''}`;
+            }
+            
+            // カートの金額更新（デモ用・実際はサーバーサイドで計算）
+            function updateCartTotals() {
+                // このデモでは簡易的な計算のみ
+                console.log('Cart totals would be updated here');
+            }
+            
+            // 入力フィールドの直接編集時の処理
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+            quantityInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    let value = parseInt(this.value);
+                    if (isNaN(value) || value < 1) {
+                        this.value = 1;
+                    } else if (value > 10) {
+                        this.value = 10;
+                    }
+                    updateCartTotals();
+                });
+            });
+        });
+    </script>
+</body>
+</html>3>Final Fantasy X/X-2 HD Remaster - Switch</h3>
+                            <p class="product-condition">Used - Very Good</p>
+                            <p class="product-price">49.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 製品2 -->
+                    <div class="product-card">
+                        <div class="image-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(187, 0, 0, 0.5));">
+                                <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01M17.32 5H6.68a4 4 0 00-3.978 3.59c-.006.052-.01.101-.01.15v6.52c0 1.66 1.34 3 3 3h14.64c1.66 0 3-1.34 3-3v-6.52c0-.049-.004-.098-.01-.15A4 4 0 0017.32 5z"></path>
+                            </svg>
+                            <div>PlayStation 5 Game</div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Final Fantasy XVI - PS5 Japanese Version</h3>
+                            <p class="product-condition">New</p>
+                            <p class="product-price">79.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 製品3 -->
+                    <div class="product-card">
+                        <div class="image-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0277bd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(2, 119, 189, 0.5));">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <polygon points="12 8 5 13 5 21 19 21 19 13"></polygon>
+                            </svg>
+                            <div>Vintage PS1 Game</div>
+                        </div>
+                        <div class="product-details">
+                            <h
