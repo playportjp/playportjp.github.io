@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Fantasy VII Remake - PlayPortJP</title>
+    <meta name="description" content="Premium Japanese games, books, music, and collectibles delivered worldwide.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 商品詳細ページ用スタイル */
+        .breadcrumb {
+            margin: 1.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+        
+        .breadcrumb-separator {
+            margin: 0 0.5rem;
+        }
+        
+        .product-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .product-media {
+            background-color: var(--surface);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .product-image-main {
+            height: 400px;
+            background-color: var(--surface-lighter);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .product-image-main svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
+        
+        .product-image-main div {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .product-image-gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            padding: 0.75rem;
+        }
+        
+        .gallery-thumb {
+            height: 80px;
+            background-color: var(--surface-lighter);
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: border-color 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .gallery-thumb:hover, .gallery-thumb.active {
+            border-color: var(--primary);
+        }
+        
+        .gallery-thumb svg {
+            width: 32px;
+            height: 32px;
+            opacity: 0.8;
+        }
+        
+        .product-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-title {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: white;
+            line-height: 1.3;
+        }
+        
+        .product-meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .meta-tag.game {
+            background-color: #5755d9;
+        }
+        
+        .meta-tag.book {
+            background-color: #2e7d32;
+        }
+        
+        .meta-tag.music {
+            background-color: #9c27b0;
+        }
+        
+        .meta-tag.collectible {
+            background-color: #e65100;
+        }
+        
+        .meta-tag.console {
+            background-color: #0277bd;
+        }
+        
+        .meta-tag.other {
+            background-color: var(--surface);
+            color: var(--text-secondary);
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .rating-stars {
+            display: flex;
+            color: #ff9800;
+            margin-right: 0.5rem;
+        }
+        
+        .rating-stars svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 1px;
+        }
+        
+        .rating-count {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .product-price-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-price {
+            font-size: 2rem;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+        
+        .price-note {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .product-condition-container {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .condition-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .condition-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .condition-label {
+            width: 120px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .condition-value {
+            font-size: 0.9rem;
+        }
+        
+        .condition-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .condition-badge.new {
+            background-color: #3a9e4e;
+            color: white;
+        }
+        
+        .condition-badge.used {
+            background-color: #2c7cb0;
+            color: white;
+        }
+        
+        .stock-status {
+            font-weight: 500;
+        }
+        
+        .in-stock {
+            color: #4CAF50;
+        }
+        
+        .low-stock {
+            color: #FFC107;
+        }
+        
+        .out-of-stock {
+            color: #F44336;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quantity-input {
+            display: flex;
+            align-items: center;
+            max-width: 140px;
+        }
+        
+        .quantity-btn {
+            width: 36px;
+            height: 44px;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .quantity-btn:hover {
+            background-color: var(--surface-lighter);
+        }
+        
+        .quantity-btn.minus {
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .quantity-btn.plus {
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .quantity-input input {
+            width: 60px;
+            height: 44px;
+            border: 1px solid var(--border);
+            border-left: none;
+            border-right: none;
+            background-color: var(--surface-lighter);
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .quantity-input input:focus {
+            outline: none;
+        }
+        
+        .btn {
+            height: 44px;
+            padding: 0 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--surface);
+        }
+        
+        .btn svg {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-wishlist {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            width: 44px;
+            height: 44px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-wishlist:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .trust-badges {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .trust-badge svg {
+            color: var(--primary);
+            margin-right: 0.5rem;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .product-description {
+            margin-bottom: 2rem;
+        }
+        
+        .description-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .description-content {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .product-tabs {
+            margin-bottom: 3rem;
+        }
+        
+        .tabs-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .tab-button:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+        
+        .tab-button.active {
+            color: var(--text-primary);
+        }
+        
+        .tab-button.active:after {
+            transform: scaleX(1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .specs-table tr {
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .specs-table tr:last-child {
+            border-bottom: none;
+        }
+        
+        .specs-table th, .specs-table td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .specs-table th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            width: 40%;
+        }
+        
+        .related-products {
+            margin-bottom: 3rem;
+        }
+        
+        .related-products h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .related-products .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+        
+        /* 顧客レビュー */
+        .review-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .review-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .reviewer-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .reviewer-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .review-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .review-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+        
+        .review-photos {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .review-photo {
+            width: 80px;
+            height: 80px;
+            background-color: var(--surface-lighter);
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .review-photo svg {
+            width: 24px;
+            height: 24px;
+            opacity: 0.6;
+        }
+        
+        /* レスポンシブ対応 */
+        @media (max-width: 992px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .product-image-main {
+                height: 350px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .product-actions {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .quantity-input {
+                max-width: 100%;
+            }
+            
+            .quantity-input input {
+                flex: 1;
+            }
+            
+            .trust-badges {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .tabs-nav {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .product-rating {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .product-image-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .gallery-thumb {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>Play<span>Port</span>JP</h1>
+                </a>
+            </div>
+            <div class="search-container">
+                <form action="search-results.html" method="get">
+                    <input type="search" placeholder="Search products..." aria-label="Search">
+                    <button type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#order-history">Order History</a></li>
+                    <li><a href="#account" id="account-link">Account</a></li>
+                    <li class="cart-icon">
+                        <a href="#cart">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span class="cart-count">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- パンくずリスト -->
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <span class="breadcrumb-separator">›</span>
+                <a href="#games">Games</a>
+                <span class="breadcrumb-separator">›</span>
+                <a href="#playstation">PlayStation</a>
+                <span class="breadcrumb-separator">›</span>
+                <span>Final Fantasy VII Remake - PS4 Japanese Edition</span>
+            </div>
+
+            <!-- 商品詳細エリア -->
+            <div class="product-detail-container">
+                <!-- 商品画像エリア -->
+                <div class="product-media">
+                    <div class="product-image-main">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 4px 6px rgba(187, 0, 0, 0.5));">
+                            <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01M17.32 5H6.68a4 4 0 00-3.978 3.59c-.006.052-.01.101-.01.15v6.52c0 1.66 1.34 3 3 3h14.64c1.66 0 3-1.34 3-3v-6.52c0-.049-.004-.098-.01-.15A4 4 0 0017.32 5z"></path>
+                        </svg>
+                        <div>PlayStation 4 Game</div>
+                        <a href="#" class="search-image-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Google
+                        </a>
+                    </div>
+                    <div class="product-image-gallery">
+                        <div class="gallery-thumb active">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01M17.32 5H6.68a4 4 0 00-3.978 3.59c-.006.052-.01.101-.01.15v6.52c0 1.66 1.34 3 3 3h14.64c1.66 0 3-1.34 3-3v-6.52c0-.049-.004-.098-.01-.15A4 4 0 0017.32 5z"></path>
+                            </svg>
+                        </div>
+                        <div class="gallery-thumb">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <path d="M8 12h8"></path>
+                                <path d="M12 8v8"></path>
+                            </svg>
+                        </div>
+                        <div class="gallery-thumb">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 4H3"></path>
+                                <path d="M18 8H6"></path>
+                                <path d="M19 12H9"></path>
+                                <path d="M16 16H6"></path>
+                                <path d="M11 20H9"></path>
+                            </svg>
+                        </div>
+                        <div class="gallery-thumb">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 9V5H7v4"></path>
+                                <path d="M17 9H7"></path>
+                                <rect x="4" y="12" width="16" height="8" rx="1"></rect>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 商品情報エリア -->
+                <div class="product-info">
+                    <h1 class="product-title">Final Fantasy VII Remake - PS4 Japanese Edition</h1>
+                    
+                    <div class="product-meta">
+                        <span class="meta-tag game">Game</span>
+                        <span class="meta-tag other">PS4</span>
+                        <span class="meta-tag other">RPG</span>
+                        <span class="meta-tag other">Square Enix</span>
+                    </div>
+                    
+                    <div class="product-rating">
+                        <div class="rating-stars">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </div>
+                        <div class="rating-count">48 reviews</div>
+                    </div>
+                    
+                    <div class="product-price-container">
+                        <div class="product-price">64.99 CAD</div>
+                        <div class="price-note">Sales tax calculated at checkout</div>
+                    </div>
+                    
+                    <div class="product-condition-container">
+                        <div class="condition-row">
+                            <div class="condition-label">Condition</div>
+                            <div class="condition-value">
+                                <span class="condition-badge used">USED</span> - Excellent
+                            </div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-label">Availability</div>
+                            <div class="condition-value">
+                                <span class="stock-status in-stock">In Stock</span> - Ready to ship
+                            </div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-label">Region</div>
+                            <div class="condition-value">Japan (NTSC-J)</div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-label">Language</div>
+                            <div class="condition-value">Japanese (Some English UI options)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-actions">
+                        <div class="quantity-input">
+                            <button class="quantity-btn minus">-</button>
+                            <input type="number" value="1" min="1" max="10">
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            Add to Cart
+                        </button>
+                        <button class="btn-wishlist">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 0L2 5.67a5.5 5.5 0 0 0 0 7.78l10 10 10-10a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="trust-badges">
+                        <div class="trust-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            Authenticity Verified
+                        </div>
+                        <div class="trust-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            Carefully Inspected
+                        </div>
+                        <div class="trust-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21.5 2v6h-6"></path>
+                                <path d="M2.5 22v-6h6"></path>
+                                <path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"></path>
+                            </svg>
+                            30-Day Returns
+                        </div>
+                    </div>
+                    
+                    <div class="product-description">
+                        <h3 class="description-title">Product Description</h3>
+                        <div class="description-content">
+                            <p>Experience the unforgettable RPG that redefined the genre with this Japanese edition of Final Fantasy VII Remake for PlayStation 4. This version features the complete game experience with Japanese voice acting and text.</p>
+                            <p>This pre-owned copy is in excellent condition. The disc shows minimal signs of use with no scratches that would affect gameplay. The original case, cover art, and manual are all included and in great condition.</p>
+                            <p>Final Fantasy VII Remake is a reimagining of the iconic 1997 PlayStation game that redefined the RPG genre. This first game in the FFVII Remake project expands on the storyline of Midgar into a full standalone game.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- タブコンテンツ -->
+            <div class="product-tabs">
+                <div class="tabs-nav">
+                    <button class="tab-button active" data-tab="details">Details</button>
+                    <button class="tab-button" data-tab="specifications">Specifications</button>
+                    <button class="tab-button" data-tab="shipping">Shipping & Returns</button>
+                    <button class="tab-button" data-tab="reviews">Customer Reviews (48)</button>
+                </div>
+                
+                <div id="details" class="tab-content active">
+                    <h3 class="description-title">Game Features</h3>
+                    <ul class="description-content">
+                        <li>A spectacular reimagining of one of the most visionary games ever</li>
+                        <li>The first entry in a multi-part saga that completely redefines the epic story of Final Fantasy VII</li>
+                        <li>Immerse yourself in the world of Final Fantasy VII with incredible graphics, a new battle system, and more</li>
+                        <li>Experience the game with Japanese voice acting and text for an authentic experience</li>
+                        <li>Includes special in-game bonus items exclusive to the Japanese edition</li>
+                    </ul>
+                    
+                    <h3 class="description-title" style="margin-top: 1.5rem;">Package Contents</h3>
+                    <ul class="description-content">
+                        <li>Final Fantasy VII Remake game disc</li>
+                        <li>Original PlayStation 4 case and cover art</li>
+                        <li>Full color instruction booklet in Japanese</li>
+                        <li>Promotional insert with special offers (Japan only)</li>
+                    </ul>
+                </div>
+                
+                <div id="specifications" class="tab-content">
+                    <table class="specs-table">
+                        <tr>
+                            <th>Title</th>
+                            <td>Final Fantasy VII Remake</td>
+                        </tr>
+                        <tr>
+                            <th>Platform</th>
+                            <td>PlayStation 4</td>
+                        </tr>
+                        <tr>
+                            <th>Region</th>
+                            <td>Japan (NTSC-J)</td>
+                        </tr>
+                        <tr>
+                            <th>Language</th>
+                            <td>Japanese (Some English UI options)</td>
+                        </tr>
+                        <tr>
+                            <th>Developer</th>
+                            <td>Square Enix</td>
+                        </tr>
+                        <tr>
+                            <th>Publisher</th>
+                            <td>Square Enix</td>
+                        </tr>
+                        <tr>
+                            <th>Release Date</th>
+                            <td>April 10, 2020</td>
+                        </tr>
+                        <tr>
+                            <th>Genre</th>
+                            <td>Role-playing game (RPG), Action</td>
+                        </tr>
+                        <tr>
+                            <th>Players</th>
+                            <td>1 player</td>
+                        </tr>
+                        <tr>
+                            <th>Rated</th>
+                            <td>CERO: C (Ages 15+)</td>
+                        </tr>
+                        <tr>
+                            <th>File Size</th>
+                            <td>Approx. 100 GB</td>
+                        </tr>
+                        <tr>
+                            <th>Compatible With</th>
+                            <td>All PS4 systems, PS5 (backwards compatibility)</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="shipping" class="tab-content">
+                    <h3 class="description-title">Shipping Information</h3>
+                    <div class="description-content">
+                        <p>We ship worldwide from our warehouse in Vancouver, Canada. All items are carefully packaged to ensure they arrive in the condition described.</p>
+                        
+                        <ul>
+                            <li>Orders are typically processed within 1-2 business days</li>
+                            <li>Standard shipping (5-10 business days): 8.99 CAD</li>
+                            <li>Express shipping (3-5 business days): 14.99 CAD</li>
+                            <li>International shipping (10-20 business days): 19.99 CAD</li>
+                            <li>Free shipping on orders over 100 CAD (Canada and US only)</li>
+                        </ul>
+                        
+                        <p>Tracking information will be provided via email once your order has been shipped.</p>
+                    </div>
+                    
+                    <h3 class="description-title" style="margin-top: 1.5rem;">Return Policy</h3>
+                    <div class="description-content">
+                        <p>We want you to be completely satisfied with your purchase. If for any reason you're not happy with your order, we offer a 30-day return policy from the date of delivery.</p>
+                        
+                        <ul>
+                            <li>Items must be returned in the same condition as they were received</li>
+                            <li>Original packaging must be included</li>
+                            <li>Return shipping costs are the responsibility of the customer unless the item was damaged or defective</li>
+                            <li>Refunds will be processed within 5-7 business days after we receive your return</li>
+                        </ul>
+                        
+                        <p>To initiate a return, please contact our customer service team at support@playportjp.com.</p>
+                    </div>
+                </div>
+                
+                <div id="reviews" class="tab-content">
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Alex T.</div>
+                                <div class="review-date">August 15, 2024</div>
+                            </div>
+                            <div class="rating-stars">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="review-text">
+                            <p>Absolutely amazing condition for a used game! The disc looks practically new, and all the original packaging was included. The Japanese voice acting really adds to the experience, and I love having the physical Japanese edition in my collection. Shipping was fast and the packaging was secure. Would definitely buy from PlayPortJP again!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Sophia K.</div>
+                                <div class="review-date">July 28, 2024</div>
+                            </div>
+                            <div class="rating-stars">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="review-text">
+                            <p>I'm a huge collector of Japanese editions of Final Fantasy games, and this was a great addition to my collection. The condition was as described—excellent with minimal wear. The game works perfectly on my North American PS4. Just be aware that the text is in Japanese, but if you've played the English version or know the story, it's not a problem. Would buy from here again!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Marcus J.</div>
+                                <div class="review-date">July 10, 2024</div>
+                            </div>
+                            <div class="rating-stars">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="review-text">
+                            <p>Good condition overall, but there were a few minor scratches on the disc that weren't mentioned in the description. The game still plays fine though. Shipping was a bit slow to my location (took about 12 days), but everything arrived safely. The Japanese exclusive bonuses were a nice touch. Three stars.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 関連商品 -->
+            <div class="related-products">
+                <h2>You Might Also Like</h2>
+                <div class="product-grid">
+                    <!-- Product Card 1 -->
+                    <div class="product-card">
+                        <div class="image-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5755d9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(87, 85, 217, 0.5));">
+                                <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                                <path d="M12 12h.01"></path>
+                                <path d="M17 12h.01"></path>
+                                <path d="M7 12h.01"></path>
+                            </svg>
+                            <div>Nintendo Switch Game</div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Final Fantasy X/X-2 HD Remaster - Nintendo Switch</h3>
+                            <p class="product-condition">Used - Very Good</p>
+                            <p class="product-price">49.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 2 -->
+                    <div class="product-card">
+                        <div class="image-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(187, 0, 0, 0.5));">
+                                <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01M17.32 5H6.68a4 4 0 00-3.978 3.59c-.006.052-.01.101-.01.15v6.52c0 1.66 1.34 3 3 3h14.64c1.66 0 3-1.34 3-3v-6.52c0-.049-.004-.098-.01-.15A4 4 0 0017.32 5z"></path>
+                            </svg>
+                            <div>PlayStation 5 Game</div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Final Fantasy XVI - PS5 Japanese Version</h3>
+                            <p class="product-condition">New</p>
+                            <p class="product-price">79.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 3 -->
+                    <div class="product-card">
+                        <div class="image-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e65100" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(230, 81, 0, 0.5));">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                <path d="M3.27 6.96L12 12.01l8.73-5.05"></path>
+                                <path d="M12 22.08V12"></path>
+                            </svg>
+                            <div>Collectible Figure</div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Final Fantasy VII Remake Tifa Lockhart Play Arts Kai Figure</h3>
+                            <p class="product-condition">New</p>
+                            <p class="product-price">149.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 4 -->
+                    <div class="product-card">
+                        <div class="image-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#9c27b0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(156, 39, 176, 0.5));">
+                                <path d="M9 18V5l12-2v13"></path>
+                                <circle cx="6" cy="18" r="3"></circle>
+                                <circle cx="18" cy="16" r="3"></circle>
+                            </svg>
+                            <div>Music CD</div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Final Fantasy VII Remake Original Soundtrack (3-CD)</h3>
+                            <p class="product-condition">New</p>
+                            <p class="product-price">59.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-nav">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="#games">Games</a></li>
+                        <li><a href="#books">Books</a></li>
+                        <li><a href="#music">Music</a></li>
+                        <li><a href="#collectibles">Collectibles</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav">
+                    <h3>Information</h3>
+                    <ul>
+                        <li><a href="#shipping">Shipping</a></li>
+                        <li><a href="#returns">Returns</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe for updates on new arrivals and special offers.</p>
+                    <form>
+                        <input type="email" placeholder="Your email" aria-label="Email for newsletter">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 PlayPortJP. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // タブの切り替え機能
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // アクティブなタブをリセット
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // クリックされたタブをアクティブに
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // 数量の増減機能
+            const minusBtn = document.querySelector('.quantity-btn.minus');
+            const plusBtn = document.querySelector('.quantity-btn.plus');
+            const quantityInput = document.querySelector('.quantity-input input');
+            
+            minusBtn.addEventListener('click', function() {
+                let value = parseInt(quantityInput.value);
+                if (value > 1) {
+                    quantityInput.value = value - 1;
+                }
+            });
+            
+            plusBtn.addEventListener('click', function() {
+                let value = parseInt(quantityInput.value);
+                if (value < 10) {
+                    quantityInput.value = value + 1;
+                }
+            });
+            
+            // ギャラリーサムネイルの切り替え
+            const galleryThumbs = document.querySelectorAll('.gallery-thumb');
+            
+            galleryThumbs.forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    galleryThumbs.forEach(t => t.classList.remove('active'));
+                    thumb.classList.add('active');
+                    
+                    // ここで実際の画像が切り替わる処理を実装
+                    // （このデモでは画像はプレースホルダーのみ）
+                });
+            });
+        });
+    </script>
+</body>
+</html>
