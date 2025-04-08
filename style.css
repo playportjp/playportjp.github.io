@@ -457,3 +457,79 @@ footer {
         border-radius: 4px;
     }
 }
+/* Category Styles */
+.categories {
+    padding: 2rem 0;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.category-card {
+    background-color: var(--card);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border);
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    border-color: rgba(187, 0, 0, 0.3);
+}
+
+.category-image {
+    height: 100px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--surface-lighter);
+    border-radius: 4px;
+}
+
+/* カテゴリーアイコンのプレースホルダー */
+.category-image::before {
+    content: '';
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.category-card[data-category="games"] .category-image::before {
+    /* アイコンがない場合は色で区別 */
+    background-color: rgba(187, 0, 0, 0.2);
+}
+
+.category-card[data-category="books"] .category-image::before {
+    background-color: rgba(0, 100, 187, 0.2);
+}
+
+.category-card[data-category="music"] .category-image::before {
+    background-color: rgba(0, 150, 50, 0.2);
+}
+
+.category-card[data-category="collectibles"] .category-image::before {
+    background-color: rgba(150, 100, 0, 0.2);
+}
+
+.category-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+
+/* セクション間の区切り */
+.featured-products, .about-section {
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+}
