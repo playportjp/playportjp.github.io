@@ -1,126 +1,459 @@
-/**
- * index.js - ホームページ固有のJavaScript機能
- */
-
-document.addEventListener('DOMContentLoaded', () => {
-    // カテゴリカードのイメージをロード（実際のプロジェクトでは画像リソースが必要）
-    loadCategoryImages();
-    
-    // 商品カードのイメージをロード（実際のプロジェクトでは画像リソースが必要）
-    loadProductImages();
-});
-
-/**
- * カテゴリカードの画像を設定
- */
-function loadCategoryImages() {
-    // カテゴリとその背景画像のマッピング
-    const categoryImages = {
-        'games': 'images/categories/games-bg.jpg',
-        'books': 'images/categories/books-bg.jpg',
-        'music': 'images/categories/music-bg.jpg',
-        'collectibles': 'images/categories/collectibles-bg.jpg'
-    };
-    
-    // カテゴリカードを取得して画像を設定
-    const categoryCards = document.querySelectorAll('.category-card');
-    categoryCards.forEach(card => {
-        const category = card.dataset.category;
-        const imageElement = card.querySelector('.category-image');
-        
-        if (category && imageElement) {
-            // 背景画像を設定
-            imageElement.style.backgroundImage = `url('${categoryImages[category] || 'images/categories/placeholder.jpg'}')`;
-            imageElement.style.backgroundSize = 'cover';
-            imageElement.style.backgroundPosition = 'center';
-        }
-    });
+/* Base Styles & Custom Properties */
+:root {
+    --background: #121212;
+    --surface: #1e1e1e;
+    --surface-lighter: #2a2a2a;
+    --primary: #bb0000;
+    --primary-hover: #990000;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --border: #383838;
+    --card: #242424;
+    --card-hover: #2c2c2c;
+    --focus-ring: rgba(187, 0, 0, 0.4);
 }
 
-/**
- * 商品カードの画像を設定
- */
-function loadProductImages() {
-    // 商品カードを取得して画像を設定
-    const productCards = document.querySelectorAll('.product-card');
-    productCards.forEach(card => {
-        const imageUrl = card.dataset.productImage;
-        const imageElement = card.querySelector('.product-image');
-        
-        if (imageUrl && imageElement) {
-            // 背景画像を設定
-            imageElement.style.backgroundImage = `url('${imageUrl}')`;
-            imageElement.style.backgroundSize = 'cover';
-            imageElement.style.backgroundPosition = 'center';
-        }
-    });
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/**
- * おすすめ商品のフェッチ（実際のプロジェクトではAPIからデータを取得）
- * 注: 現在はHTMLに直接記述されているため使用されていない
- */
-function fetchFeaturedProducts() {
-    // APIからデータを取得する例
-    // この関数は現在は使われていないが、将来的にAPIから商品データを取得する場合に使用できる
-    
-    /* 
-    // 実際のプロジェクトでは以下のようなコードを使用する
-    fetch('/api/featured-products')
-        .then(response => response.json())
-        .then(products => {
-            const productGrid = document.querySelector('.product-grid');
-            productGrid.innerHTML = ''; // 既存のコンテンツをクリア
-            
-            products.forEach(product => {
-                // 商品カードのHTMLを生成
-                const productCard = createProductCard(product);
-                productGrid.appendChild(productCard);
-            });
-        })
-        .catch(error => {
-            console.error('おすすめ商品の取得に失敗しました:', error);
-        });
-    */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--background);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/**
- * 商品カードHTML要素を作成する関数
- * 注: 現在はHTMLに直接記述されているため使用されていない
- */
-function createProductCard(product) {
-    // 商品カードの要素を生成する例
-    // この関数は現在は使われていないが、将来的にAPIから商品データを取得する場合に使用できる
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--primary);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 1.5rem;
+}
+
+h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+}
+
+h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* Header Styles */
+header {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 1rem 0;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo Styling */
+.logo a {
+    text-decoration: none;
+}
+
+.logo h1 {
+    color: white;
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    font-size: 1.6rem;
+    text-transform: none;
+    position: relative;
+    display: inline-block;
+}
+
+.logo h1 span {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.logo h1::after {
+    content: "";
+    position: absolute;
+    height: 3px;
+    background-color: var(--primary);
+    width: 100%;
+    left: 0;
+    bottom: -2px;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: right;
+}
+
+.logo a:hover h1::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Search Container */
+.search-container {
+    flex-grow: 1;
+    max-width: 500px;
+    margin: 0 2rem;
+}
+
+.search-container form {
+    display: flex;
+    position: relative;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background-color: var(--surface-lighter);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.search-container input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+.search-container button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+}
+
+.search-container button:hover {
+    color: var(--text-primary);
+}
+
+/* Navigation */
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+nav ul li a {
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.cart-icon {
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--primary);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+/* Common Product Card Styles */
+.product-card {
+    background-color: var(--card);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    border-color: rgba(187, 0, 0, 0.3);
+}
+
+.product-image {
+    height: 180px;
+    background-color: var(--surface-lighter);
+    flex-shrink: 0;
+}
+
+.product-details {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-details h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.4;
+    min-height: 2.8rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-card:hover .product-details h3 {
+    color: var(--primary);
+}
+
+.product-condition {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.7rem;
+}
+
+.product-price {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    margin-top: auto;
+}
+
+.add-to-cart {
+    width: 100%;
+    padding: 0.6rem 0;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.add-to-cart:hover {
+    background-color: var(--primary-hover);
+}
+
+/* Product Grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Footer Styles */
+footer {
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 3rem 0 1.5rem;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-nav h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.footer-nav ul {
+    list-style: none;
+}
+
+.footer-nav ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav ul li a {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.footer-nav ul li a:hover {
+    color: var(--text-primary);
+}
+
+.footer-newsletter p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.footer-newsletter form {
+    display: flex;
+}
+
+.footer-newsletter input {
+    flex-grow: 1;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 4px 0 0 4px;
+    background-color: var(--surface-lighter);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.footer-newsletter input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+.footer-newsletter button {
+    padding: 0.6rem 1rem;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.footer-newsletter button:hover {
+    background-color: var(--primary-hover);
+}
+
+.copyright {
+    text-align: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.copyright p {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-bottom: 0;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: var(--primary-hover);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: var(--surface-lighter);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--surface);
+    color: var(--text-primary);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
     
-    /*
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.dataset.productId = product.id;
-    card.dataset.productPrice = product.price;
-    card.dataset.productImage = product.image;
+    .logo {
+        margin-bottom: 1rem;
+        text-align: center;
+    }
     
-    card.innerHTML = `
-        <div class="product-image" style="background-image: url('${product.image}')"></div>
-        <div class="product-details">
-            <h3>${product.name}</h3>
-            <p class="product-condition">${product.condition}</p>
-            <p class="product-price">${product.price} ${product.currency}</p>
-            <button class="add-to-cart">Add to Cart</button>
-        </div>
-    `;
+    .search-container {
+        margin: 0 0 1rem 0;
+        max-width: none;
+    }
     
-    // 「カートに追加」ボタンにイベントリスナーを設定
-    const addButton = card.querySelector('.add-to-cart');
-    addButton.addEventListener('click', () => {
-        window.cartManager.addItem(product);
-        
-        // 視覚的フィードバック
-        addButton.textContent = '追加しました！';
-        setTimeout(() => {
-            addButton.textContent = 'カートに追加';
-        }, 1500);
-    });
+    nav ul {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem 1.5rem;
+    }
     
-    return card;
-    */
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-newsletter form {
+        flex-direction: column;
+    }
+    
+    .footer-newsletter input {
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .footer-newsletter button {
+        border-radius: 4px;
+    }
 }
