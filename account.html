@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Information - PlayPortJP</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"><h1>PlayPortJP</h1></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="search-results.html">Products</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                    <li class="active"><a href="account.html">Account</a></li>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <input type="text" placeholder="Search products...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="cart-icon">
+                <a href="cart.html"><i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span></a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="account-container">
+                <div class="account-sidebar">
+                    <h2>My Account</h2>
+                    <ul>
+                        <li class="active" data-tab="profile"><i class="fas fa-user"></i> Profile</li>
+                        <li data-tab="addresses"><i class="fas fa-map-marker-alt"></i> Shipping Addresses</li>
+                        <li data-tab="security"><i class="fas fa-lock"></i> Security Settings</li>
+                        <li data-tab="payment"><i class="fas fa-credit-card"></i> Payment Methods</li>
+                        <li data-tab="notifications"><i class="fas fa-bell"></i> Notifications</li>
+                        <li data-tab="orders"><i class="fas fa-box"></i> Order History</li>
+                    </ul>
+                </div>
+
+                <div class="account-content">
+                    <!-- Profile Information -->
+                    <div class="account-tab active" id="profile">
+                        <h2>Profile Information</h2>
+                        <form id="profile-form">
+                            <div class="form-group">
+                                <label for="fullname">Full Name</label>
+                                <input type="text" id="fullname" name="fullname" placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" placeholder="example@mail.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" placeholder="123-456-7890">
+                            </div>
+                            <div class="form-group">
+                                <label for="birthday">Date of Birth</label>
+                                <input type="date" id="birthday" name="birthday">
+                            </div>
+                            <button type="submit" class="btn">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <!-- Shipping Addresses -->
+                    <div class="account-tab" id="addresses">
+                        <h2>Shipping Addresses</h2>
+                        <div class="address-list">
+                            <div class="address-item">
+                                <h3>Home <span class="default-badge">Default</span></h3>
+                                <p>123 Main Street</p>
+                                <p>Apt 101</p>
+                                <p>New York, NY 10001</p>
+                                <div class="address-actions">
+                                    <button class="btn-small">Edit</button>
+                                    <button class="btn-small btn-delete">Delete</button>
+                                </div>
+                            </div>
+                            <div class="address-item">
+                                <h3>Work</h3>
+                                <p>456 Business Ave</p>
+                                <p>5th Floor</p>
+                                <p>New York, NY 10002</p>
+                                <div class="address-actions">
+                                    <button class="btn-small">Edit</button>
+                                    <button class="btn-small">Set as Default</button>
+                                    <button class="btn-small btn-delete">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn" id="add-address-btn"><i class="fas fa-plus"></i> Add New Address</button>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="account-tab" id="security">
+                        <h2>Security Settings</h2>
+                        <form id="security-form">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password" name="current-password">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password" name="new-password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm Password</label>
+                                <input type="password" id="confirm-password" name="confirm-password">
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="two-factor" name="two-factor">
+                                <label for="two-factor">Enable Two-Factor Authentication</label>
+                            </div>
+                            <button type="submit" class="btn">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="account-tab" id="payment">
+                        <h2>Payment Methods</h2>
+                        <div class="payment-list">
+                            <div class="payment-item">
+                                <div class="payment-icon"><i class="fab fa-cc-visa"></i></div>
+                                <div class="payment-details">
+                                    <h3>VISA Card <span class="default-badge">Default</span></h3>
+                                    <p>**** **** **** 1234</p>
+                                    <p>Expires: 12/25</p>
+                                </div>
+                                <div class="payment-actions">
+                                    <button class="btn-small">Edit</button>
+                                    <button class="btn-small btn-delete">Delete</button>
+                                </div>
+                            </div>
+                            <div class="payment-item">
+                                <div class="payment-icon"><i class="fab fa-cc-mastercard"></i></div>
+                                <div class="payment-details">
+                                    <h3>Mastercard</h3>
+                                    <p>**** **** **** 5678</p>
+                                    <p>Expires: 09/27</p>
+                                </div>
+                                <div class="payment-actions">
+                                    <button class="btn-small">Edit</button>
+                                    <button class="btn-small">Set as Default</button>
+                                    <button class="btn-small btn-delete">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn" id="add-payment-btn"><i class="fas fa-plus"></i> Add New Payment Method</button>
+                    </div>
+
+                    <!-- Notification Settings -->
+                    <div class="account-tab" id="notifications">
+                        <h2>Notification Settings</h2>
+                        <form id="notifications-form">
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="email-order" name="email-order" checked>
+                                <label for="email-order">Receive order status updates via email</label>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="email-promo" name="email-promo" checked>
+                                <label for="email-promo">Receive promotions and sales information via email</label>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="email-news" name="email-news">
+                                <label for="email-news">Receive newsletters</label>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="sms-order" name="sms-order" checked>
+                                <label for="sms-order">Receive order status updates via SMS</label>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="sms-promo" name="sms-promo">
+                                <label for="sms-promo">Receive promotions and sales information via SMS</label>
+                            </div>
+                            <button type="submit" class="btn">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <!-- Order History (Simplified, details on separate page) -->
+                    <div class="account-tab" id="orders">
+                        <h2>Order History</h2>
+                        <p>Recent Orders</p>
+                        <div class="orders-list">
+                            <div class="order-item">
+                                <div class="order-header">
+                                    <div class="order-date">April 5, 2025</div>
+                                    <div class="order-number">Order #: ORD123456</div>
+                                    <div class="order-total">$129.80</div>
+                                    <div class="order-status delivered">Delivered</div>
+                                </div>
+                                <div class="order-summary">
+                                    <div class="order-product-img">
+                                        <img src="https://via.placeholder.com/60" alt="Product image">
+                                    </div>
+                                    <div class="order-product-info">
+                                        <p>Nintendo Switch Game Title</p>
+                                        <p>Quantity: 1</p>
+                                    </div>
+                                </div>
+                                <div class="order-actions">
+                                    <a href="order-detail.html?id=ORD123456" class="btn-small">View Details</a>
+                                    <button class="btn-small">Reorder</button>
+                                </div>
+                            </div>
+
+                            <div class="order-item">
+                                <div class="order-header">
+                                    <div class="order-date">March 20, 2025</div>
+                                    <div class="order-number">Order #: ORD123455</div>
+                                    <div class="order-total">$285.00</div>
+                                    <div class="order-status delivered">Delivered</div>
+                                </div>
+                                <div class="order-summary">
+                                    <div class="order-product-img">
+                                        <img src="https://via.placeholder.com/60" alt="Product image">
+                                    </div>
+                                    <div class="order-product-info">
+                                        <p>PlayStation 5 Controller</p>
+                                        <p>Quantity: 2</p>
+                                    </div>
+                                </div>
+                                <div class="order-actions">
+                                    <a href="order-detail.html?id=ORD123455" class="btn-small">View Details</a>
+                                    <button class="btn-small">Reorder</button>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="order-history.html" class="btn">View All Orders</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PlayPortJP</h3>
+                    <p>The Ultimate Gaming & Hobby Marketplace</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Shopping</h3>
+                    <ul>
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Bestsellers</a></li>
+                        <li><a href="#">Sales</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Shipping</a></li>
+                        <li><a href="#">Returns & Exchanges</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+
+    <!-- JavaScriptファイルの読み込み -->
+    <script src="js/complete.js"></script>
+    <script src="js/account.js"></script>
+</body>
+</html>
