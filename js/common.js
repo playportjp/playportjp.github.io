@@ -1,44 +1,44 @@
 /**
- * common.js - サイト共通のJavaScript機能
+ * common.js - Common JavaScript functionality for the site
  */
 
-// カートの状態管理
+// Cart state management
 class CartManager {
     constructor() {
         this.items = this.loadCart();
         this.updateCartCount();
     }
 
-    // ローカルストレージからカート情報を読み込む
+    // Load cart information from local storage
     loadCart() {
         try {
             const cart = localStorage.getItem('cart');
             return cart ? JSON.parse(cart) : [];
         } catch (error) {
-            console.error('カートの読み込みエラー:', error);
+            console.error('Error loading cart:', error);
             return [];
         }
     }
 
-    // カートをローカルストレージに保存
+    // Save cart to local storage
     saveCart() {
         try {
             localStorage.setItem('cart', JSON.stringify(this.items));
         } catch (error) {
-            console.error('カートの保存エラー:', error);
+            console.error('Error saving cart:', error);
         }
     }
 
-    // 商品をカートに追加
+    // Add product to cart
     addItem(product) {
-        // すでにカートに同じ商品があるか確認
+        // Check if the same product is already in the cart
         const existingItem = this.items.find(item => item.id === product.id);
         
         if (existingItem) {
-            // 既存の商品の数量を増やす
+            // Increase quantity of existing product
             existingItem.quantity += 1;
         } else {
-            // 新しい商品をカートに追加
+            // Add new product to cart
             this.items.push({
                 id: product.id,
                 name: product.name,
@@ -51,52 +51,52 @@ class CartManager {
         this.saveCart();
         this.updateCartCount();
         
-        // カスタムイベントの発火（他のJSファイルでリッスンできるように）
+        // Fire custom event (so other JS files can listen)
         const event = new CustomEvent('cart:updated', { detail: { cart: this.items } });
         document.dispatchEvent(event);
     }
 
-    // カートから商品を削除
+    // Remove product from cart
     removeItem(productId) {
         this.items = this.items.filter(item => item.id !== productId);
         
         this.saveCart();
         this.updateCartCount();
         
-        // カスタムイベントの発火
+        // Fire custom event
         const event = new CustomEvent('cart:updated', { detail: { cart: this.items } });
         document.dispatchEvent(event);
     }
     
-    // 商品の数量を更新
+    // Update product quantity
     updateQuantity(productId, quantity) {
         const item = this.items.find(item => item.id === productId);
         
         if (item) {
             if (quantity <= 0) {
-                // 数量が0以下なら商品を削除
+                // Remove product if quantity is 0 or less
                 this.removeItem(productId);
             } else {
-                // 数量を更新
+                // Update quantity
                 item.quantity = quantity;
                 this.saveCart();
                 this.updateCartCount();
                 
-                // カスタムイベントの発火
+                // Fire custom event
                 const event = new CustomEvent('cart:updated', { detail: { cart: this.items } });
                 document.dispatchEvent(event);
             }
         }
     }
     
-    // カートの合計金額を計算
+    // Calculate total cart amount
     getTotal() {
         return this.items.reduce((total, item) => {
             return total + (item.price * item.quantity);
         }, 0);
     }
     
-    // カートの商品数を更新
+    // Update cart item count
     updateCartCount() {
         const cartCountElements = document.querySelectorAll('.cart-count');
         const count = this.items.reduce((total, item) => total + item.quantity, 0);
@@ -107,14 +107,14 @@ class CartManager {
     }
 }
 
-// 検索機能
+// Search functionality
 class SearchManager {
     constructor() {
         this.bindEvents();
     }
     
     bindEvents() {
-        // 検索フォームのイベントリスナーを設定
+        // Set up search form event listener
         const searchForm = document.getElementById('search-form');
         if (searchForm) {
             searchForm.addEventListener('submit', this.handleSearch.bind(this));
@@ -125,13 +125,13 @@ class SearchManager {
         const searchInput = document.getElementById('search-input');
         if (searchInput && searchInput.value.trim() === '') {
             event.preventDefault();
-            // 空の検索を防止
-            alert('検索キーワードを入力してください');
+            // Prevent empty searches
+            alert('Please enter a search keyword');
         }
     }
 }
 
-// ニュースレター購読
+// Newsletter subscription
 class NewsletterManager {
     constructor() {
         this.bindEvents();
@@ -149,18 +149,18 @@ class NewsletterManager {
         
         const emailInput = document.getElementById('newsletter-email');
         if (emailInput && this.validateEmail(emailInput.value)) {
-            // 実際のAPI呼び出しをここに実装（現在はモック）
+            // Actual API call would be implemented here (currently mocked)
             this.subscribeToNewsletter(emailInput.value)
                 .then(() => {
-                    alert('ニュースレターに登録しました！');
+                    alert('Successfully subscribed to the newsletter!');
                     emailInput.value = '';
                 })
                 .catch(error => {
-                    console.error('登録エラー:', error);
-                    alert('登録中にエラーが発生しました。後でもう一度お試しください。');
+                    console.error('Registration error:', error);
+                    alert('An error occurred during registration. Please try again later.');
                 });
         } else {
-            alert('有効なメールアドレスを入力してください');
+            alert('Please enter a valid email address');
         }
     }
     
@@ -169,29 +169,29 @@ class NewsletterManager {
         return re.test(email);
     }
     
-    // ニュースレター登録のモック関数（実際はAPIを使用する）
+    // Mock function for newsletter subscription (would use API in production)
     subscribeToNewsletter(email) {
         return new Promise((resolve) => {
-            // API呼び出しをシミュレート
+            // Simulate API call
             setTimeout(() => {
-                console.log(`メールアドレス ${email} をニュースレターに登録`);
+                console.log(`Registered email ${email} to newsletter`);
                 resolve();
             }, 500);
         });
     }
 }
 
-// DOMが読み込まれたら初期化
+// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // インスタンス化して機能を有効化
+    // Instantiate and enable functionality
     window.cartManager = new CartManager();
     window.searchManager = new SearchManager();
     window.newsletterManager = new NewsletterManager();
     
-    // 「カートに追加」ボタンのイベントリスナーを設定
+    // Set up "Add to Cart" button event listeners
     document.querySelectorAll('.add-to-cart').forEach(button => {
         button.addEventListener('click', function() {
-            // 商品情報を取得（data属性から取得するか、親要素から取得）
+            // Get product information (from data attributes or parent element)
             const productCard = this.closest('.product-card');
             if (productCard) {
                 const product = {
@@ -201,13 +201,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     image: productCard.dataset.productImage || ''
                 };
                 
-                // カートに追加
+                // Add to cart
                 window.cartManager.addItem(product);
                 
-                // 視覚的フィードバック
-                this.textContent = '追加しました！';
+                // Visual feedback
+                this.textContent = 'Added!';
                 setTimeout(() => {
-                    this.textContent = 'カートに追加';
+                    this.textContent = 'Add to Cart';
                 }, 1500);
             }
         });
