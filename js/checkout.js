@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // チェックアウトアイテムの表示
 function displayCheckoutItems() {
     const checkoutItems = document.getElementById('checkout-items');
-    // CartManagerのインスタンスメソッドを使用
-    const cartItems = window.cartManager.getCartItems();
+    // CartManagerからアイテムを取得（common.jsとの互換性を確保）
+    const cartItems = window.cartManager.items;
     
     // カートが空の場合
     if (cartItems.length === 0) {
@@ -207,7 +207,7 @@ function handleOrderSubmit(e) {
     
     // フォームデータの取得
     const formData = new FormData(e.target);
-    const cartItems = window.cartManager.getCartItems();
+    const cartItems = window.cartManager.items;
     
     // 小計、税金、送料、合計を計算
     const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -243,6 +243,11 @@ function handleOrderSubmit(e) {
     
     // 注文処理（デモ用）
     console.log('Order submitted:', orderData);
+    
+    // カートをクリア
+    window.cartManager.items = [];
+    window.cartManager.saveCart();
+    window.cartManager.updateCartCount();
     
     // order-confirmation.htmlにリダイレクト
     window.location.href = 'order-confirmation.html';
