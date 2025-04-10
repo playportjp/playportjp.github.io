@@ -1,215 +1,245 @@
-/**
- * common.js - Common JavaScript functionality for the site
- */
-
-// Cart state management
-class CartManager {
-    constructor() {
-        this.items = this.loadCart();
-        this.updateCartCount();
+// checkout.js - チェックアウトページ用のJavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // カートからアイテムを取得して表示
+    displayCheckoutItems();
+    
+    // 注文フォームの送信処理
+    const orderForm = document.getElementById('order-form');
+    if (orderForm) {
+        orderForm.addEventListener('submit', handleOrderSubmit);
     }
+    
+    // フォームフィールドのリアルタイムバリデーション設定
+    setupFormValidation();
+});
 
-    // Load cart information from local storage
-    loadCart() {
-        try {
-            const cart = localStorage.getItem('cart');
-            return cart ? JSON.parse(cart) : [];
-        } catch (error) {
-            console.error('Error loading cart:', error);
-            return [];
-        }
-    }
-
-    // Save cart to local storage
-    saveCart() {
-        try {
-            localStorage.setItem('cart', JSON.stringify(this.items));
-        } catch (error) {
-            console.error('Error saving cart:', error);
-        }
-    }
-
-    // Add product to cart
-    addItem(product) {
-        // Check if the same product is already in the cart
-        const existingItem = this.items.find(item => item.id === product.id);
+// チェックアウトアイテムの表示
+function displayCheckoutItems() {
+    const checkoutItems = document.getElementById('checkout-items');
+    // CartManagerからアイテムを取得（common.jsとの互換性を確保）
+    const cartItems = window.cartManager.items;
+    
+    // カートが空の場合
+    if (cartItems.length === 0) {
+        checkoutItems.innerHTML = '<p>Your cart is empty. <a href="index.html">Continue shopping</a></p>';
+        updateOrderTotals(0);
         
-        if (existingItem) {
-            // Increase quantity of existing product
-            existingItem.quantity += 1;
-        } else {
-            // Add new product to cart
-            this.items.push({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                image: product.image,
-                quantity: 1
+        // 注文ボタンを無効化
+        const submitButton = document.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+        }
+        return;
+    }
+    
+    // カート内の商品を表示
+    let html = '';
+    let subtotal = 0;
+    
+    cartItems.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        
+        html += `
+            <div class="checkout-item">
+                <div class="checkout-item-image">
+                    ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<div class="placeholder-image"></div>'}
+                </div>
+                <div class="checkout-item-details">
+                    <div class="checkout-item-title">${item.name}</div>
+                    <div class="checkout-item-price">
+                        ${item.price.toFixed(2)} CAD
+                        <span class="checkout-item-quantity">x${item.quantity}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    checkoutItems.innerHTML = html;
+    updateOrderTotals(subtotal);
+}
+
+// 注文合計の更新
+function updateOrderTotals(subtotal) {
+    const shipping = 15.00; // 固定送料
+    const tax = subtotal * 0.05; // 5%の税金（GST/HST相当）
+    const total = subtotal + shipping + tax;
+    
+    document.getElementById('checkout-subtotal').textContent = `${subtotal.toFixed(2)} CAD`;
+    document.getElementById('checkout-shipping').textContent = `${shipping.toFixed(2)} CAD`;
+    
+    // 税金の表示要素があれば更新
+    const taxElement = document.getElementById('checkout-tax');
+    if (taxElement) {
+        taxElement.textContent = `${tax.toFixed(2)} CAD`;
+    }
+    
+    document.getElementById('checkout-total').textContent = `${total.toFixed(2)} CAD`;
+}
+
+// フォームバリデーションの設定
+function setupFormValidation() {
+    const requiredFields = [
+        'full-name', 'email', 'address', 'city', 'postal-code', 'country', 'phone'
+    ];
+    
+    requiredFields.forEach(fieldName => {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        if (field) {
+            field.addEventListener('blur', function() {
+                validateField(this);
             });
         }
-        
-        this.saveCart();
-        this.updateCartCount();
-        
-        // Fire custom event (so other JS files can listen)
-        const event = new CustomEvent('cart:updated', { detail: { cart: this.items } });
-        document.dispatchEvent(event);
-    }
-
-    // Remove product from cart
-    removeItem(productId) {
-        this.items = this.items.filter(item => item.id !== productId);
-        
-        this.saveCart();
-        this.updateCartCount();
-        
-        // Fire custom event
-        const event = new CustomEvent('cart:updated', { detail: { cart: this.items } });
-        document.dispatchEvent(event);
-    }
-    
-    // Update product quantity
-    updateQuantity(productId, quantity) {
-        const item = this.items.find(item => item.id === productId);
-        
-        if (item) {
-            if (quantity <= 0) {
-                // Remove product if quantity is 0 or less
-                this.removeItem(productId);
-            } else {
-                // Update quantity
-                item.quantity = quantity;
-                this.saveCart();
-                this.updateCartCount();
-                
-                // Fire custom event
-                const event = new CustomEvent('cart:updated', { detail: { cart: this.items } });
-                document.dispatchEvent(event);
-            }
-        }
-    }
-    
-    // Calculate total cart amount
-    getTotal() {
-        return this.items.reduce((total, item) => {
-            return total + (item.price * item.quantity);
-        }, 0);
-    }
-    
-    // Update cart item count
-    updateCartCount() {
-        const cartCountElements = document.querySelectorAll('.cart-count');
-        const count = this.items.reduce((total, item) => total + item.quantity, 0);
-        
-        cartCountElements.forEach(element => {
-            element.textContent = count;
-        });
-    }
-}
-
-// Search functionality
-class SearchManager {
-    constructor() {
-        this.bindEvents();
-    }
-    
-    bindEvents() {
-        // Set up search form event listener
-        const searchForm = document.getElementById('search-form');
-        if (searchForm) {
-            searchForm.addEventListener('submit', this.handleSearch.bind(this));
-        }
-    }
-    
-    handleSearch(event) {
-        const searchInput = document.getElementById('search-input');
-        if (searchInput && searchInput.value.trim() === '') {
-            event.preventDefault();
-            // Prevent empty searches
-            alert('Please enter a search keyword');
-        }
-    }
-}
-
-// Newsletter subscription
-class NewsletterManager {
-    constructor() {
-        this.bindEvents();
-    }
-    
-    bindEvents() {
-        const newsletterForm = document.getElementById('newsletter-form');
-        if (newsletterForm) {
-            newsletterForm.addEventListener('submit', this.handleSubscribe.bind(this));
-        }
-    }
-    
-    handleSubscribe(event) {
-        event.preventDefault();
-        
-        const emailInput = document.getElementById('newsletter-email');
-        if (emailInput && this.validateEmail(emailInput.value)) {
-            // Actual API call would be implemented here (currently mocked)
-            this.subscribeToNewsletter(emailInput.value)
-                .then(() => {
-                    alert('Successfully subscribed to the newsletter!');
-                    emailInput.value = '';
-                })
-                .catch(error => {
-                    console.error('Registration error:', error);
-                    alert('An error occurred during registration. Please try again later.');
-                });
-        } else {
-            alert('Please enter a valid email address');
-        }
-    }
-    
-    validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-    }
-    
-    // Mock function for newsletter subscription (would use API in production)
-    subscribeToNewsletter(email) {
-        return new Promise((resolve) => {
-            // Simulate API call
-            setTimeout(() => {
-                console.log(`Registered email ${email} to newsletter`);
-                resolve();
-            }, 500);
-        });
-    }
-}
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Instantiate and enable functionality
-    window.cartManager = new CartManager();
-    window.searchManager = new SearchManager();
-    window.newsletterManager = new NewsletterManager();
-    
-    // Set up "Add to Cart" button event listeners
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-        button.addEventListener('click', function() {
-            // Get product information (from data attributes or parent element)
-            const productCard = this.closest('.product-card');
-            if (productCard) {
-                const product = {
-                    id: productCard.dataset.productId,
-                    name: productCard.querySelector('.product-details h3').textContent,
-                    price: parseFloat(productCard.dataset.productPrice || '0'),
-                    image: productCard.dataset.productImage || ''
-                };
-                
-                // Add to cart
-                window.cartManager.addItem(product);
-                
-                // Visual feedback
-                this.textContent = 'Added!';
-                setTimeout(() => {
-                    this.textContent = 'Add to Cart';
-                }, 1500);
-            }
-        });
     });
-});
+    
+    // メールアドレスの特別なバリデーション
+    const emailField = document.querySelector('[name="email"]');
+    if (emailField) {
+        emailField.addEventListener('blur', function() {
+            validateEmail(this);
+        });
+    }
+}
+
+// 個別フィールドのバリデーション
+function validateField(field) {
+    const fieldId = field.id;
+    const errorElement = document.getElementById(`${fieldId}-error`);
+    
+    if (!field.value.trim()) {
+        field.classList.add('invalid');
+        
+        if (errorElement) {
+            errorElement.textContent = 'This field is required';
+            errorElement.style.display = 'block';
+        }
+        return false;
+    } else {
+        field.classList.remove('invalid');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
+        return true;
+    }
+}
+
+// メールアドレスのバリデーション
+function validateEmail(field) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const errorElement = document.getElementById('email-error');
+    
+    if (!field.value.trim()) {
+        field.classList.add('invalid');
+        
+        if (errorElement) {
+            errorElement.textContent = 'Email is required';
+            errorElement.style.display = 'block';
+        }
+        return false;
+    } else if (!emailRegex.test(field.value)) {
+        field.classList.add('invalid');
+        
+        if (errorElement) {
+            errorElement.textContent = 'Please enter a valid email address';
+            errorElement.style.display = 'block';
+        }
+        return false;
+    } else {
+        field.classList.remove('invalid');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
+        return true;
+    }
+}
+
+// フォーム全体のバリデーション
+function validateForm() {
+    const requiredFields = [
+        'full-name', 'email', 'address', 'city', 'postal-code', 'country', 'phone'
+    ];
+    
+    let isValid = true;
+    
+    requiredFields.forEach(fieldName => {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        if (field) {
+            if (fieldName === 'email') {
+                isValid = validateEmail(field) && isValid;
+            } else {
+                isValid = validateField(field) && isValid;
+            }
+        }
+    });
+    
+    return isValid;
+}
+
+// 注文フォーム送信処理
+function handleOrderSubmit(e) {
+    e.preventDefault();
+    
+    // フォームのバリデーション
+    if (!validateForm()) {
+        const firstInvalid = document.querySelector('.invalid');
+        if (firstInvalid) {
+            firstInvalid.focus();
+        }
+        return;
+    }
+    
+    // フォームデータの取得
+    const formData = new FormData(e.target);
+    const cartItems = window.cartManager.items;
+    
+    // 小計、税金、送料、合計を計算
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const shipping = 15.00;
+    const tax = subtotal * 0.05;
+    const total = subtotal + shipping + tax;
+    
+    const orderData = {
+        customerInfo: {
+            name: formData.get('full-name'),
+            email: formData.get('email'),
+            address: formData.get('address'),
+            city: formData.get('city'),
+            postalCode: formData.get('postal-code'),
+            country: formData.get('country'),
+            phone: formData.get('phone'),
+            notes: formData.get('notes')
+        },
+        items: cartItems,
+        summary: {
+            subtotal: subtotal,
+            tax: tax,
+            shipping: shipping,
+            total: total
+        },
+        paymentMethod: formData.get('payment-method'),
+        orderDate: new Date().toISOString(),
+        orderNumber: generateOrderNumber()
+    };
+    
+    // 注文データをlocalStorageに保存
+    localStorage.setItem('currentOrder', JSON.stringify(orderData));
+    
+    // 注文処理（デモ用）
+    console.log('Order submitted:', orderData);
+    
+    // カートをクリア
+    window.cartManager.items = [];
+    window.cartManager.saveCart();
+    window.cartManager.updateCartCount();
+    
+    // order-confirmation.htmlにリダイレクト
+    window.location.href = 'order-confirmation.html';
+}
+
+// 注文番号の生成
+function generateOrderNumber() {
+    const timestamp = new Date().getTime();
+    const random = Math.floor(Math.random() * 1000);
+    return `PP-${timestamp}-${random}`;
+}
