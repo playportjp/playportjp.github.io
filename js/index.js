@@ -1,459 +1,124 @@
-/* Base Styles & Custom Properties */
-:root {
-    --background: #121212;
-    --surface: #1e1e1e;
-    --surface-lighter: #2a2a2a;
-    --primary: #bb0000;
-    --primary-hover: #990000;
-    --text-primary: #e0e0e0;
-    --text-secondary: #a0a0a0;
-    --border: #383838;
-    --card: #242424;
-    --card-hover: #2c2c2c;
-    --focus-ring: rgba(187, 0, 0, 0.4);
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--background);
-    color: var(--text-primary);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-}
-
-a {
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-a:hover {
-    color: var(--primary);
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-}
-
-button {
-    cursor: pointer;
-    font-family: inherit;
-}
-
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 500;
-    line-height: 1.2;
-}
-
-h1 {
-    font-size: 1.5rem;
-}
-
-h2 {
-    font-size: 1.75rem;
-    margin-bottom: 1.5rem;
-    font-weight: 400;
-}
-
-h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
-}
-
-p {
-    margin-bottom: 1rem;
-}
-
-/* Header Styles */
-header {
-    background-color: var(--surface);
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    padding: 1rem 0;
-}
-
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Logo Styling */
-.logo a {
-    text-decoration: none;
-}
-
-.logo h1 {
-    color: white;
-    margin: 0;
-    font-weight: 600;
-    letter-spacing: -0.5px;
-    font-size: 1.6rem;
-    text-transform: none;
-    position: relative;
-    display: inline-block;
-}
-
-.logo h1 span {
-    color: var(--primary);
-    font-weight: 700;
-}
-
-.logo h1::after {
-    content: "";
-    position: absolute;
-    height: 3px;
-    background-color: var(--primary);
-    width: 100%;
-    left: 0;
-    bottom: -2px;
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-    transform-origin: right;
-}
-
-.logo a:hover h1::after {
-    transform: scaleX(1);
-    transform-origin: left;
-}
-
-/* Search Container */
-.search-container {
-    flex-grow: 1;
-    max-width: 500px;
-    margin: 0 2rem;
-}
-
-.search-container form {
-    display: flex;
-    position: relative;
-}
-
-.search-container input {
-    width: 100%;
-    padding: 0.6rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background-color: var(--surface-lighter);
-    color: var(--text-primary);
-    font-size: 0.9rem;
-}
-
-.search-container input:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--focus-ring);
-}
-
-.search-container button {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.25rem;
-}
-
-.search-container button:hover {
-    color: var(--text-primary);
-}
-
-/* Navigation */
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 1.5rem;
-    align-items: center;
-}
-
-nav ul li a {
-    font-size: 0.9rem;
-    font-weight: 400;
-}
-
-.cart-icon {
-    position: relative;
-}
-
-.cart-count {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: var(--primary);
-    color: white;
-    font-size: 0.7rem;
-    padding: 0.1rem 0.4rem;
-    border-radius: 10px;
-    font-weight: 600;
-}
-
-/* Common Product Card Styles */
-.product-card {
-    background-color: var(--card);
-    border-radius: 4px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    border-color: rgba(187, 0, 0, 0.3);
-}
-
-.product-image {
-    height: 180px;
-    background-color: var(--surface-lighter);
-    flex-shrink: 0;
-}
-
-.product-details {
-    padding: 1rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.product-details h3 {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    line-height: 1.4;
-    min-height: 2.8rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.product-card:hover .product-details h3 {
-    color: var(--primary);
-}
-
-.product-condition {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-bottom: 0.7rem;
-}
-
-.product-price {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-    margin-top: auto;
-}
-
-.add-to-cart {
-    width: 100%;
-    padding: 0.6rem 0;
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
-}
-
-.add-to-cart:hover {
-    background-color: var(--primary-hover);
-}
-
-/* Product Grid */
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1.5rem;
-}
-
-/* Footer Styles */
-footer {
-    background-color: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 3rem 0 1.5rem;
-}
-
-.footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.footer-nav h3 {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    font-weight: 500;
-}
-
-.footer-nav ul {
-    list-style: none;
-}
-
-.footer-nav ul li {
-    margin-bottom: 0.5rem;
-}
-
-.footer-nav ul li a {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
-.footer-nav ul li a:hover {
-    color: var(--text-primary);
-}
-
-.footer-newsletter p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-}
-
-.footer-newsletter form {
-    display: flex;
-}
-
-.footer-newsletter input {
-    flex-grow: 1;
-    padding: 0.6rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 4px 0 0 4px;
-    background-color: var(--surface-lighter);
-    color: var(--text-primary);
-    font-size: 0.9rem;
-}
-
-.footer-newsletter input:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--focus-ring);
-}
-
-.footer-newsletter button {
-    padding: 0.6rem 1rem;
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 0 4px 4px 0;
-    font-weight: 500;
-    font-size: 0.9rem;
-}
-
-.footer-newsletter button:hover {
-    background-color: var(--primary-hover);
-}
-
-.copyright {
-    text-align: center;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
-}
-
-.copyright p {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    margin-bottom: 0;
-}
-
-/* Button Styles */
-.btn {
-    display: inline-block;
-    padding: 0.6rem 1.2rem;
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
-    text-align: center;
-}
-
-.btn:hover {
-    background-color: var(--primary-hover);
-    color: white;
-}
-
-.btn-secondary {
-    background-color: var(--surface-lighter);
-    color: var(--text-primary);
-}
-
-.btn-secondary:hover {
-    background-color: var(--surface);
-    color: var(--text-primary);
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
+// カート管理の基本機能
+window.cartManager = {
+    items: [],
     
-    .logo {
-        margin-bottom: 1rem;
-        text-align: center;
-    }
+    // カートにアイテムを追加
+    addItem: function(productId, name, price, image, quantity = 1) {
+        const existingItem = this.items.find(item => item.id === productId);
+        
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            this.items.push({
+                id: productId,
+                name: name,
+                price: price,
+                image: image,
+                quantity: quantity
+            });
+        }
+        
+        this.saveCart();
+        this.updateCartCount();
+    },
     
-    .search-container {
-        margin: 0 0 1rem 0;
-        max-width: none;
-    }
+    // カートを保存
+    saveCart: function() {
+        localStorage.setItem('cart', JSON.stringify(this.items));
+    },
     
-    nav ul {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 1rem 1.5rem;
-    }
+    // カートを読み込み
+    loadCart: function() {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+            this.items = JSON.parse(savedCart);
+        }
+    },
     
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    // カート数を更新
+    updateCartCount: function() {
+        const cartCountElement = document.getElementById('cart-count');
+        if (cartCountElement) {
+            const itemCount = this.items.reduce((count, item) => count + item.quantity, 0);
+            cartCountElement.textContent = itemCount;
+        }
+    }
+};
+
+// 商品データを取得して表示
+async function loadProducts() {
+    try {
+        const response = await fetch('data/products.json');
+        if (!response.ok) {
+            throw new Error('商品データの取得に失敗しました');
+        }
+        
+        const products = await response.json();
+        displayFeaturedProducts(products);
+    } catch (error) {
+        console.error('Error loading products:', error);
     }
 }
 
-@media (max-width: 480px) {
-    .product-grid {
-        grid-template-columns: 1fr;
-    }
+// おすすめ商品を表示
+function displayFeaturedProducts(products) {
+    // 最初の6商品を表示
+    const featuredProducts = products.slice(0, 6);
+    const productGrid = document.querySelector('.featured-products .product-grid');
     
-    .footer-newsletter form {
-        flex-direction: column;
-    }
+    if (!productGrid) return;
     
-    .footer-newsletter input {
-        border-radius: 4px;
-        margin-bottom: 0.5rem;
-    }
+    // 既存のハードコードされた商品カードをクリア
+    productGrid.innerHTML = '';
     
-    .footer-newsletter button {
-        border-radius: 4px;
-    }
+    featuredProducts.forEach(product => {
+        const productCard = `
+            <div class="product-card" data-product-id="${product.id}" data-product-price="${product.price}" data-product-image="${product.image}">
+                <div class="product-image" style="background-image: url('${product.image}'); background-size: cover; background-position: center;"></div>
+                <div class="product-details">
+                    <h3>${product.name}</h3>
+                    <p class="product-condition">${product.new ? 'New' : 'Good condition'}</p>
+                    <p class="product-price">${product.price.toFixed(2)} CAD</p>
+                    <button class="add-to-cart" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-image="${product.image}">Add to Cart</button>
+                </div>
+            </div>
+        `;
+        
+        productGrid.innerHTML += productCard;
+    });
+    
+    // カートボタンにイベントリスナーを追加
+    addToCartListeners();
 }
+
+// カートボタンにイベントリスナーを追加
+function addToCartListeners() {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.id;
+            const name = this.dataset.name;
+            const price = parseFloat(this.dataset.price);
+            const image = this.dataset.image;
+            
+            window.cartManager.addItem(productId, name, price, image);
+            
+            // 追加アニメーション
+            this.textContent = 'Added to Cart!';
+            setTimeout(() => {
+                this.textContent = 'Add to Cart';
+            }, 1500);
+        });
+    });
+}
+
+// ページロード時の処理
+document.addEventListener('DOMContentLoaded', function() {
+    // カートをロード
+    window.cartManager.loadCart();
+    window.cartManager.updateCartCount();
+    
+    // 商品を取得して表示
+    loadProducts();
+});
