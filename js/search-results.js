@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 検索クエリがある場合、検索を実行
     if (searchQuery) {
+        console.log('Search query found:', searchQuery);
         // 検索クエリを表示
         const searchInfoTitle = document.querySelector('.search-info h1');
         if (searchInfoTitle) {
@@ -20,8 +21,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // 商品を検索して表示
         searchProducts(searchQuery);
     } else {
+        console.log('No search query found, loading all products');
         // 検索クエリがない場合は全商品を表示
         loadAllProducts();
+        
+        // タイトルを更新
+        const searchInfoTitle = document.querySelector('.search-info h1');
+        if (searchInfoTitle) {
+            searchInfoTitle.textContent = 'All Products';
+        }
     }
     
     // フィルターとソートのイベントリスナーを設定
@@ -41,9 +49,16 @@ function searchProducts(query) {
             return response.json();
         })
         .then(products => {
+            console.log(`Loaded ${products.length} total products`);
+            
             // 検索クエリに基づいて商品をフィルタリング
             const filteredProducts = filterProductsByQuery(products, query);
             console.log(`Found ${filteredProducts.length} products matching query "${query}"`);
+            
+            // デバッグ: フィルタリングされた商品の名前をログに出力
+            if (filteredProducts.length > 0) {
+                console.log('Filtered products:', filteredProducts.map(p => p.name));
+            }
             
             // 検索結果数を更新
             updateResultCount(filteredProducts.length);
@@ -94,9 +109,10 @@ function filterProductsByQuery(products, query) {
     if (!query) return products;
     
     const searchTerms = query.toLowerCase().split(' ');
+    console.log('Search terms:', searchTerms);
     
     return products.filter(product => {
-        // 商品名、説明、カテゴリ、サブカテゴリを検索
+        // 商品名、説明、カテゴリ、サブカテゴリを検索対象文字列として結合
         const searchableText = `
             ${product.name || ''} 
             ${product.description || ''} 
@@ -104,8 +120,8 @@ function filterProductsByQuery(products, query) {
             ${product.subcategory || ''}
         `.toLowerCase();
         
-        // すべての検索語が商品のテキストに含まれているかチェック
-        return searchTerms.every(term => searchableText.includes(term));
+        // いずれかの検索語が商品のテキストに含まれているかチェック
+        return searchTerms.some(term => searchableText.includes(term));
     });
 }
 
@@ -192,35 +208,33 @@ function displaySearchResults(products) {
         
         const productHtml = `
             <div class="product-card">
-                <a href="product-detail.html?id=${product.id}">
-                    <div class="image-placeholder" style="${imageStyle}">
-                        ${!product.image ? imageContent : ''}
-                        <a href="https://www.google.com/search?q=${encodeURIComponent(product.name)}&tbm=isch" class="search-image-link" target="_blank">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            Google
-                        </a>
+                <div class="image-placeholder" style="${imageStyle}">
+                    ${!product.image ? imageContent : ''}
+                    <a href="https://www.google.com/search?q=${encodeURIComponent(product.name)}&tbm=isch" class="search-image-link" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Google
+                    </a>
+                </div>
+                <div class="product-details">
+                    <h3>${product.name}</h3>
+                    <div class="product-meta">
+                        ${categoryTagHtml}
                     </div>
-                    <div class="product-details">
-                        <h3>${product.name}</h3>
-                        <div class="product-meta">
-                            ${categoryTagHtml}
-                        </div>
-                        <div class="product-condition">
-                            <span class="condition-badge ${conditionBadgeClass}">${conditionBadgeText}</span>
-                            <span class="stock-status ${stockStatusClass}">${stockStatusText}</span>
-                        </div>
-                        <div class="shipping-time">Ships within 1-2 business days</div>
-                        <p class="product-description">${product.description}</p>
-                        <p class="product-price">${product.price.toFixed(2)} CAD</p>
-                        <div class="product-actions">
-                            <button class="btn btn-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
-                            <a href="product-detail.html?id=${product.id}" class="btn btn-secondary">Details</a>
-                        </div>
+                    <div class="product-condition">
+                        <span class="condition-badge ${conditionBadgeClass}">${conditionBadgeText}</span>
+                        <span class="stock-status ${stockStatusClass}">${stockStatusText}</span>
                     </div>
-                </a>
+                    <div class="shipping-time">Ships within 1-2 business days</div>
+                    <p class="product-description">${product.description}</p>
+                    <p class="product-price">${product.price.toFixed(2)} CAD</p>
+                    <div class="product-actions">
+                        <button class="btn btn-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
+                        <a href="product-detail.html?id=${product.id}" class="btn btn-secondary">Details</a>
+                    </div>
+                </div>
             </div>
         `;
         
