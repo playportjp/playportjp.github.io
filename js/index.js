@@ -1,28 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // 商品データを取得して表示
     loadProducts();
-    
-    // カートの初期化
-    initializeCart();
 });
-
-// カート機能の初期化
-function initializeCart() {
-    if (!window.cartManager) {
-        window.cartManager = {
-            items: [],
-            addItem: function(productId, name, price, image, quantity = 1) {
-                console.log(`Adding to cart: ${name}`);
-                // カートに追加するロジック
-                const cartCount = document.getElementById('cart-count');
-                if (cartCount) {
-                    let count = parseInt(cartCount.textContent || '0');
-                    cartCount.textContent = count + 1;
-                }
-            }
-        };
-    }
-}
 
 // 商品データを取得して表示
 function loadProducts() {
