@@ -248,3 +248,57 @@ function generateOrderNumber() {
     const random = Math.floor(Math.random() * 1000);
     return `PP-${timestamp}-${random}`;
 }
+
+// カート管理機能
+window.cartManager = {
+    items: [],
+    
+    // カートにアイテムを追加
+    addItem: function(productId, name, price, image, quantity = 1) {
+        const existingItem = this.items.find(item => item.id === productId);
+        
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            this.items.push({
+                id: productId,
+                name: name,
+                price: price,
+                image: image,
+                quantity: quantity
+            });
+        }
+        
+        this.saveCart();
+        this.updateCartCount();
+        console.log(`Added to cart: ${name}`);
+    },
+    
+    // カートを保存
+    saveCart: function() {
+        localStorage.setItem('cart', JSON.stringify(this.items));
+    },
+    
+    // カートを読み込み
+    loadCart: function() {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+            this.items = JSON.parse(savedCart);
+        }
+    },
+    
+    // カート数を更新
+    updateCartCount: function() {
+        const cartCountElement = document.getElementById('cart-count');
+        if (cartCountElement) {
+            const itemCount = this.items.reduce((count, item) => count + item.quantity, 0);
+            cartCountElement.textContent = itemCount;
+        }
+    }
+};
+
+// DOM読み込み完了時にカート情報を読み込む
+document.addEventListener('DOMContentLoaded', function() {
+    window.cartManager.loadCart();
+    window.cartManager.updateCartCount();
+});
