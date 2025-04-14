@@ -210,6 +210,16 @@ nav ul li a {
     font-weight: 600;
 }
 
+/* 商品カードのリンクスタイル */
+.product-card a.product-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    cursor: pointer;
+}
+
 /* Common Product Card Styles */
 .product-card {
     background-color: var(--card);
@@ -232,6 +242,13 @@ nav ul li a {
     height: 180px;
     background-color: var(--surface-lighter);
     flex-shrink: 0;
+    background-position: center;
+    background-size: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05);
 }
 
 .product-details {
@@ -281,6 +298,8 @@ nav ul li a {
     font-weight: 500;
     font-size: 0.9rem;
     transition: background-color 0.2s ease;
+    position: relative;
+    z-index: 10;
 }
 
 .add-to-cart:hover {
@@ -292,6 +311,37 @@ nav ul li a {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 1.5rem;
+}
+
+/* 検索結果ページの商品カードリンク */
+.results-grid .product-card > a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    cursor: pointer;
+}
+
+/* 商品画像がない場合のプレースホルダー */
+.product-card .product-image:empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
+}
+
+.product-card .product-image:empty::after {
+    content: 'No Image';
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* 商品詳細ページでの画像プレースホルダー */
+.product-image-main {
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
 }
 
 /* Footer Styles */
@@ -411,52 +461,6 @@ footer {
     color: var(--text-primary);
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .logo {
-        margin-bottom: 1rem;
-        text-align: center;
-    }
-    
-    .search-container {
-        margin: 0 0 1rem 0;
-        max-width: none;
-    }
-    
-    nav ul {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 1rem 1.5rem;
-    }
-    
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-}
-
-@media (max-width: 480px) {
-    .product-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .footer-newsletter form {
-        flex-direction: column;
-    }
-    
-    .footer-newsletter input {
-        border-radius: 4px;
-        margin-bottom: 0.5rem;
-    }
-    
-    .footer-newsletter button {
-        border-radius: 4px;
-    }
-}
 /* Category Styles */
 .categories {
     padding: 2rem 0;
@@ -701,12 +705,57 @@ input:focus, select:focus, textarea:focus {
     font-size: 1rem;
 }
 
+/* Responsive Styles */
 @media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .logo {
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .search-container {
+        margin: 0 0 1rem 0;
+        max-width: none;
+    }
+    
+    nav ul {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem 1.5rem;
+    }
+    
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    
     .checkout-container {
         grid-template-columns: 1fr;
     }
     
     .order-summary {
         margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-newsletter form {
+        flex-direction: column;
+    }
+    
+    .footer-newsletter input {
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .footer-newsletter button {
+        border-radius: 4px;
     }
 }
