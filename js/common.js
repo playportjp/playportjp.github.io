@@ -1,7 +1,10 @@
 // checkout.js - チェックアウトページ用のJavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    // カートからアイテムを取得して表示
-    displayCheckoutItems();
+    // checkout-items要素が存在する場合のみ実行
+    if (document.getElementById('checkout-items')) {
+        // カートからアイテムを取得して表示
+        displayCheckoutItems();
+    }
     
     // 注文フォームの送信処理
     const orderForm = document.getElementById('order-form');
@@ -10,7 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // フォームフィールドのリアルタイムバリデーション設定
-    setupFormValidation();
+    if (document.querySelector('[name="full-name"]')) {
+        setupFormValidation();
+    }
 });
 
 // チェックアウトアイテムの表示
