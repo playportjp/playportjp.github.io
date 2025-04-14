@@ -1,124 +1,102 @@
-// カート管理の基本機能
-window.cartManager = {
-    items: [],
+document.addEventListener('DOMContentLoaded', function() {
+    // 商品データを取得して表示
+    loadProducts();
     
-    // カートにアイテムを追加
-    addItem: function(productId, name, price, image, quantity = 1) {
-        const existingItem = this.items.find(item => item.id === productId);
-        
-        if (existingItem) {
-            existingItem.quantity += quantity;
-        } else {
-            this.items.push({
-                id: productId,
-                name: name,
-                price: price,
-                image: image,
-                quantity: quantity
-            });
-        }
-        
-        this.saveCart();
-        this.updateCartCount();
-    },
-    
-    // カートを保存
-    saveCart: function() {
-        localStorage.setItem('cart', JSON.stringify(this.items));
-    },
-    
-    // カートを読み込み
-    loadCart: function() {
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
-            this.items = JSON.parse(savedCart);
-        }
-    },
-    
-    // カート数を更新
-    updateCartCount: function() {
-        const cartCountElement = document.getElementById('cart-count');
-        if (cartCountElement) {
-            const itemCount = this.items.reduce((count, item) => count + item.quantity, 0);
-            cartCountElement.textContent = itemCount;
-        }
+    // カートの初期化
+    initializeCart();
+});
+
+// カート機能の初期化
+function initializeCart() {
+    if (!window.cartManager) {
+        window.cartManager = {
+            items: [],
+            addItem: function(productId, name, price, image, quantity = 1) {
+                console.log(`Adding to cart: ${name}`);
+                // カートに追加するロジック
+                const cartCount = document.getElementById('cart-count');
+                if (cartCount) {
+                    let count = parseInt(cartCount.textContent || '0');
+                    cartCount.textContent = count + 1;
+                }
+            }
+        };
     }
-};
+}
 
 // 商品データを取得して表示
-async function loadProducts() {
-    try {
-        const response = await fetch('data/products.json');
-        if (!response.ok) {
-            throw new Error('商品データの取得に失敗しました');
-        }
-        
-        const products = await response.json();
-        displayFeaturedProducts(products);
-    } catch (error) {
-        console.error('Error loading products:', error);
-    }
+function loadProducts() {
+    console.log('Loading products...');
+    
+    // データ取得
+    fetch('data/products.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load products');
+            }
+            return response.json();
+        })
+        .then(products => {
+            console.log('Products loaded:', products.length);
+            displayProducts(products);
+        })
+        .catch(error => {
+            console.error('Error loading products:', error);
+        });
 }
 
-// おすすめ商品を表示
-function displayFeaturedProducts(products) {
-    // 最初の6商品を表示
-    const featuredProducts = products.slice(0, 6);
-    const productGrid = document.querySelector('.featured-products .product-grid');
+// 商品を表示
+function displayProducts(products) {
+    // 最初の商品だけを表示（シンプルにするため）
+    const firstProduct = products[0];
+    console.log('Displaying product:', firstProduct);
     
-    if (!productGrid) return;
+    const productGrid = document.querySelector('.product-grid');
+    if (!productGrid) {
+        console.error('Product grid element not found');
+        return;
+    }
     
-    // 既存のハードコードされた商品カードをクリア
+    // Grid内のすべての要素を削除
     productGrid.innerHTML = '';
     
-    featuredProducts.forEach(product => {
-        const productCard = `
-            <div class="product-card" data-product-id="${product.id}" data-product-price="${product.price}" data-product-image="${product.image}">
-                <div class="product-image" style="background-image: url('${product.image}'); background-size: cover; background-position: center;"></div>
-                <div class="product-details">
-                    <h3>${product.name}</h3>
-                    <p class="product-condition">${product.new ? 'New' : 'Good condition'}</p>
-                    <p class="product-price">${product.price.toFixed(2)} CAD</p>
-                    <button class="add-to-cart" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-image="${product.image}">Add to Cart</button>
-                </div>
+    // 1つの商品を表示
+    const productHtml = `
+        <div class="product-card" data-product-id="${firstProduct.id}">
+            <div class="product-image">
+                <img src="${firstProduct.image}" alt="${firstProduct.name}" style="width:100%; height:100%; object-fit:cover;">
             </div>
-        `;
-        
-        productGrid.innerHTML += productCard;
-    });
+            <div class="product-details">
+                <h3>${firstProduct.name}</h3>
+                <p class="product-condition">${firstProduct.new ? 'New' : 'Good condition'}</p>
+                <p class="product-price">${firstProduct.price.toFixed(2)} CAD</p>
+                <button class="add-to-cart" data-id="${firstProduct.id}">Add to Cart</button>
+            </div>
+        </div>
+    `;
+    
+    productGrid.innerHTML = productHtml;
     
     // カートボタンにイベントリスナーを追加
-    addToCartListeners();
-}
-
-// カートボタンにイベントリスナーを追加
-function addToCartListeners() {
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
-    
-    addToCartButtons.forEach(button => {
+    document.querySelectorAll('.add-to-cart').forEach(button => {
         button.addEventListener('click', function() {
-            const productId = this.dataset.id;
-            const name = this.dataset.name;
-            const price = parseFloat(this.dataset.price);
-            const image = this.dataset.image;
+            const productId = this.getAttribute('data-id');
+            const product = products.find(p => p.id === productId);
             
-            window.cartManager.addItem(productId, name, price, image);
-            
-            // 追加アニメーション
-            this.textContent = 'Added to Cart!';
-            setTimeout(() => {
-                this.textContent = 'Add to Cart';
-            }, 1500);
+            if (product) {
+                window.cartManager.addItem(
+                    product.id, 
+                    product.name, 
+                    product.price, 
+                    product.image
+                );
+                
+                // クリック時のフィードバック
+                this.textContent = 'Added!';
+                setTimeout(() => {
+                    this.textContent = 'Add to Cart';
+                }, 1000);
+            }
         });
     });
 }
-
-// ページロード時の処理
-document.addEventListener('DOMContentLoaded', function() {
-    // カートをロード
-    window.cartManager.loadCart();
-    window.cartManager.updateCartCount();
-    
-    // 商品を取得して表示
-    loadProducts();
-});
