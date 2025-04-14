@@ -26,10 +26,6 @@ function loadProducts() {
 
 // 商品を表示
 function displayProducts(products) {
-    // 最初の商品だけを表示（最小限の実装として）
-    const firstProduct = products[0];
-    console.log('Displaying first product:', firstProduct);
-    
     const productGrid = document.querySelector('.featured-products .product-grid');
     if (!productGrid) {
         console.error('Product grid element not found');
@@ -39,25 +35,38 @@ function displayProducts(products) {
     // Grid内のすべての要素を削除
     productGrid.innerHTML = '';
     
-    // 商品カードを作成
-    const productHtml = `
-        <div class="product-card" data-product-id="${firstProduct.id}">
-            <div class="product-image" style="background-image: url('${firstProduct.image}'); background-size: cover; background-position: center;"></div>
-            <div class="product-details">
-                <h3>${firstProduct.name}</h3>
-                <p class="product-condition">${firstProduct.new ? 'New' : 'Used'}</p>
-                <p class="product-price">${firstProduct.price.toFixed(2)} CAD</p>
-                <button class="add-to-cart" data-id="${firstProduct.id}">Add to Cart</button>
-            </div>
-        </div>
-    `;
+    // 表示する商品数を制限（必要に応じて変更）
+    const displayCount = Math.min(6, products.length);
     
-    productGrid.innerHTML = productHtml;
+    // 商品カードを作成
+    for (let i = 0; i < displayCount; i++) {
+        const product = products[i];
+        
+        const productHtml = `
+            <div class="product-card" data-product-id="${product.id}">
+                <a href="product-detail.html?id=${product.id}" class="product-link">
+                    <div class="product-image" style="background-image: url('${product.image}'); background-size: cover; background-position: center;"></div>
+                    <div class="product-details">
+                        <h3>${product.name}</h3>
+                        <p class="product-condition">${product.new ? 'New' : 'Used'}</p>
+                        <p class="product-price">${product.price.toFixed(2)} CAD</p>
+                        <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
+                    </div>
+                </a>
+            </div>
+        `;
+        
+        productGrid.innerHTML += productHtml;
+    }
     
     // カートボタンにイベントリスナーを追加
     const addToCartButtons = document.querySelectorAll('.add-to-cart');
     addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(event) {
+            // リンクのナビゲーションを防止
+            event.preventDefault();
+            event.stopPropagation();
+            
             const productId = this.getAttribute('data-id');
             const product = products.find(p => p.id === productId);
             
