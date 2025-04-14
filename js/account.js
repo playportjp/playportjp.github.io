@@ -1,6 +1,8 @@
 // account.js - アカウント画面の機能を管理
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Account page loaded');
+    
     // タブの切り替え機能を設定
     setupAccountTabs();
     
@@ -25,8 +27,13 @@ function setupAccountTabs() {
     const tabItems = document.querySelectorAll('.account-sidebar li');
     const tabContents = document.querySelectorAll('.account-tab');
     
+    console.log('Setting up account tabs:', tabItems.length, 'tabs found');
+    
     tabItems.forEach(tab => {
         tab.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            console.log('Tab clicked:', tabId);
+            
             // アクティブクラスをすべてのタブから削除
             tabItems.forEach(item => {
                 item.classList.remove('active');
@@ -34,9 +41,6 @@ function setupAccountTabs() {
             
             // クリックされたタブをアクティブに
             this.classList.add('active');
-            
-            // データ属性からタブIDを取得
-            const tabId = this.getAttribute('data-tab');
             
             // すべてのコンテンツを非表示
             tabContents.forEach(content => {
@@ -47,6 +51,8 @@ function setupAccountTabs() {
             const activeContent = document.getElementById(tabId);
             if (activeContent) {
                 activeContent.classList.add('active');
+            } else {
+                console.warn('Tab content not found for:', tabId);
             }
         });
     });
@@ -59,6 +65,7 @@ function setupFormSubmitHandlers() {
     if (profileForm) {
         profileForm.addEventListener('submit', function(event) {
             event.preventDefault();
+            console.log('Profile form submitted');
             
             // フォームデータの取得と保存（実際にはAPI送信など）
             const formData = {
@@ -67,6 +74,8 @@ function setupFormSubmitHandlers() {
                 phone: document.getElementById('phone').value,
                 birthday: document.getElementById('birthday').value
             };
+            
+            console.log('Profile data:', formData);
             
             // ローカルストレージに保存（デモ用）
             localStorage.setItem('account-profile', JSON.stringify(formData));
@@ -81,6 +90,7 @@ function setupFormSubmitHandlers() {
     if (securityForm) {
         securityForm.addEventListener('submit', function(event) {
             event.preventDefault();
+            console.log('Security form submitted');
             
             const currentPassword = document.getElementById('current-password').value;
             const newPassword = document.getElementById('new-password').value;
@@ -93,6 +103,7 @@ function setupFormSubmitHandlers() {
             }
             
             // パスワード変更処理（実際にはAPI送信など）
+            console.log('Password change requested');
             
             // フィードバック表示
             showFeedback('security-form', 'Security settings updated successfully!');
@@ -107,6 +118,7 @@ function setupFormSubmitHandlers() {
     if (notificationsForm) {
         notificationsForm.addEventListener('submit', function(event) {
             event.preventDefault();
+            console.log('Notifications form submitted');
             
             // 通知設定の保存処理
             const notificationSettings = {
@@ -116,6 +128,8 @@ function setupFormSubmitHandlers() {
                 smsOrder: document.getElementById('sms-order').checked,
                 smsPromo: document.getElementById('sms-promo').checked
             };
+            
+            console.log('Notification settings:', notificationSettings);
             
             // ローカルストレージに保存（デモ用）
             localStorage.setItem('account-notifications', JSON.stringify(notificationSettings));
@@ -156,6 +170,8 @@ function setupButtonHandlers() {
             const addressItem = this.closest('.address-item');
             const addressTitle = addressItem.querySelector('h3').textContent.split(' ')[0];
             
+            console.log('Address action:', action, 'for', addressTitle);
+            
             if (action === 'Edit') {
                 // 住所編集モーダルやフォームを表示
                 alert(`Edit ${addressTitle} address`);
@@ -164,6 +180,7 @@ function setupButtonHandlers() {
                 if (confirm(`Are you sure you want to delete ${addressTitle} address?`)) {
                     // 削除処理
                     addressItem.style.opacity = '0';
+                    addressItem.style.transition = 'opacity 0.3s ease';
                     setTimeout(() => {
                         addressItem.remove();
                     }, 300);
@@ -196,6 +213,8 @@ function setupButtonHandlers() {
             const paymentItem = this.closest('.payment-item');
             const paymentTitle = paymentItem.querySelector('h3').textContent.split(' ')[0];
             
+            console.log('Payment action:', action, 'for', paymentTitle);
+            
             if (action === 'Edit') {
                 // 支払い方法編集モーダルやフォームを表示
                 alert(`Edit ${paymentTitle} payment method`);
@@ -204,6 +223,7 @@ function setupButtonHandlers() {
                 if (confirm(`Are you sure you want to delete ${paymentTitle} payment method?`)) {
                     // 削除処理
                     paymentItem.style.opacity = '0';
+                    paymentItem.style.transition = 'opacity 0.3s ease';
                     setTimeout(() => {
                         paymentItem.remove();
                     }, 300);
@@ -232,13 +252,18 @@ function setupButtonHandlers() {
 // フィードバックメッセージを表示
 function showFeedback(formId, message, isError = false) {
     const form = document.getElementById(formId);
-    if (!form) return;
+    if (!form) {
+        console.warn('Form not found:', formId);
+        return;
+    }
     
     // 既存のフィードバックを削除
     const existingFeedback = form.querySelector('.feedback-message');
     if (existingFeedback) {
         existingFeedback.remove();
     }
+    
+    console.log('Showing feedback:', message, isError ? '(error)' : '(success)');
     
     // フィードバック要素を作成
     const feedback = document.createElement('div');
@@ -259,10 +284,13 @@ function showFeedback(formId, message, isError = false) {
 
 // アカウントデータをロード（デモ用）
 function loadAccountData() {
+    console.log('Loading account data');
+    
     // プロフィールデータをロード
     const profileData = localStorage.getItem('account-profile');
     if (profileData) {
         const profile = JSON.parse(profileData);
+        console.log('Found saved profile data:', profile);
         
         // フォームフィールドに値を設定
         const fullnameField = document.getElementById('fullname');
@@ -280,6 +308,7 @@ function loadAccountData() {
     const notificationData = localStorage.getItem('account-notifications');
     if (notificationData) {
         const notifications = JSON.parse(notificationData);
+        console.log('Found saved notification settings:', notifications);
         
         // チェックボックスの状態を設定
         const emailOrderCheck = document.getElementById('email-order');
