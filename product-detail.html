@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Final Fantasy VII Remake - PlayPortJP</title>
+    <title>Product Detail - PlayPortJP</title>
     <meta name="description" content="Premium Japanese games, books, music, and collectibles delivered worldwide.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -129,11 +129,11 @@
             font-weight: 500;
         }
         
-        .meta-tag.game {
+        .meta-tag.games {
             background-color: #5755d9;
         }
         
-        .meta-tag.book {
+        .meta-tag.books {
             background-color: #2e7d32;
         }
         
@@ -141,12 +141,16 @@
             background-color: #9c27b0;
         }
         
-        .meta-tag.collectible {
+        .meta-tag.collectibles {
             background-color: #e65100;
         }
         
-        .meta-tag.console {
+        .meta-tag.models {
             background-color: #0277bd;
+        }
+        
+        .meta-tag.culture {
+            background-color: #9c27b0;
         }
         
         .meta-tag.other {
@@ -558,6 +562,32 @@
             opacity: 0.6;
         }
         
+        /* 商品詳細ページでの画像プレースホルダー */
+        .product-image-main {
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        
+        .error-message h2 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .error-message p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+        
         /* レスポンシブ対応 */
         @media (max-width: 992px) {
             .product-detail-container {
@@ -658,11 +688,9 @@
             <div class="breadcrumb">
                 <a href="index.html">Home</a>
                 <span class="breadcrumb-separator">›</span>
-                <a href="#games">Games</a>
+                <a href="category.html?cat=games">Games</a>
                 <span class="breadcrumb-separator">›</span>
-                <a href="#playstation">PlayStation</a>
-                <span class="breadcrumb-separator">›</span>
-                <span>Final Fantasy VII Remake - PS4 Japanese Edition</span>
+                <span id="breadcrumb-product-name">Product Detail</span>
             </div>
 
             <!-- 商品詳細エリア -->
@@ -671,21 +699,18 @@
                 <div class="product-media">
                     <div class="product-image-main">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 4px 6px rgba(187, 0, 0, 0.5));">
-                            <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01M17.32 5H6.68a4 4 0 00-3.978 3.59c-.006.052-.01.101-.01.15v6.52c0 1.66 1.34 3 3 3h14.64c1.66 0 3-1.34 3-3v-6.52c0-.049-.004-.098-.01-.15A4 4 0 0017.32 5z"></path>
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
                         </svg>
-                        <div>PlayStation 4 Game</div>
-                        <a href="#" class="search-image-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            Google
-                        </a>
+                        <div>商品画像</div>
                     </div>
                     <div class="product-image-gallery">
                         <div class="gallery-thumb active">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01M17.32 5H6.68a4 4 0 00-3.978 3.59c-.006.052-.01.101-.01.15v6.52c0 1.66 1.34 3 3 3h14.64c1.66 0 3-1.34 3-3v-6.52c0-.049-.004-.098-.01-.15A4 4 0 0017.32 5z"></path>
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
                             </svg>
                         </div>
                         <div class="gallery-thumb">
@@ -716,13 +741,10 @@
 
                 <!-- 商品情報エリア -->
                 <div class="product-info">
-                    <h1 class="product-title">Final Fantasy VII Remake - PS4 Japanese Edition</h1>
+                    <h1 class="product-title">商品タイトル</h1>
                     
                     <div class="product-meta">
-                        <span class="meta-tag game">Game</span>
-                        <span class="meta-tag other">PS4</span>
-                        <span class="meta-tag other">RPG</span>
-                        <span class="meta-tag other">Square Enix</span>
+                        <!-- カテゴリータグはJavaScriptによって追加されます -->
                     </div>
                     
                     <div class="product-rating">
@@ -743,11 +765,11 @@
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                             </svg>
                         </div>
-                        <div class="rating-count">48 reviews</div>
+                        <div class="rating-count">0 reviews</div>
                     </div>
                     
                     <div class="product-price-container">
-                        <div class="product-price">64.99 CAD</div>
+                        <div class="product-price">0.00 CAD</div>
                         <div class="price-note">Sales tax calculated at checkout</div>
                     </div>
                     
@@ -755,13 +777,13 @@
                         <div class="condition-row">
                             <div class="condition-label">Condition</div>
                             <div class="condition-value">
-                                <span class="condition-badge used">USED</span> - Excellent
+                                <span class="condition-badge new">NEW</span>
                             </div>
                         </div>
                         <div class="condition-row">
                             <div class="condition-label">Availability</div>
                             <div class="condition-value">
-                                <span class="stock-status in-stock">In Stock</span> - Ready to ship
+                                <span class="stock-status in-stock">In Stock</span>
                             </div>
                         </div>
                         <div class="condition-row">
@@ -770,7 +792,7 @@
                         </div>
                         <div class="condition-row">
                             <div class="condition-label">Language</div>
-                            <div class="condition-value">Japanese (Some English UI options)</div>
+                            <div class="condition-value">Japanese</div>
                         </div>
                     </div>
                     
@@ -790,8 +812,7 @@
                         </button>
                         <button class="btn-wishlist">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 0L2 5.67a5.5 5.5 0 0 0 0 7.78l10 10 10-10a5.5 5.5 0
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 0L2 5.67a5.5 5.5 0 0 0 0 7.78l10 10 10-10a5.5 5.5 0 0 0 0-7.78z"></path>
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 0L2 5.67a5.5 5.5 0 0 0 0 7.78l10 10 10-10a5.5 5.5 0 0 0 0-7.78z"></path>
                             </svg>
                         </button>
                     </div>
@@ -824,9 +845,7 @@
                     <div class="product-description">
                         <h3 class="description-title">Product Description</h3>
                         <div class="description-content">
-                            <p>Experience the unforgettable RPG that redefined the genre with this Japanese edition of Final Fantasy VII Remake for PlayStation 4. This version features the complete game experience with Japanese voice acting and text.</p>
-                            <p>This pre-owned copy is in excellent condition. The disc shows minimal signs of use with no scratches that would affect gameplay. The original case, cover art, and manual are all included and in great condition.</p>
-                            <p>Final Fantasy VII Remake is a reimagining of the iconic 1997 PlayStation game that redefined the RPG genre. This first game in the FFVII Remake project expands on the storyline of Midgar into a full standalone game.</p>
+                            <!-- 商品の説明がJavaScriptによって挿入されます -->
                         </div>
                     </div>
                 </div>
@@ -838,25 +857,13 @@
                     <button class="tab-button active" data-tab="details">Details</button>
                     <button class="tab-button" data-tab="specifications">Specifications</button>
                     <button class="tab-button" data-tab="shipping">Shipping & Returns</button>
-                    <button class="tab-button" data-tab="reviews">Customer Reviews (48)</button>
+                    <button class="tab-button" data-tab="reviews">Customer Reviews</button>
                 </div>
                 
                 <div id="details" class="tab-content active">
-                    <h3 class="description-title">Game Features</h3>
+                    <h3 class="description-title">Product Features</h3>
                     <ul class="description-content">
-                        <li>A spectacular reimagining of one of the most visionary games ever</li>
-                        <li>The first entry in a multi-part saga that completely redefines the epic story of Final Fantasy VII</li>
-                        <li>Immerse yourself in the world of Final Fantasy VII with incredible graphics, a new battle system, and more</li>
-                        <li>Experience the game with Japanese voice acting and text for an authentic experience</li>
-                        <li>Includes special in-game bonus items exclusive to the Japanese edition</li>
-                    </ul>
-                    
-                    <h3 class="description-title" style="margin-top: 1.5rem;">Package Contents</h3>
-                    <ul class="description-content">
-                        <li>Final Fantasy VII Remake game disc</li>
-                        <li>Original PlayStation 4 case and cover art</li>
-                        <li>Full color instruction booklet in Japanese</li>
-                        <li>Promotional insert with special offers (Japan only)</li>
+                        <!-- 商品の特徴がJavaScriptによって挿入されます -->
                     </ul>
                 </div>
                 
@@ -864,11 +871,11 @@
                     <table class="specs-table">
                         <tr>
                             <th>Title</th>
-                            <td>Final Fantasy VII Remake</td>
+                            <td>Product Title</td>
                         </tr>
                         <tr>
                             <th>Platform</th>
-                            <td>PlayStation 4</td>
+                            <td>Platform</td>
                         </tr>
                         <tr>
                             <th>Region</th>
@@ -876,39 +883,23 @@
                         </tr>
                         <tr>
                             <th>Language</th>
-                            <td>Japanese (Some English UI options)</td>
+                            <td>Japanese</td>
                         </tr>
                         <tr>
                             <th>Developer</th>
-                            <td>Square Enix</td>
+                            <td>Developer</td>
                         </tr>
                         <tr>
                             <th>Publisher</th>
-                            <td>Square Enix</td>
+                            <td>Publisher</td>
                         </tr>
                         <tr>
                             <th>Release Date</th>
-                            <td>April 10, 2020</td>
+                            <td>Release Date</td>
                         </tr>
                         <tr>
                             <th>Genre</th>
-                            <td>Role-playing game (RPG), Action</td>
-                        </tr>
-                        <tr>
-                            <th>Players</th>
-                            <td>1 player</td>
-                        </tr>
-                        <tr>
-                            <th>Rated</th>
-                            <td>CERO: C (Ages 15+)</td>
-                        </tr>
-                        <tr>
-                            <th>File Size</th>
-                            <td>Approx. 100 GB</td>
-                        </tr>
-                        <tr>
-                            <th>Compatible With</th>
-                            <td>All PS4 systems, PS5 (backwards compatibility)</td>
+                            <td>Genre</td>
                         </tr>
                     </table>
                 </div>
@@ -945,91 +936,10 @@
                 </div>
                 
                 <div id="reviews" class="tab-content">
-                    <div class="review-item">
-                        <div class="review-header">
-                            <div class="reviewer-info">
-                                <div class="reviewer-name">Alex T.</div>
-                                <div class="review-date">August 15, 2024</div>
-                            </div>
-                            <div class="rating-stars">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="review-text">
-                            <p>Absolutely amazing condition for a used game! The disc looks practically new, and all the original packaging was included. The Japanese voice acting really adds to the experience, and I love having the physical Japanese edition in my collection. Shipping was fast and the packaging was secure. Would definitely buy from PlayPortJP again!</p>
-                        </div>
-                    </div>
-                    
-                    <div class="review-item">
-                        <div class="review-header">
-                            <div class="reviewer-info">
-                                <div class="reviewer-name">Sophia K.</div>
-                                <div class="review-date">July 28, 2024</div>
-                            </div>
-                            <div class="rating-stars">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="review-text">
-                            <p>I'm a huge collector of Japanese editions of Final Fantasy games, and this was a great addition to my collection. The condition was as described—excellent with minimal wear. The game works perfectly on my North American PS4. Just be aware that the text is in Japanese, but if you've played the English version or know the story, it's not a problem. Would buy from here again!</p>
-                        </div>
-                    </div>
-                    
-                    <div class="review-item">
-                        <div class="review-header">
-                            <div class="reviewer-info">
-                                <div class="reviewer-name">Marcus J.</div>
-                                <div class="review-date">July 10, 2024</div>
-                            </div>
-                            <div class="rating-stars">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="review-text">
-                            <p>Good condition overall, but there were a few minor scratches on the disc that weren't mentioned in the description. The game still plays fine though. Shipping was a bit slow to my location (took about 12 days), but everything arrived safely. The Japanese exclusive bonuses were a nice touch. Three stars.</p>
-                        </div>
+                    <!-- レビューはJavaScriptによって動的に挿入されるか、
+                         または利用可能なレビューがない場合のメッセージが表示されます -->
+                    <div class="no-reviews">
+                        <p>No reviews yet for this product. Be the first to leave a review!</p>
                     </div>
                 </div>
             </div>
@@ -1038,49 +948,7 @@
             <div class="related-products">
                 <h2>You Might Also Like</h2>
                 <div class="product-grid">
-                    <!-- Product Card 1 -->
-                    <div class="product-card" data-product-id="101" data-product-price="49.99" data-product-image="images/products/ffx-switch.jpg">
-                        <div class="product-image"></div>
-                        <div class="product-details">
-                            <h3>Final Fantasy X/X-2 HD Remaster - Nintendo Switch</h3>
-                            <p class="product-condition">Used - Very Good</p>
-                            <p class="product-price">49.99 CAD</p>
-                            <button class="add-to-cart">Add to Cart</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Product Card 2 -->
-                    <div class="product-card" data-product-id="102" data-product-price="79.99" data-product-image="images/products/ff16-ps5.jpg">
-                        <div class="product-image"></div>
-                        <div class="product-details">
-                            <h3>Final Fantasy XVI - PS5 Japanese Version</h3>
-                            <p class="product-condition">New</p>
-                            <p class="product-price">79.99 CAD</p>
-                            <button class="add-to-cart">Add to Cart</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Product Card 3 -->
-                    <div class="product-card" data-product-id="103" data-product-price="149.99" data-product-image="images/products/tifa-figure.jpg">
-                        <div class="product-image"></div>
-                        <div class="product-details">
-                            <h3>Final Fantasy VII Remake Tifa Lockhart Play Arts Kai Figure</h3>
-                            <p class="product-condition">New</p>
-                            <p class="product-price">149.99 CAD</p>
-                            <button class="add-to-cart">Add to Cart</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Product Card 4 -->
-                    <div class="product-card" data-product-id="104" data-product-price="59.99" data-product-image="images/products/ff7r-soundtrack.jpg">
-                        <div class="product-image"></div>
-                        <div class="product-details">
-                            <h3>Final Fantasy VII Remake Original Soundtrack (3-CD)</h3>
-                            <p class="product-condition">New</p>
-                            <p class="product-price">59.99 CAD</p>
-                            <button class="add-to-cart">Add to Cart</button>
-                        </div>
-                    </div>
+                    <!-- 関連商品はJavaScriptによって動的に挿入されます -->
                 </div>
             </div>
         </div>
@@ -1125,57 +993,6 @@
 
     <!-- JavaScriptファイルの読み込み -->
     <script src="js/common.js"></script>
-    <script>
-        // タブの切り替え機能
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabButtons = document.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // アクティブなタブをリセット
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // クリックされたタブをアクティブに
-                    button.classList.add('active');
-                    const tabId = button.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
-            
-            // 数量の増減機能
-            const minusBtn = document.querySelector('.quantity-btn.minus');
-            const plusBtn = document.querySelector('.quantity-btn.plus');
-            const quantityInput = document.querySelector('.quantity-input input');
-            
-            minusBtn.addEventListener('click', function() {
-                let value = parseInt(quantityInput.value);
-                if (value > 1) {
-                    quantityInput.value = value - 1;
-                }
-            });
-            
-            plusBtn.addEventListener('click', function() {
-                let value = parseInt(quantityInput.value);
-                if (value < 10) {
-                    quantityInput.value = value + 1;
-                }
-            });
-            
-            // ギャラリーサムネイルの切り替え
-            const galleryThumbs = document.querySelectorAll('.gallery-thumb');
-            
-            galleryThumbs.forEach(thumb => {
-                thumb.addEventListener('click', function() {
-                    galleryThumbs.forEach(t => t.classList.remove('active'));
-                    thumb.classList.add('active');
-                    
-                    // ここで実際の画像が切り替わる処理を実装
-                    // （このデモでは画像はプレースホルダーのみ）
-                });
-            });
-        });
-    </script>
+    <script src="js/product-detail.js"></script>
 </body>
 </html>
