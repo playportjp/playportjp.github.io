@@ -47,11 +47,11 @@ function loadProducts() {
 
 // 商品を表示
 function displayProducts(products) {
-    // 最初の商品だけを表示（シンプルにするため）
+    // 最初の商品だけを表示（最小限の実装として）
     const firstProduct = products[0];
-    console.log('Displaying product:', firstProduct);
+    console.log('Displaying first product:', firstProduct);
     
-    const productGrid = document.querySelector('.product-grid');
+    const productGrid = document.querySelector('.featured-products .product-grid');
     if (!productGrid) {
         console.error('Product grid element not found');
         return;
@@ -60,15 +60,13 @@ function displayProducts(products) {
     // Grid内のすべての要素を削除
     productGrid.innerHTML = '';
     
-    // 1つの商品を表示
+    // 商品カードを作成
     const productHtml = `
         <div class="product-card" data-product-id="${firstProduct.id}">
-            <div class="product-image">
-                <img src="${firstProduct.image}" alt="${firstProduct.name}" style="width:100%; height:100%; object-fit:cover;">
-            </div>
+            <div class="product-image" style="background-image: url('${firstProduct.image}'); background-size: cover; background-position: center;"></div>
             <div class="product-details">
                 <h3>${firstProduct.name}</h3>
-                <p class="product-condition">${firstProduct.new ? 'New' : 'Good condition'}</p>
+                <p class="product-condition">${firstProduct.new ? 'New' : 'Used'}</p>
                 <p class="product-price">${firstProduct.price.toFixed(2)} CAD</p>
                 <button class="add-to-cart" data-id="${firstProduct.id}">Add to Cart</button>
             </div>
@@ -78,12 +76,13 @@ function displayProducts(products) {
     productGrid.innerHTML = productHtml;
     
     // カートボタンにイベントリスナーを追加
-    document.querySelectorAll('.add-to-cart').forEach(button => {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    addToCartButtons.forEach(button => {
         button.addEventListener('click', function() {
             const productId = this.getAttribute('data-id');
             const product = products.find(p => p.id === productId);
             
-            if (product) {
+            if (product && window.cartManager) {
                 window.cartManager.addItem(
                     product.id, 
                     product.name, 
