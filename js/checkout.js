@@ -1,123 +1,4 @@
-// checkout.js - チェックアウト画面の機能を管理
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Checkout.js loaded');
-    
-    // 支払い方法の切り替え
-    const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
-    paymentMethods.forEach(method => {
-        method.addEventListener('change', togglePaymentFields);
-    });
-    
-    // プロモーションコードボタン
-    const promoBtn = document.getElementById('apply-promo');
-    if (promoBtn) {
-        promoBtn.addEventListener('click', applyPromoCode);
-    }
-    
-    // フォームフィールドのリアルタイムバリデーション設定
-    setupFormValidation();
-    
-    // 注文フォームの送信処理をオーバーライド
-    const orderForm = document.getElementById('order-form');
-    if (orderForm) {
-        orderForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            handleCheckoutSubmit(event);
-        });
-    }
-});
-
-// 支払い方法フィールドの切り替え
-function togglePaymentFields() {
-    const creditCardFields = document.getElementById('credit-card-fields');
-    const paypalFields = document.getElementById('paypal-fields');
-    const selectedMethod = document.querySelector('input[name="payment-method"]:checked').value;
-    
-    if (selectedMethod === 'credit') {
-        creditCardFields.style.display = 'block';
-        paypalFields.style.display = 'none';
-    } else if (selectedMethod === 'paypal') {
-        creditCardFields.style.display = 'none';
-        paypalFields.style.display = 'block';
-    }
-}
-
-// フォームバリデーションの設定
-function setupFormValidation() {
-    // 名前フィールドのバリデーション
-    const nameInput = document.getElementById('full-name');
-    if (nameInput) {
-        nameInput.addEventListener('blur', function() {
-            validateField(this, 'name-error', value => {
-                return value.trim().length >= 3 || 'Please enter your full name';
-            });
-        });
-    }
-    
-    // メールフィールドのバリデーション
-    const emailInput = document.getElementById('email');
-    if (emailInput) {
-        emailInput.addEventListener('blur', function() {
-            validateField(this, 'email-error', value => {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(value) || 'Please enter a valid email address';
-            });
-        });
-    }
-    
-    // 電話番号フィールドのバリデーション
-    const phoneInput = document.getElementById('phone');
-    if (phoneInput) {
-        phoneInput.addEventListener('blur', function() {
-            validateField(this, 'phone-error', value => {
-                const phoneRegex = /^\+?[\d\s-]{10,15}$/;
-                return phoneRegex.test(value) || 'Please enter a valid phone number';
-            });
-        });
-    }
-    
-    // 住所フィールドのバリデーション
-    const addressInput = document.getElementById('address');
-    if (addressInput) {
-        addressInput.addEventListener('blur', function() {
-            validateField(this, 'address-error', value => {
-                return value.trim().length >= 5 || 'Please enter your complete address';
-            });
-        });
-    }
-    
-    // 市区町村フィールドのバリデーション
-    const cityInput = document.getElementById('city');
-    if (cityInput) {
-        cityInput.addEventListener('blur', function() {
-            validateField(this, 'city-error', value => {
-                return value.trim().length >= 2 || 'Please enter your city';
-            });
-        });
-    }
-    
-    // 郵便番号フィールドのバリデーション
-    const postalInput = document.getElementById('postal-code');
-    if (postalInput) {
-        postalInput.addEventListener('blur', function() {
-            validateField(this, 'postal-error', value => {
-                return value.trim().length >= 3 || 'Please enter your postal/ZIP code';
-            });
-        });
-    }
-    
-    // クレジットカード番号のバリデーション
-    const cardNumberInput = document.getElementById('card-number');
-    if (cardNumberInput) {
-        cardNumberInput.addEventListener('input', function() {
-            // スペースを自動で追加する
-            this.value = this.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
-        });
-        
-        cardNumberInput.addEventListener('blur', function() {
-            validateField(this, 'card-number-error', value => {
-                const cardNumberRegex = /^[\d\s]{15,19}$/;
+const cardNumberRegex = /^[\d\s]{15,19}$/;
                 return cardNumberRegex.test(value) || 'Please enter a valid card number';
             });
         });
@@ -262,65 +143,6 @@ function applyDiscount(discountRate) {
     const subtotalElement = document.getElementById('checkout-subtotal');
     const subtotalText = subtotalElement.textContent;
     const subtotal = parseFloat(subtotalText.replace(/[^0-9.]/g, ''));
-    
-    // 割引額を計算
-    const discount = subtotal * discountRate;
-    
-    // 税額を再計算（割引後の小計に対して）
-    const discountedSubtotal = subtotal - discount;
-    const tax = discountedSubtotal * 0.1;
-    
-    // 合計を更新
-    const total = discountedSubtotal + tax;
-    
-    // 表示を更新
-    document.getElementById('checkout-subtotal').textContent = `${discountedSubtotal.toFixed(2)} CAD`;
-    document.getElementById('checkout-tax').textContent = `${tax.toFixed(2)} CAD`;
-    document.getElementById('checkout-total').textContent = `${total.toFixed(2)} CAD`;
-    
-    // プロモーションコード適用済みの表示
-    const promoInput = document.getElementById('promo-code-input');
-    promoInput.disabled = true;
-    promoInput.value = 'WELCOME10 - 10% OFF';
-    document.getElementById('apply-promo').disabled = true;
-}
-
-// チェックアウトフォームの送信処理
-function handleCheckoutSubmit(event) {
-    // フォームのバリデーション
-    if (!validateForm()) {
-        // スクロールしてエラー箇所を表示
-        const firstError = document.querySelector('.error-message:not(:empty)');
-        if (firstError) {
-            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return;
-    }
-    
-    // 注文データの収集
-    const orderData = collectOrderData();
-    
-    // 注文データをlocalStorageに保存
-    localStorage.setItem('currentOrder', JSON.stringify(orderData));
-    
-    // カートをクリア
-    window.cartManager.clearCart();
-    
-    // 注文確認ページへリダイレクト
-    window.location.href = 'order-confirmation.html';
-}
-
-// 注文データの収集
-function collectOrderData() {
-    // カートアイテム
-    const cartItems = window.cartManager.items;
-    
-    // 小計、税金、合計を取得
-    const subtotalText = document.getElementById('checkout-subtotal').textContent;
-    const taxText = document.getElementById('checkout-tax').textContent;
-    const totalText = document.getElementById('checkout-total').textContent;
-    
-    const subtotal = parseFloat(subtotalText.replace(/[^0-9.]/g, ''));
     const tax = parseFloat(taxText.replace(/[^0-9.]/g, ''));
     const shipping = 0; // 送料無料と仮定
     const total = parseFloat(totalText.replace(/[^0-9.]/g, ''));
@@ -366,4 +188,346 @@ function generateOrderNumber() {
     const timestamp = new Date().getTime().toString().slice(-10);
     const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     return `PP-${timestamp}-${random}`;
+}
+    
+    // 割引額を計算
+    const discount = subtotal * discountRate;
+    
+    // 税額を再計算（割引後の小計に対して）
+    const discountedSubtotal = subtotal - discount;
+    const tax = discountedSubtotal * 0.1;
+    
+    // 合計を更新
+    const total = discountedSubtotal + tax;
+    
+    // 表示を更新
+    document.getElementById('checkout-subtotal').textContent = `${discountedSubtotal.toFixed(2)} CAD`;
+    document.getElementById('checkout-tax').textContent = `${tax.toFixed(2)} CAD`;
+    document.getElementById('checkout-total').textContent = `${total.toFixed(2)} CAD`;
+    
+    // プロモーションコード適用済みの表示
+    const promoInput = document.getElementById('promo-code-input');
+    promoInput.disabled = true;
+    promoInput.value = 'WELCOME10 - 10% OFF';
+    document.getElementById('apply-promo').disabled = true;
+}
+
+// 注文フォームの送信処理
+function handleCheckoutSubmit(event) {
+    // フォームのバリデーション
+    if (!validateForm()) {
+        // スクロールしてエラー箇所を表示
+        const firstError = document.querySelector('.error-message:not(:empty)');
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+    
+    // 注文データの収集
+    const orderData = collectOrderData();
+    
+    // 注文データをlocalStorageに保存
+    localStorage.setItem('currentOrder', JSON.stringify(orderData));
+    
+    // カートをクリア
+    window.cartManager.clearCart();
+    
+    // 注文確認ページへリダイレクト
+    window.location.href = 'order-confirmation.html';
+}
+
+// 注文データの収集
+function collectOrderData() {
+    // カートアイテム
+    const cartItems = window.cartManager.items;
+    
+    // 小計、税金、合計を取得
+    const subtotalText = document.getElementById('checkout-subtotal').textContent;
+    const taxText = document.getElementById('checkout-tax').textContent;
+    const totalText = document.getElementById('checkout-total').textContent;
+    
+    const subtotal = parseFloat(subtotalText.replace(/[^0-9.]/g, ''));// checkout.js - チェックアウト画面の機能を管理
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Checkout.js loaded');
+    
+    // カートマネージャーが利用可能か確認
+    if (!window.cartManager) {
+        console.error('Cart manager is not available');
+        return;
+    }
+    
+    // カートの初期化とチェック
+    setTimeout(function() {
+        // カートが未ロードの場合、ロードする
+        window.cartManager.loadCart();
+        console.log('Cart loaded in checkout.js:', window.cartManager.items);
+        
+        // カートアイテムを表示
+        displayCheckoutItems();
+        
+        // 合計金額の計算と表示
+        updateOrderTotals();
+    }, 100);
+    
+    // 支払い方法の切り替え
+    const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', togglePaymentFields);
+    });
+    
+    // プロモーションコードボタン
+    const promoBtn = document.getElementById('apply-promo');
+    if (promoBtn) {
+        promoBtn.addEventListener('click', applyPromoCode);
+    }
+    
+    // フォームフィールドのリアルタイムバリデーション設定
+    setupFormValidation();
+    
+    // 注文フォームの送信処理
+    const orderForm = document.getElementById('order-form');
+    if (orderForm) {
+        orderForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            handleCheckoutSubmit(event);
+        });
+    }
+});
+
+// チェックアウトアイテムの表示
+function displayCheckoutItems() {
+    const checkoutItemsContainer = document.getElementById('checkout-items');
+    if (!checkoutItemsContainer) return;
+    
+    // カートマネージャーからアイテムを取得
+    if (!window.cartManager) {
+        console.error('Cart manager is not available');
+        return;
+    }
+    
+    const cartItems = window.cartManager.items;
+    console.log('Displaying checkout items:', cartItems);
+    
+    // カートが空の場合の処理
+    if (!cartItems || cartItems.length === 0) {
+        console.warn('Cart is empty, redirecting to cart page');
+        // リダイレクトする前に少し遅延させる
+        setTimeout(() => {
+            window.location.href = 'cart.html';
+        }, 100);
+        return;
+    }
+    
+    let html = '';
+    
+    // 各商品をHTMLに変換
+    cartItems.forEach(item => {
+        html += `
+            <div class="checkout-item" data-product-id="${item.id}">
+                <div class="checkout-item-image" ${item.image ? `style="background-image: url('${item.image}'); background-size: cover;"` : ''}>
+                    ${!item.image ? `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    ` : ''}
+                </div>
+                <div class="checkout-item-details">
+                    <div class="checkout-item-title">${item.name}</div>
+                    <div class="checkout-item-price">
+                        ${item.price.toFixed(2)} CAD
+                        <span class="checkout-item-quantity">x${item.quantity}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    checkoutItemsContainer.innerHTML = html;
+}
+
+// 注文合計の更新
+function updateOrderTotals() {
+    // 必要な要素が存在するか確認
+    const subtotalElement = document.getElementById('checkout-subtotal');
+    const taxElement = document.getElementById('checkout-tax');
+    const totalElement = document.getElementById('checkout-total');
+    
+    if (!subtotalElement || !taxElement || !totalElement) {
+        console.error('Required summary elements not found');
+        return;
+    }
+    
+    // カートマネージャーからアイテムを取得
+    if (!window.cartManager || !window.cartManager.items) {
+        console.error('Cart items not available');
+        return;
+    }
+    
+    const cartItems = window.cartManager.items;
+    if (!cartItems || cartItems.length === 0) return;
+    
+    // 小計を計算
+    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    
+    // 税金（小計の10%と仮定）
+    const tax = subtotal * 0.1;
+    
+    // 送料（free shipping と仮定）
+    const shipping = 0;
+    
+    // 合計
+    const total = subtotal + tax + shipping;
+    
+    // アイテム数を取得
+    const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+    
+    // 表示を更新
+    subtotalElement.textContent = `${subtotal.toFixed(2)} CAD`;
+    taxElement.textContent = `${tax.toFixed(2)} CAD`;
+    document.getElementById('checkout-shipping').textContent = shipping === 0 ? 'Free' : `${shipping.toFixed(2)} CAD`;
+    totalElement.textContent = `${total.toFixed(2)} CAD`;
+    
+    // 小計の表示にアイテム数を含める
+    const subtotalLabel = document.querySelector('.summary-row:first-child .summary-label');
+    if (subtotalLabel) {
+        subtotalLabel.textContent = `Subtotal (${itemCount} item${itemCount !== 1 ? 's' : ''})`;
+    }
+    
+    console.log('Order totals updated:', { subtotal, tax, total, itemCount });
+}
+
+// 支払い方法フィールドの切り替え
+function togglePaymentFields() {
+    const creditCardFields = document.getElementById('credit-card-fields');
+    const paypalFields = document.getElementById('paypal-fields');
+    const selectedMethod = document.querySelector('input[name="payment-method"]:checked').value;
+    
+    if (selectedMethod === 'credit') {
+        creditCardFields.style.display = 'block';
+        paypalFields.style.display = 'none';
+    } else if (selectedMethod === 'paypal') {
+        creditCardFields.style.display = 'none';
+        paypalFields.style.display = 'block';
+    }
+}
+
+// フォームバリデーションの設定
+function setupFormValidation() {
+    // 名前フィールドのバリデーション
+    const nameInput = document.getElementById('full-name');
+    if (nameInput) {
+        nameInput.addEventListener('blur', function() {
+            validateField(this, 'name-error', value => {
+                return value.trim().length >= 3 || 'Please enter your full name';
+            });
+        });
+    }
+    
+    // メールフィールドのバリデーション
+    const emailInput = document.getElementById('email');
+    if (emailInput) {
+        emailInput.addEventListener('blur', function() {
+            validateField(this, 'email-error', value => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(value) || 'Please enter a valid email address';
+            });
+        });
+    }
+    
+    // 電話番号フィールドのバリデーション
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('blur', function() {
+            validateField(this, 'phone-error', value => {
+                const phoneRegex = /^\+?[\d\s-]{10,15}$/;
+                return phoneRegex.test(value) || 'Please enter a valid phone number';
+            });
+        });
+    }
+    
+    // 住所フィールドのバリデーション
+    const addressInput = document.getElementById('address');
+    if (addressInput) {
+        addressInput.addEventListener('blur', function() {
+            validateField(this, 'address-error', value => {
+                return value.trim().length >= 5 || 'Please enter your complete address';
+            });
+        });
+    }
+    
+    // 市区町村フィールドのバリデーション
+    const cityInput = document.getElementById('city');
+    if (cityInput) {
+        cityInput.addEventListener('blur', function() {
+            validateField(this, 'city-error', value => {
+                return value.trim().length >= 2 || 'Please enter your city';
+            });
+        });
+    }
+    
+    // 郵便番号フィールドのバリデーション
+    const postalInput = document.getElementById('postal-code');
+    if (postalInput) {
+        postalInput.addEventListener('blur', function() {
+            validateField(this, 'postal-error', value => {
+                return value.trim().length >= 3 || 'Please enter your postal/ZIP code';
+            });
+        });
+    }
+    
+    // クレジットカード番号のバリデーション
+    const cardNumberInput = document.getElementById('card-number');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function() {
+            // スペースを自動で追加する
+            this.value = this.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+        });
+        
+        cardNumberInput.addEventListener('blur', function() {
+            validateField(this, 'card-number-error', value => {
+                const cardNumberRegex = /^[\d\s]{15,19}$/;
+                return cardNumberRegex.test(value) || 'Please enter a valid card number';
+            });
+        });
+    }
+    
+    // 有効期限のバリデーション
+    const expiryInput = document.getElementById('expiry-date');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', function() {
+            // スラッシュを自動で追加する
+            this.value = this.value.replace(/\//g, '').replace(/^(\d{2})(\d{0,2})/, '$1/$2').trim();
+        });
+        
+        expiryInput.addEventListener('blur', function() {
+            validateField(this, 'expiry-error', value => {
+                const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+                if (!expiryRegex.test(value)) {
+                    return 'Please enter expiry in MM/YY format';
+                }
+                
+                // 有効期限が現在より未来かチェック
+                const [month, year] = value.split('/');
+                const expiryDate = new Date(2000 + parseInt(year), parseInt(month) - 1);
+                const currentDate = new Date();
+                
+                return expiryDate > currentDate || 'Card is expired';
+            });
+        });
+    }
+    
+    // CVVのバリデーション
+    const cvvInput = document.getElementById('cvv');
+    if (cvvInput) {
+        cvvInput.addEventListener('blur', function() {
+            validateField(this, 'cvv-error', value => {
+                const cvvRegex = /^\d{3,4}$/;
+                return cvvRegex.test(value) || 'Please enter a valid CVV';
+            });
+        });
+    }
 }
