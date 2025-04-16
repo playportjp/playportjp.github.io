@@ -25,13 +25,14 @@
             margin-bottom: 3rem;
         }
         
-        /* 注文サマリー部分のスタイル */
+        /* 注文サマリー部分のスタイル - 改善版 */
         .order-summary {
             background-color: var(--surface);
             border-radius: 8px;
             border: 1px solid var(--border);
             padding: 1.5rem;
             align-self: start;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .order-summary h2 {
@@ -49,8 +50,8 @@
         
         .checkout-item {
             display: flex;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1.25rem;
             border-bottom: 1px solid var(--border);
         }
         
@@ -61,8 +62,8 @@
         }
         
         .checkout-item-image {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             background-color: var(--surface-lighter);
             border-radius: 4px;
             margin-right: 1rem;
@@ -74,6 +75,12 @@
             overflow: hidden;
         }
         
+        .checkout-item-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
         .checkout-item-image svg {
             width: 30px;
             height: 30px;
@@ -83,50 +90,58 @@
         .checkout-item-details {
             flex-grow: 1;
             min-width: 0;
-            width: 100%; /* 幅を確保 */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         .checkout-item-title {
             font-size: 0.95rem;
             font-weight: 500;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.35rem;
             color: white;
-            white-space: nowrap; /* 改行を防止 */
-            overflow: hidden; /* はみ出した部分を隠す */
-            text-overflow: ellipsis; /* はみ出した部分を省略記号で表示 */
-            max-width: 100%; /* 最大幅を設定 */
+            line-height: 1.3;
+            /* 長い商品名の表示改善 */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
         
         .checkout-item-meta {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            margin-bottom: 0.25rem;
-            white-space: nowrap; /* 改行を防止 */
-            overflow: hidden; /* はみ出した部分を隠す */
-            text-overflow: ellipsis; /* はみ出した部分を省略記号で表示 */
+            margin-bottom: 0.35rem;
+            line-height: 1.3;
         }
         
         .checkout-item-price {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 0.9rem;
+            margin-top: 0.35rem;
         }
         
         .checkout-item-price .price {
             font-weight: 500;
+            color: #FFCF33;
         }
         
-        /* 注文合計部分のスタイル */
+        /* 注文合計部分のスタイル - 改善版 */
         .order-totals {
             margin-top: 1.5rem;
-            padding-top: 1rem;
+            padding-top: 1.25rem;
             border-top: 1px solid var(--border);
         }
         
         .order-subtotal, .order-shipping, .order-tax {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.85rem;
             font-size: 0.95rem;
             color: var(--text-secondary);
         }
@@ -134,12 +149,16 @@
         .order-total {
             display: flex;
             justify-content: space-between;
-            margin-top: 1rem;
-            padding-top: 1rem;
+            margin-top: 1.25rem;
+            padding-top: 1.25rem;
             border-top: 1px solid var(--border);
             font-size: 1.1rem;
-            font-weight: 500;
+            font-weight: 600;
             color: white;
+        }
+        
+        .order-total-value {
+            color: #FFCF33;
         }
         
         /* チェックアウトフォームのスタイル */
@@ -148,6 +167,7 @@
             border-radius: 8px;
             border: 1px solid var(--border);
             padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .checkout-form h2 {
@@ -200,6 +220,18 @@
             padding-right: 2.5rem;
         }
         
+        /* エラーメッセージのスタイル */
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: 0.35rem;
+            display: none;
+        }
+        
+        input.invalid, select.invalid, textarea.invalid {
+            border-color: #ff6b6b;
+        }
+        
         .payment-notice {
             margin-bottom: 1.5rem;
             padding: 1rem;
@@ -244,7 +276,7 @@
             margin-top: 1.5rem;
             cursor: pointer;
             transition: background-color 0.2s;
-            text-align: center; /* テキストを中央揃えに */
+            text-align: center;
         }
         
         .btn-checkout:hover {
@@ -269,13 +301,7 @@
             }
             
             .checkout-item-title {
-                white-space: normal; /* モバイルでは改行を許可 */
-                text-overflow: initial; /* 省略記号を表示しない */
-                overflow: visible; /* はみ出し部分を表示 */
-            }
-            
-            .checkout-item-meta {
-                white-space: normal; /* モバイルでは改行を許可 */
+                -webkit-line-clamp: 3; /* モバイルでは3行まで表示 */
             }
         }
     </style>
@@ -325,7 +351,7 @@
                 <h1 class="page-title">Checkout</h1>
                 
                 <div class="checkout-container">
-                    <!-- 注文サマリー -->
+                    <!-- 注文サマリー - 改善版 -->
                     <div class="order-summary">
                         <h2>Order Summary</h2>
                         <div id="checkout-items">
@@ -340,13 +366,13 @@
                                 <span>Shipping:</span>
                                 <span id="checkout-shipping">15.00 CAD</span>
                             </div>
-                            <div class="order-shipping">
+                            <div class="order-tax">
                                 <span>Tax (5%):</span>
                                 <span id="checkout-tax">0.00 CAD</span>
                             </div>
                             <div class="order-total">
                                 <span>Total:</span>
-                                <span id="checkout-total">0.00 CAD</span>
+                                <span id="checkout-total" class="order-total-value">0.00 CAD</span>
                             </div>
                         </div>
                     </div>
