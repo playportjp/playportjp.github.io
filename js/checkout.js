@@ -1,502 +1,441 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - PlayPortJP</title>
-    <meta name="description" content="Complete your order at PlayPortJP - Premium Japanese games, books, music, and collectibles.">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+// checkout.js - チェックアウト画面の機能を管理
+
+document.addEventListener('DOMContentLoaded', function() {
+    // カートからアイテムを取得して表示
+    displayCheckoutItems();
     
-    <style>
-        /* チェックアウトページ用スタイル */
-        .page-title {
-            margin: 2rem 0;
-            font-size: 1.8rem;
-            font-weight: 500;
-        }
-        
-        .checkout-container {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-        
-        /* 注文サマリー部分のスタイル */
-        .order-summary {
-            background-color: var(--surface);
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            align-self: start;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .order-summary h2 {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-            color: white;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        #checkout-items {
-            margin-bottom: 1.5rem;
-        }
-        
-        .checkout-item {
-            display: flex;
-            margin-bottom: 1.25rem;
-            padding-bottom: 1.25rem;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .checkout-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        
-        .checkout-item-image {
-            width: 70px;
-            height: 70px;
-            background-color: var(--surface-lighter);
-            border-radius: 4px;
-            margin-right: 1rem;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        
-        .checkout-item-image img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        
-        .checkout-item-image svg {
-            width: 30px;
-            height: 30px;
-            opacity: 0.8;
-        }
-        
-        .checkout-item-details {
-            flex-grow: 1;
-            min-width: 0;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        
-        .checkout-item-title {
-            font-size: 0.95rem;
-            font-weight: 500;
-            margin-bottom: 0.35rem;
-            color: white;
-            line-height: 1.3;
-            /* 長い商品名の表示改善 */
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-        }
-        
-        .checkout-item-meta {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.35rem;
-            line-height: 1.3;
-        }
-        
-        .checkout-item-price {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-            margin-top: 0.35rem;
-        }
-        
-        .checkout-item-price .price {
-            font-weight: 500;
-            color: #FFCF33;
-        }
-        
-        /* 注文合計部分のスタイル */
-        .order-totals {
-            margin-top: 1.5rem;
-            padding-top: 1.25rem;
-            border-top: 1px solid var(--border);
-        }
-        
-        .order-subtotal, .order-shipping, .order-tax {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.85rem;
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-        }
-        
-        .order-total {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1.25rem;
-            padding-top: 1.25rem;
-            border-top: 1px solid var(--border);
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: white;
-        }
-        
-        .order-total-value {
-            color: #FFCF33;
-        }
-        
-        /* チェックアウトフォームのスタイル */
-        .checkout-form {
-            background-color: var(--surface);
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .checkout-form h2 {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-            color: white;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-        
-        label {
-            display: block;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            background-color: var(--surface-lighter);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-        }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px var(--focus-ring);
-        }
-        
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 16px;
-            padding-right: 2.5rem;
-        }
-        
-        /* エラーメッセージのスタイル */
-        .error-message {
-            color: #ff6b6b;
-            font-size: 0.85rem;
-            margin-top: 0.35rem;
-            display: none;
-        }
-        
-        input.invalid, select.invalid, textarea.invalid {
-            border-color: #ff6b6b;
-        }
-        
-        .payment-notice {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background-color: rgba(255, 207, 51, 0.1);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            color: #FFCF33;
-            font-size: 0.9rem;
-        }
-        
-        .payment-options {
-            margin-bottom: 2rem;
-        }
-        
-        .payment-option {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-        
-        .payment-option input[type="radio"] {
-            width: auto;
-            margin-right: 0.75rem;
-        }
-        
-        .payment-option label {
-            margin-bottom: 0;
-            font-size: 0.95rem;
-            color: var(--text-primary);
-        }
-        
-        .btn-checkout {
-            display: block;
-            width: 100%;
-            padding: 0.9rem 0;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-top: 1.5rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            text-align: center;
-        }
-        
-        .btn-checkout:hover {
-            background-color: var(--primary-hover);
-        }
-        
-        /* モバイル対応 */
-        @media (max-width: 992px) {
-            .checkout-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .order-summary {
-                margin-bottom: 2rem;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-            
-            .checkout-item-title {
-                -webkit-line-clamp: 3; /* モバイルでは3行まで表示 */
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <a href="index.html">
-                    <h1>Play<span>Port</span>JP</h1>
-                </a>
-            </div>
-            <div class="search-container">
-                <form action="search-results.html" method="get" id="search-form">
-                    <input type="search" placeholder="Search products..." aria-label="Search" name="query" id="search-input">
-                    <button type="submit" id="search-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    // 合計金額の計算と表示
+    updateOrderTotals();
+    
+    // 注文フォームの送信処理
+    const orderForm = document.getElementById('order-form');
+    if (orderForm) {
+        orderForm.addEventListener('submit', handleOrderSubmit);
+    }
+    
+    // フォームフィールドのリアルタイムバリデーション設定
+    setupFormValidation();
+    
+    // 支払い方法の切り替え
+    const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', togglePaymentFields);
+    });
+    
+    // プロモーションコードボタン
+    const promoBtn = document.getElementById('apply-promo');
+    if (promoBtn) {
+        promoBtn.addEventListener('click', applyPromoCode);
+    }
+});
+
+// チェックアウトアイテムの表示
+function displayCheckoutItems() {
+    const checkoutItemsContainer = document.getElementById('checkout-items');
+    if (!checkoutItemsContainer) return;
+    
+    // カートマネージャーからアイテムを取得
+    const cartItems = window.cartManager.items;
+    
+    // カートが空の場合はカートページにリダイレクト
+    if (!cartItems || cartItems.length === 0) {
+        window.location.href = 'cart.html';
+        return;
+    }
+    
+    let html = '';
+    
+    // 各商品をHTMLに変換
+    cartItems.forEach(item => {
+        html += `
+            <div class="checkout-item" data-product-id="${item.id}">
+                <div class="checkout-item-image" ${item.image ? `style="background-image: url('${item.image}'); background-size: cover;"` : ''}>
+                    ${!item.image ? `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
                         </svg>
-                    </button>
-                </form>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="order-history.html">Order History</a></li>
-                    <li><a href="account.html" id="account-link">Account</a></li>
-                    <li class="cart-icon">
-                        <a href="cart.html" id="cart-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                            </svg>
-                            <span class="cart-count" id="cart-count">0</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main>
-        <section class="checkout-section">
-            <div class="container">
-                <h1 class="page-title">Checkout</h1>
-                
-                <div class="checkout-container">
-                    <!-- 注文サマリー -->
-                    <div class="order-summary">
-                        <h2>Order Summary</h2>
-                        <div id="checkout-items">
-                            <!-- カートアイテムがここに表示されます -->
-                        </div>
-                        <div class="order-totals">
-                            <div class="order-subtotal">
-                                <span>Subtotal:</span>
-                                <span id="checkout-subtotal">0.00 CAD</span>
-                            </div>
-                            <div class="order-shipping">
-                                <span>Shipping:</span>
-                                <span id="checkout-shipping">15.00 CAD</span>
-                            </div>
-                            <div class="order-tax">
-                                <span>Tax (5%):</span>
-                                <span id="checkout-tax">0.00 CAD</span>
-                            </div>
-                            <div class="order-total">
-                                <span>Total:</span>
-                                <span id="checkout-total" class="order-total-value">0.00 CAD</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- チェックアウトフォーム -->
-                    <div class="checkout-form">
-                        <h2>Shipping Information</h2>
-                        <form id="order-form">
-                            <div class="form-group">
-                                <label for="full-name">Full Name</label>
-                                <input type="text" id="full-name" name="full-name" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="email">Email Address</label>
-                                <input type="email" id="email" name="email" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="address">Address</label>
-                                <input type="text" id="address" name="address" required>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="city">City</label>
-                                    <input type="text" id="city" name="city" required>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="postal-code">Postal Code</label>
-                                    <input type="text" id="postal-code" name="postal-code" required>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="country">Country</label>
-                                <select id="country" name="country" required>
-                                    <option value="FR">France</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="phone">Phone Number</label>
-                                <input type="tel" id="phone" name="phone" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="notes">Order Notes (Optional)</label>
-                                <textarea id="notes" name="notes" rows="3"></textarea>
-                            </div>
-                            
-                            <div class="payment-notice">
-                                <p>Note: This is a demo store. No actual payment will be processed.</p>
-                            </div>
-                            
-                            <div class="payment-options">
-                                <h2>Payment Method</h2>
-                                
-                                <div class="payment-option">
-                                    <input type="radio" id="payment-credit" name="payment-method" value="credit" checked>
-                                    <label for="payment-credit">Credit Card</label>
-                                </div>
-                                
-                                <div class="payment-option">
-                                    <input type="radio" id="payment-paypal" name="payment-method" value="paypal">
-                                    <label for="payment-paypal">PayPal</label>
-                                </div>
-                            </div>
-                            
-                            <button type="submit" class="btn-checkout">Complete Order</button>
-                        </form>
+                    ` : ''}
+                </div>
+                <div class="checkout-item-details">
+                    <div class="checkout-item-title">${item.name}</div>
+                    <div class="checkout-item-price">
+                        ${item.price.toFixed(2)} CAD
+                        <span class="checkout-item-quantity">x${item.quantity}</span>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-nav">
-                    <h3>Categories</h3>
-                    <ul>
-                        <li><a href="category.html?cat=games">Games</a></li>
-                        <li><a href="category.html?cat=books">Books</a></li>
-                        <li><a href="category.html?cat=music">Music</a></li>
-                        <li><a href="category.html?cat=collectibles">Collectibles</a></li>
-                    </ul>
-                </div>
-                <div class="footer-nav">
-                    <h3>Information</h3>
-                    <ul>
-                        <li><a href="shipping.html">Shipping</a></li>
-                        <li><a href="returns.html">Returns</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-newsletter">
-                    <h3>Stay Updated</h3>
-                    <p>Subscribe for updates on new arrivals and special offers.</p>
-                    <form id="newsletter-form">
-                        <input type="email" placeholder="Your email" aria-label="Email for newsletter" id="newsletter-email" required>
-                        <button type="submit">Subscribe</button>
-                    </form>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 PlayPortJP. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+        `;
+    });
     
-    <!-- JavaScript file loading -->
-    <script src="js/common.js"></script>
-    <script src="js/checkout.js"></script>
-</body>
-</html>="">Select a country</option>
-                                    <option value="CA">Canada</option>
-                                    <option value="US">United States</option>
-                                    <option value="JP">Japan</option>
-                                    <option value="GB">United Kingdom</option>
-                                    <option value="AU">Australia</option>
-                                    <option value="DE">Germany</option>
-                                    <option value
+    checkoutItemsContainer.innerHTML = html;
+}
+
+// 注文合計の更新
+function updateOrderTotals() {
+    // カートマネージャーからアイテムを取得
+    const cartItems = window.cartManager.items;
+    if (!cartItems || cartItems.length === 0) return;
+    
+    // 小計を計算
+    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    
+    // 税金（小計の10%と仮定）
+    const tax = subtotal * 0.1;
+    
+    // 送料（free shipping と仮定）
+    const shipping = 0;
+    
+    // 合計
+    const total = subtotal + tax + shipping;
+    
+    // 表示を更新
+    document.getElementById('checkout-subtotal').textContent = `${subtotal.toFixed(2)} CAD`;
+    document.getElementById('checkout-tax').textContent = `${tax.toFixed(2)} CAD`;
+    document.getElementById('checkout-shipping').textContent = shipping === 0 ? 'Free' : `${shipping.toFixed(2)} CAD`;
+    document.getElementById('checkout-total').textContent = `${total.toFixed(2)} CAD`;
+}
+
+// 支払い方法フィールドの切り替え
+function togglePaymentFields() {
+    const creditCardFields = document.getElementById('credit-card-fields');
+    const paypalFields = document.getElementById('paypal-fields');
+    const selectedMethod = document.querySelector('input[name="payment-method"]:checked').value;
+    
+    if (selectedMethod === 'credit') {
+        creditCardFields.style.display = 'block';
+        paypalFields.style.display = 'none';
+    } else if (selectedMethod === 'paypal') {
+        creditCardFields.style.display = 'none';
+        paypalFields.style.display = 'block';
+    }
+}
+
+// フォームバリデーションの設定
+function setupFormValidation() {
+    // 名前フィールドのバリデーション
+    const nameInput = document.getElementById('full-name');
+    if (nameInput) {
+        nameInput.addEventListener('blur', function() {
+            validateField(this, 'name-error', value => {
+                return value.trim().length >= 3 || 'Please enter your full name';
+            });
+        });
+    }
+    
+    // メールフィールドのバリデーション
+    const emailInput = document.getElementById('email');
+    if (emailInput) {
+        emailInput.addEventListener('blur', function() {
+            validateField(this, 'email-error', value => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(value) || 'Please enter a valid email address';
+            });
+        });
+    }
+    
+    // 電話番号フィールドのバリデーション
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('blur', function() {
+            validateField(this, 'phone-error', value => {
+                const phoneRegex = /^\+?[\d\s-]{10,15}$/;
+                return phoneRegex.test(value) || 'Please enter a valid phone number';
+            });
+        });
+    }
+    
+    // 住所フィールドのバリデーション
+    const addressInput = document.getElementById('address');
+    if (addressInput) {
+        addressInput.addEventListener('blur', function() {
+            validateField(this, 'address-error', value => {
+                return value.trim().length >= 5 || 'Please enter your complete address';
+            });
+        });
+    }
+    
+    // 市区町村フィールドのバリデーション
+    const cityInput = document.getElementById('city');
+    if (cityInput) {
+        cityInput.addEventListener('blur', function() {
+            validateField(this, 'city-error', value => {
+                return value.trim().length >= 2 || 'Please enter your city';
+            });
+        });
+    }
+    
+    // 郵便番号フィールドのバリデーション
+    const postalInput = document.getElementById('postal-code');
+    if (postalInput) {
+        postalInput.addEventListener('blur', function() {
+            validateField(this, 'postal-error', value => {
+                return value.trim().length >= 3 || 'Please enter your postal/ZIP code';
+            });
+        });
+    }
+    
+    // クレジットカード番号のバリデーション
+    const cardNumberInput = document.getElementById('card-number');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function() {
+            // スペースを自動で追加する
+            this.value = this.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+        });
+        
+        cardNumberInput.addEventListener('blur', function() {
+            validateField(this, 'card-number-error', value => {
+                const cardNumberRegex = /^[\d\s]{15,19}$/;
+                return cardNumberRegex.test(value) || 'Please enter a valid card number';
+            });
+        });
+    }
+    
+    // 有効期限のバリデーション
+    const expiryInput = document.getElementById('expiry-date');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', function() {
+            // スラッシュを自動で追加する
+            this.value = this.value.replace(/\//g, '').replace(/^(\d{2})(\d{0,2})/, '$1/$2').trim();
+        });
+        
+        expiryInput.addEventListener('blur', function() {
+            validateField(this, 'expiry-error', value => {
+                const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+                if (!expiryRegex.test(value)) {
+                    return 'Please enter expiry in MM/YY format';
+                }
+                
+                // 有効期限が現在より未来かチェック
+                const [month, year] = value.split('/');
+                const expiryDate = new Date(2000 + parseInt(year), parseInt(month) - 1);
+                const currentDate = new Date();
+                
+                return expiryDate > currentDate || 'Card is expired';
+            });
+        });
+    }
+    
+    // CVVのバリデーション
+    const cvvInput = document.getElementById('cvv');
+    if (cvvInput) {
+        cvvInput.addEventListener('blur', function() {
+            validateField(this, 'cvv-error', value => {
+                const cvvRegex = /^\d{3,4}$/;
+                return cvvRegex.test(value) || 'Please enter a valid CVV';
+            });
+        });
+    }
+}
+
+// フィールドのバリデーション
+function validateField(field, errorId, validationFn) {
+    const errorElement = document.getElementById(errorId);
+    if (!errorElement) return;
+    
+    const result = validationFn(field.value);
+    
+    if (result === true || result === undefined) {
+        // バリデーション成功
+        field.classList.remove('invalid');
+        field.classList.add('valid');
+        errorElement.textContent = '';
+        return true;
+    } else {
+        // バリデーション失敗
+        field.classList.remove('valid');
+        field.classList.add('invalid');
+        errorElement.textContent = result;
+        return false;
+    }
+}
+
+// フォーム全体のバリデーション
+function validateForm() {
+    let isValid = true;
+    
+    // 必須フィールドの確認
+    const requiredFields = [
+        { field: 'full-name', error: 'name-error', message: 'Please enter your full name' },
+        { field: 'email', error: 'email-error', message: 'Please enter your email address' },
+        { field: 'phone', error: 'phone-error', message: 'Please enter your phone number' },
+        { field: 'address', error: 'address-error', message: 'Please enter your address' },
+        { field: 'city', error: 'city-error', message: 'Please enter your city' },
+        { field: 'postal-code', error: 'postal-error', message: 'Please enter your postal/ZIP code' },
+        { field: 'country', error: 'country-error', message: 'Please select your country' }
+    ];
+    
+    // 支払い方法に基づく追加フィールド
+    const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+    if (paymentMethod === 'credit') {
+        requiredFields.push(
+            { field: 'card-number', error: 'card-number-error', message: 'Please enter your card number' },
+            { field: 'expiry-date', error: 'expiry-error', message: 'Please enter card expiry date' },
+            { field: 'cvv', error: 'cvv-error', message: 'Please enter CVV' }
+        );
+    }
+    
+    // 各フィールドをチェック
+    requiredFields.forEach(item => {
+        const field = document.getElementById(item.field);
+        const errorElement = document.getElementById(item.error);
+        
+        if (field && field.value.trim() === '') {
+            field.classList.add('invalid');
+            if (errorElement) {
+                errorElement.textContent = item.message;
+            }
+            isValid = false;
+        }
+    });
+    
+    // 利用規約の同意確認
+    const termsCheckbox = document.getElementById('terms');
+    const termsError = document.getElementById('terms-error');
+    if (termsCheckbox && !termsCheckbox.checked) {
+        termsError.textContent = 'You must agree to the terms and conditions';
+        isValid = false;
+    } else if (termsError) {
+        termsError.textContent = '';
+    }
+    
+    return isValid;
+}
+
+// プロモーションコードの適用
+function applyPromoCode() {
+    const promoInput = document.getElementById('promo-code-input');
+    if (!promoInput || promoInput.value.trim() === '') {
+        alert('Please enter a promotion code.');
+        return;
+    }
+    
+    const promoCode = promoInput.value.trim().toUpperCase();
+    
+    // プロモーションコードのバリデーション（サンプル）
+    if (promoCode === 'WELCOME10') {
+        // 10% 割引を適用
+        alert('Promotion code "WELCOME10" applied! 10% discount on your order.');
+        
+        // 割引後の金額を計算（例として単純に10%割引）
+        applyDiscount(0.1);
+    } else {
+        alert('Invalid promotion code. Please try again.');
+    }
+}
+
+// 割引の適用
+function applyDiscount(discountRate) {
+    // 現在の小計を取得
+    const subtotalElement = document.getElementById('checkout-subtotal');
+    const subtotalText = subtotalElement.textContent;
+    const subtotal = parseFloat(subtotalText.replace(/[^0-9.]/g, ''));
+    
+    // 割引額を計算
+    const discount = subtotal * discountRate;
+    
+    // 税額を再計算（割引後の小計に対して）
+    const discountedSubtotal = subtotal - discount;
+    const tax = discountedSubtotal * 0.1;
+    
+    // 合計を更新
+    const total = discountedSubtotal + tax;
+    
+    // 表示を更新
+    document.getElementById('checkout-subtotal').textContent = `${discountedSubtotal.toFixed(2)} CAD`;
+    document.getElementById('checkout-tax').textContent = `${tax.toFixed(2)} CAD`;
+    document.getElementById('checkout-total').textContent = `${total.toFixed(2)} CAD`;
+    
+    // プロモーションコード適用済みの表示
+    const promoInput = document.getElementById('promo-code-input');
+    promoInput.disabled = true;
+    promoInput.value = 'WELCOME10 - 10% OFF';
+    document.getElementById('apply-promo').disabled = true;
+}
+
+// 注文フォームの送信処理
+function handleOrderSubmit(event) {
+    event.preventDefault();
+    
+    // フォームのバリデーション
+    if (!validateForm()) {
+        // スクロールしてエラー箇所を表示
+        const firstError = document.querySelector('.error-message:not(:empty)');
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+    
+    // 注文データの収集
+    const orderData = collectOrderData();
+    
+    // 注文データをlocalStorageに保存
+    localStorage.setItem('currentOrder', JSON.stringify(orderData));
+    
+    // カートをクリア
+    window.cartManager.items = [];
+    window.cartManager.saveCart();
+    
+    // 注文確認ページへリダイレクト
+    window.location.href = 'order-confirmation.html';
+}
+
+// 注文データの収集
+function collectOrderData() {
+    // カートアイテム
+    const cartItems = window.cartManager.items;
+    
+    // 小計、税金、合計を取得
+    const subtotalText = document.getElementById('checkout-subtotal').textContent;
+    const taxText = document.getElementById('checkout-tax').textContent;
+    const totalText = document.getElementById('checkout-total').textContent;
+    
+    const subtotal = parseFloat(subtotalText.replace(/[^0-9.]/g, ''));
+    const tax = parseFloat(taxText.replace(/[^0-9.]/g, ''));
+    const shipping = 0; // 送料無料と仮定
+    const total = parseFloat(totalText.replace(/[^0-9.]/g, ''));
+    
+    // 顧客情報
+    const customerInfo = {
+        name: document.getElementById('full-name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
+        postalCode: document.getElementById('postal-code').value,
+        country: document.getElementById('country').value
+    };
+    
+    // 支払い方法
+    const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+    
+    // 注文番号の生成（ダミー）
+    const orderNumber = generateOrderNumber();
+    
+    // 注文日時
+    const orderDate = new Date();
+    
+    return {
+        orderNumber: orderNumber,
+        orderDate: orderDate,
+        items: cartItems,
+        customerInfo: customerInfo,
+        paymentMethod: paymentMethod,
+        summary: {
+            subtotal: subtotal,
+            shipping: shipping,
+            tax: tax,
+            total: total
+        }
+    };
+}
+
+// 注文番号の生成（ダミー）
+function generateOrderNumber() {
+    // 現在の時刻からランダムな注文番号を生成
+    const timestamp = new Date().getTime().toString().slice(-10);
+    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    return `PP-${timestamp}-${random}`;
+}
