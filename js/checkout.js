@@ -1,11 +1,22 @@
 // checkout.js - チェックアウト画面の機能を管理
 
 document.addEventListener('DOMContentLoaded', function() {
-    // カートからアイテムを取得して表示
-    displayCheckoutItems();
-    
-    // 合計金額の計算と表示
-    updateOrderTotals();
+    // ページ読み込み時に少し遅延を入れてカートを確実に読み込む
+    setTimeout(() => {
+        // カートの初期化を確認
+        if (window.cartManager) {
+            window.cartManager.loadCart();
+            console.log('Cart loaded:', window.cartManager.items);
+            
+            // カートからアイテムを取得して表示
+            displayCheckoutItems();
+            
+            // 合計金額の計算と表示
+            updateOrderTotals();
+        } else {
+            console.error('Cart manager not initialized');
+        }
+    }, 100);
     
     // 注文フォームの送信処理
     const orderForm = document.getElementById('order-form');
@@ -35,11 +46,25 @@ function displayCheckoutItems() {
     if (!checkoutItemsContainer) return;
     
     // カートマネージャーからアイテムを取得
+    if (!window.cartManager) {
+        console.error('Cart manager is not available');
+        return;
+    }
+    
+    // カートが未ロードの場合、ロードする
+    if (!window.cartManager.items || window.cartManager.items.length === 0) {
+        window.cartManager.loadCart();
+    }
+    
     const cartItems = window.cartManager.items;
+    
+    // デバッグログを追加
+    console.log('Cart items in checkout:', cartItems);
     
     // カートが空の場合はカートページにリダイレクト
     if (!cartItems || cartItems.length === 0) {
-        window.location.href = 'cart.html';
+        console.log('Cart is empty, redirecting to cart.html');
+        // window.location.href = 'cart.html'; // 一時的にコメントアウト
         return;
     }
     
