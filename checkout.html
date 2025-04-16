@@ -71,6 +71,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
         
         .checkout-item-image svg {
@@ -82,6 +83,7 @@
         .checkout-item-details {
             flex-grow: 1;
             min-width: 0;
+            width: 100%; /* 幅を確保 */
         }
         
         .checkout-item-title {
@@ -89,12 +91,19 @@
             font-weight: 500;
             margin-bottom: 0.25rem;
             color: white;
+            white-space: nowrap; /* 改行を防止 */
+            overflow: hidden; /* はみ出した部分を隠す */
+            text-overflow: ellipsis; /* はみ出した部分を省略記号で表示 */
+            max-width: 100%; /* 最大幅を設定 */
         }
         
         .checkout-item-meta {
             font-size: 0.8rem;
             color: var(--text-secondary);
             margin-bottom: 0.25rem;
+            white-space: nowrap; /* 改行を防止 */
+            overflow: hidden; /* はみ出した部分を隠す */
+            text-overflow: ellipsis; /* はみ出した部分を省略記号で表示 */
         }
         
         .checkout-item-price {
@@ -235,7 +244,7 @@
             margin-top: 1.5rem;
             cursor: pointer;
             transition: background-color 0.2s;
-            text-align: center;
+            text-align: center; /* テキストを中央揃えに */
         }
         
         .btn-checkout:hover {
@@ -257,6 +266,16 @@
             .form-row {
                 grid-template-columns: 1fr;
                 gap: 0;
+            }
+            
+            .checkout-item-title {
+                white-space: normal; /* モバイルでは改行を許可 */
+                text-overflow: initial; /* 省略記号を表示しない */
+                overflow: visible; /* はみ出し部分を表示 */
+            }
+            
+            .checkout-item-meta {
+                white-space: normal; /* モバイルでは改行を許可 */
             }
         }
     </style>
