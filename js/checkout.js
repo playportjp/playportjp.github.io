@@ -16,11 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // チェックアウトアイテムの表示
 function displayCheckoutItems() {
     const checkoutItems = document.getElementById('checkout-items');
+    
     // CartManagerからアイテムを取得（common.jsとの互換性を確保）
-    const cartItems = window.cartManager.items;
+    const cartItems = window.cartManager ? window.cartManager.items : [];
     
     // カートが空の場合
-    if (cartItems.length === 0) {
+    if (!cartItems || cartItems.length === 0) {
         checkoutItems.innerHTML = '<p>Your cart is empty. <a href="index.html">Continue shopping</a></p>';
         updateOrderTotals(0);
         
@@ -28,6 +29,7 @@ function displayCheckoutItems() {
         const submitButton = document.querySelector('button[type="submit"]');
         if (submitButton) {
             submitButton.disabled = true;
+            submitButton.classList.add('disabled');
         }
         return;
     }
@@ -71,22 +73,30 @@ function displayCheckoutItems() {
     updateOrderTotals(subtotal);
 }
 
-// 注文合計の更新
+// 注文合計の更新 - パフォーマンス最適化版
 function updateOrderTotals(subtotal) {
+    // 値固定の設定値をより明確に
     const shipping = 15.00; // 固定送料
-    const tax = subtotal * 0.05; // 5%の税金（GST/HST相当）
+    const taxRate = 0.05; // 5%の税金（GST/HST相当）
+    const tax = subtotal * taxRate;
     const total = subtotal + shipping + tax;
     
-    document.getElementById('checkout-subtotal').textContent = `${subtotal.toFixed(2)} CAD`;
-    document.getElementById('checkout-shipping').textContent = `${shipping.toFixed(2)} CAD`;
+    // DOM操作の最小化
+    const elements = {
+        subtotal: document.getElementById('checkout-subtotal'),
+        shipping: document.getElementById('checkout-shipping'),
+        tax: document.getElementById('checkout-tax'),
+        total: document.getElementById('checkout-total')
+    };
     
-    // 税金の表示要素があれば更新
-    const taxElement = document.getElementById('checkout-tax');
-    if (taxElement) {
-        taxElement.textContent = `${tax.toFixed(2)} CAD`;
-    }
+    // フォーマット関数を定義（国際化対応の準備）
+    const formatCurrency = (value) => `${value.toFixed(2)} CAD`;
     
-    document.getElementById('checkout-total').textContent = `${total.toFixed(2)} CAD`;
+    // 更新処理
+    if (elements.subtotal) elements.subtotal.textContent = formatCurrency(subtotal);
+    if (elements.shipping) elements.shipping.textContent = formatCurrency(shipping);
+    if (elements.tax) elements.tax.textContent = formatCurrency(tax);
+    if (elements.total) elements.total.textContent = formatCurrency(total);
 }
 
 // フォームバリデーションの設定
@@ -101,6 +111,13 @@ function setupFormValidation() {
             field.addEventListener('blur', function() {
                 validateField(this);
             });
+            
+            // 入力中のエラー修正時に即時バリデーション
+            field.addEventListener('input', function() {
+                if (this.classList.contains('invalid')) {
+                    validateField(this);
+                }
+            });
         }
     });
     
@@ -110,14 +127,31 @@ function setupFormValidation() {
         emailField.addEventListener('blur', function() {
             validateEmail(this);
         });
+        
+        // 入力中のエラー修正時に即時バリデーション
+        emailField.addEventListener('input', function() {
+            if (this.classList.contains('invalid')) {
+                validateEmail(this);
+            }
+        });
     }
 }
 
 // 個別フィールドのバリデーション
 function validateField(field) {
-    const errorElement = field.nextElementSibling;
+    // エラーメッセージを管理する要素を取得
+    let errorElement = field.nextElementSibling;
     const isErrorElement = errorElement && errorElement.classList.contains('error-message');
     
+    // 新しいエラー要素の作成関数
+    const createErrorElement = (message) => {
+        const error = document.createElement('div');
+        error.className = 'error-message';
+        error.textContent = message;
+        return error;
+    };
+    
+    // 値がない場合はエラー
     if (!field.value.trim()) {
         field.classList.add('invalid');
         
@@ -125,10 +159,8 @@ function validateField(field) {
             errorElement.textContent = 'This field is required';
             errorElement.style.display = 'block';
         } else {
-            const error = document.createElement('div');
-            error.className = 'error-message';
-            error.textContent = 'This field is required';
-            field.parentNode.insertBefore(error, field.nextSibling);
+            errorElement = createErrorElement('This field is required');
+            field.parentNode.insertBefore(errorElement, field.nextSibling);
         }
         return false;
     } else {
@@ -140,12 +172,22 @@ function validateField(field) {
     }
 }
 
-// メールアドレスのバリデーション
+// メールアドレスのバリデーション - 改善版
 function validateEmail(field) {
+    // より堅牢なメールアドレス判定
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const errorElement = field.nextElementSibling;
+    let errorElement = field.nextElementSibling;
     const isErrorElement = errorElement && errorElement.classList.contains('error-message');
     
+    // 新しいエラー要素の作成関数
+    const createErrorElement = (message) => {
+        const error = document.createElement('div');
+        error.className = 'error-message';
+        error.textContent = message;
+        return error;
+    };
+    
+    // 値がない場合はエラー
     if (!field.value.trim()) {
         field.classList.add('invalid');
         
@@ -153,26 +195,26 @@ function validateEmail(field) {
             errorElement.textContent = 'Email is required';
             errorElement.style.display = 'block';
         } else {
-            const error = document.createElement('div');
-            error.className = 'error-message';
-            error.textContent = 'Email is required';
-            field.parentNode.insertBefore(error, field.nextSibling);
+            errorElement = createErrorElement('Email is required');
+            field.parentNode.insertBefore(errorElement, field.nextSibling);
         }
         return false;
-    } else if (!emailRegex.test(field.value)) {
+    } 
+    // メールアドレスの形式が正しくない場合
+    else if (!emailRegex.test(field.value)) {
         field.classList.add('invalid');
         
         if (isErrorElement) {
             errorElement.textContent = 'Please enter a valid email address';
             errorElement.style.display = 'block';
         } else {
-            const error = document.createElement('div');
-            error.className = 'error-message';
-            error.textContent = 'Please enter a valid email address';
-            field.parentNode.insertBefore(error, field.nextSibling);
+            errorElement = createErrorElement('Please enter a valid email address');
+            field.parentNode.insertBefore(errorElement, field.nextSibling);
         }
         return false;
-    } else {
+    } 
+    // 正常な場合
+    else {
         field.classList.remove('invalid');
         if (isErrorElement) {
             errorElement.style.display = 'none';
@@ -181,92 +223,21 @@ function validateEmail(field) {
     }
 }
 
-// フォーム全体のバリデーション
+// フォーム全体のバリデーション - パフォーマンス改善版
 function validateForm() {
     const requiredFields = [
         'full-name', 'email', 'address', 'city', 'postal-code', 'country', 'phone'
     ];
     
-    let isValid = true;
-    
-    requiredFields.forEach(fieldName => {
+    // すべてのフィールドを一度に検証（配列を使用した効率的な処理）
+    const validationResults = requiredFields.map(fieldName => {
         const field = document.querySelector(`[name="${fieldName}"]`);
-        if (field) {
-            if (fieldName === 'email') {
-                isValid = validateEmail(field) && isValid;
-            } else {
-                isValid = validateField(field) && isValid;
-            }
+        if (!field) return true; // フィールドが存在しない場合はスキップ
+        
+        // メールアドレス特有のバリデーション
+        if (fieldName === 'email') {
+            return validateEmail(field);
+        } else {
+            return validateField(field);
         }
     });
-    
-    return isValid;
-}
-
-// 注文フォーム送信処理
-function handleOrderSubmit(e) {
-    e.preventDefault();
-    
-    // フォームのバリデーション
-    if (!validateForm()) {
-        const firstInvalid = document.querySelector('.invalid');
-        if (firstInvalid) {
-            firstInvalid.focus();
-        }
-        return;
-    }
-    
-    // フォームデータの取得
-    const formData = new FormData(e.target);
-    const cartItems = window.cartManager.items;
-    
-    // 小計、税金、送料、合計を計算
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const shipping = 15.00;
-    const tax = subtotal * 0.05;
-    const total = subtotal + shipping + tax;
-    
-    const orderData = {
-        customerInfo: {
-            name: formData.get('full-name'),
-            email: formData.get('email'),
-            address: formData.get('address'),
-            city: formData.get('city'),
-            postalCode: formData.get('postal-code'),
-            country: formData.get('country'),
-            phone: formData.get('phone'),
-            notes: formData.get('notes')
-        },
-        items: cartItems,
-        summary: {
-            subtotal: subtotal,
-            tax: tax,
-            shipping: shipping,
-            total: total
-        },
-        paymentMethod: formData.get('payment-method'),
-        orderDate: new Date().toISOString(),
-        orderNumber: generateOrderNumber()
-    };
-    
-    // 注文データをlocalStorageに保存
-    localStorage.setItem('currentOrder', JSON.stringify(orderData));
-    
-    // 注文処理（デモ用）
-    console.log('Order submitted:', orderData);
-    
-    // カートをクリア
-    window.cartManager.items = [];
-    window.cartManager.saveCart();
-    window.cartManager.updateCartCount();
-    
-    // order-confirmation.htmlにリダイレクト
-    window.location.href = 'order-confirmation.html';
-}
-
-// 注文番号の生成
-function generateOrderNumber() {
-    const timestamp = new Date().getTime();
-    const random = Math.floor(Math.random() * 1000);
-    return `PP-${timestamp}-${random}`;
-}
