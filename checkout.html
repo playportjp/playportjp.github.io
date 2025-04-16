@@ -55,8 +55,8 @@
             
             <section class="checkout-section">
                 <div class="checkout-container">
-                    <!-- 注文サマリー -->
-                    <div class="order-summary">
+                    <!-- 注文サマリー - 修正したHTML構造 -->
+                    <div class="cart-order-summary">
                         <h2 class="summary-title">Order Summary</h2>
                         
                         <!-- 商品リスト -->
@@ -65,23 +65,21 @@
                         </div>
                         
                         <!-- 合計金額 -->
-                        <div class="order-totals">
-                            <div class="order-subtotal">
-                                <span>Subtotal</span>
-                                <span id="checkout-subtotal">0.00 CAD</span>
-                            </div>
-                            <div class="order-shipping">
-                                <span>Shipping</span>
-                                <span id="checkout-shipping">Free</span>
-                            </div>
-                            <div class="order-shipping">
-                                <span>Tax</span>
-                                <span id="checkout-tax">0.00 CAD</span>
-                            </div>
-                            <div class="order-total">
-                                <span>Total</span>
-                                <span id="checkout-total">0.00 CAD</span>
-                            </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Subtotal</span>
+                            <span class="summary-value" id="checkout-subtotal">0.00 CAD</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Shipping</span>
+                            <span class="summary-value" id="checkout-shipping">Free</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Estimated Tax</span>
+                            <span class="summary-value" id="checkout-tax">0.00 CAD</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span class="summary-label">Total</span>
+                            <span class="summary-value" id="checkout-total">0.00 CAD</span>
                         </div>
                         
                         <!-- プロモーションコード -->
@@ -90,6 +88,18 @@
                             <div class="promo-input-group">
                                 <input type="text" class="promo-input" placeholder="Enter code" id="promo-code-input">
                                 <button class="promo-btn" id="apply-promo">Apply</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 支払い方法アイコン -->
+                        <div class="payment-methods">
+                            <div class="payment-title">Accepted Payment Methods</div>
+                            <div class="payment-icons">
+                                <div class="payment-icon">Visa</div>
+                                <div class="payment-icon">MC</div>
+                                <div class="payment-icon">Amex</div>
+                                <div class="payment-icon">PayPal</div>
+                                <div class="payment-icon">Apple</div>
                             </div>
                         </div>
                     </div>
