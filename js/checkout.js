@@ -241,3 +241,120 @@ function validateForm() {
             return validateField(field);
         }
     });
+    
+    // 検証結果の集計（すべてtrueならフォームは有効）
+    return validationResults.every(result => result === true);
+}
+
+// 注文フォーム送信処理 - 改善版
+function handleOrderSubmit(e) {
+    e.preventDefault();
+    
+    // フォームのバリデーション
+    if (!validateForm()) {
+        // 最初の無効なフィールドにフォーカス
+        const firstInvalid = document.querySelector('.invalid');
+        if (firstInvalid) {
+            firstInvalid.focus();
+            
+            // スムーズなスクロール
+            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+    
+    // フォームデータの取得
+    const formData = new FormData(e.target);
+    const cartItems = window.cartManager ? window.cartManager.items : [];
+    
+    // 小計、税金、送料、合計を計算
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const shipping = 15.00;
+    const taxRate = 0.05; // 多言語対応時に変更しやすいように変数化
+    const tax = subtotal * taxRate;
+    const total = subtotal + shipping + tax;
+    
+    // 注文データ構築
+    const orderData = {
+        customerInfo: {
+            name: formData.get('full-name'),
+            email: formData.get('email'),
+            address: formData.get('address'),
+            city: formData.get('city'),
+            postalCode: formData.get('postal-code'),
+            country: formData.get('country'),
+            phone: formData.get('phone'),
+            notes: formData.get('notes')
+        },
+        items: cartItems,
+        summary: {
+            subtotal: subtotal,
+            tax: tax,
+            shipping: shipping,
+            total: total
+        },
+        paymentMethod: formData.get('payment-method'),
+        orderDate: new Date().toISOString(),
+        orderNumber: generateOrderNumber(),
+        status: 'processing' // 注文状態を追加（注文履歴での表示用）
+    };
+    
+    // 注文履歴管理
+    saveOrderHistory(orderData);
+    
+    // 注文データをlocalStorageに保存（確認ページ用）
+    localStorage.setItem('currentOrder', JSON.stringify(orderData));
+    
+    // 注文処理（デモ用）
+    console.log('Order submitted:', orderData);
+    
+    // カートをクリア
+    if (window.cartManager) {
+        window.cartManager.items = [];
+        window.cartManager.saveCart();
+        window.cartManager.updateCartCount();
+    }
+    
+    // ローディング表示（オプション）
+    showProcessingMessage();
+    
+    // order-confirmation.htmlにリダイレクト
+    setTimeout(() => {
+        window.location.href = 'order-confirmation.html';
+    }, 500); // 少し遅延させて処理感を演出
+}
+
+// 注文履歴の保存
+function saveOrderHistory(orderData) {
+    // localStorage から既存の注文履歴を取得
+    let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
+    
+    // 新しい注文を追加
+    orderHistory.push(orderData);
+    
+    // 大規模データ対応のために履歴は最新100件に制限
+    if (orderHistory.length > 100) {
+        orderHistory = orderHistory.slice(-100);
+    }
+    
+    // 更新した注文履歴を保存
+    localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+}
+
+// 注文処理中メッセージの表示
+function showProcessingMessage() {
+    const submitButton = document.querySelector('.btn-checkout');
+    if (submitButton) {
+        const originalText = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = 'Processing...';
+        submitButton.classList.add('processing');
+    }
+}
+
+// 注文番号の生成 - より堅牢なバージョン
+function generateOrderNumber() {
+    const timestamp = Date.now().toString(36); // タイムスタンプを36進数に変換
+    const random = Math.floor(Math.random() * 1000000).toString(36); // ランダムな数値を36進数に変換
+    return `PP-${timestamp}-${random}`.toUpperCase();
+}
