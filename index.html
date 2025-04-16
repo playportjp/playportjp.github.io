@@ -9,22 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        /* 商品カードのリンクスタイルを追加 */
-        .product-card a.product-link {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            cursor: pointer;
-        }
-
-        .product-card .add-to-cart {
-            position: relative;
-            z-index: 10;
-        }
-    </style>
 </head>
 <body>
     <!-- Header -->
@@ -94,7 +78,71 @@
             <div class="container">
                 <h2>Featured Products</h2>
                 <div class="product-grid">
-                    <!-- 商品がJavaScriptで動的に挿入されます -->
+                    <!-- Product Card 1 -->
+                    <div class="product-card" data-product-id="001" data-product-price="69.99" data-product-image="images/products/gamecube-controller.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>GameCube Controller (Original)</h3>
+                            <p class="product-condition">Excellent condition</p>
+                            <p class="product-price">69.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 2 -->
+                    <div class="product-card" data-product-id="002" data-product-price="119.99" data-product-image="images/products/snes-classic.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>Super Nintendo Classic Set</h3>
+                            <p class="product-condition">New</p>
+                            <p class="product-price">119.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 3 -->
+                    <div class="product-card" data-product-id="003" data-product-price="89.99" data-product-image="images/products/zelda-oot.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>Zelda: Ocarina of Time (N64)</h3>
+                            <p class="product-condition">Good condition</p>
+                            <p class="product-price">89.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 4 -->
+                    <div class="product-card" data-product-id="004" data-product-price="79.99" data-product-image="images/products/gundam-model.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>Gundam RX-78 Model Kit</h3>
+                            <p class="product-condition">New</p>
+                            <p class="product-price">79.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 5 -->
+                    <div class="product-card" data-product-id="005" data-product-price="99.99" data-product-image="images/products/jp-rock-collection.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>Japanese Rock Collection (5 CDs)</h3>
+                            <p class="product-condition">Mint condition</p>
+                            <p class="product-price">99.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 6 -->
+                    <div class="product-card" data-product-id="006" data-product-price="149.99" data-product-image="images/products/pokemon-jp.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>Pokémon Red/Green Japanese Edition</h3>
+                            <p class="product-condition">Excellent condition</p>
+                            <p class="product-price">149.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
