@@ -1,31 +1,7 @@
 // checkout.js - チェックアウト画面の機能を管理
 
 document.addEventListener('DOMContentLoaded', function() {
-    // ページ読み込み時に少し遅延を入れてカートを確実に読み込む
-    setTimeout(() => {
-        // カートの初期化を確認
-        if (window.cartManager) {
-            window.cartManager.loadCart();
-            console.log('Cart loaded:', window.cartManager.items);
-            
-            // カートからアイテムを取得して表示
-            displayCheckoutItems();
-            
-            // 合計金額の計算と表示
-            updateOrderTotals();
-        } else {
-            console.error('Cart manager not initialized');
-        }
-    }, 100);
-    
-    // 注文フォームの送信処理
-    const orderForm = document.getElementById('order-form');
-    if (orderForm) {
-        orderForm.addEventListener('submit', handleOrderSubmit);
-    }
-    
-    // フォームフィールドのリアルタイムバリデーション設定
-    setupFormValidation();
+    console.log('Checkout.js loaded');
     
     // 支払い方法の切り替え
     const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
@@ -38,89 +14,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (promoBtn) {
         promoBtn.addEventListener('click', applyPromoCode);
     }
+    
+    // フォームフィールドのリアルタイムバリデーション設定
+    setupFormValidation();
+    
+    // 注文フォームの送信処理をオーバーライド
+    const orderForm = document.getElementById('order-form');
+    if (orderForm) {
+        orderForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            handleCheckoutSubmit(event);
+        });
+    }
 });
-
-// チェックアウトアイテムの表示
-function displayCheckoutItems() {
-    const checkoutItemsContainer = document.getElementById('checkout-items');
-    if (!checkoutItemsContainer) return;
-    
-    // カートマネージャーからアイテムを取得
-    if (!window.cartManager) {
-        console.error('Cart manager is not available');
-        return;
-    }
-    
-    // カートが未ロードの場合、ロードする
-    if (!window.cartManager.items || window.cartManager.items.length === 0) {
-        window.cartManager.loadCart();
-    }
-    
-    const cartItems = window.cartManager.items;
-    
-    // デバッグログを追加
-    console.log('Cart items in checkout:', cartItems);
-    
-    // カートが空の場合はカートページにリダイレクト
-    if (!cartItems || cartItems.length === 0) {
-        console.log('Cart is empty, redirecting to cart.html');
-        // window.location.href = 'cart.html'; // 一時的にコメントアウト
-        return;
-    }
-    
-    let html = '';
-    
-    // 各商品をHTMLに変換
-    cartItems.forEach(item => {
-        html += `
-            <div class="checkout-item" data-product-id="${item.id}">
-                <div class="checkout-item-image" ${item.image ? `style="background-image: url('${item.image}'); background-size: cover;"` : ''}>
-                    ${!item.image ? `
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                            <polyline points="21 15 16 10 5 21"></polyline>
-                        </svg>
-                    ` : ''}
-                </div>
-                <div class="checkout-item-details">
-                    <div class="checkout-item-title">${item.name}</div>
-                    <div class="checkout-item-price">
-                        ${item.price.toFixed(2)} CAD
-                        <span class="checkout-item-quantity">x${item.quantity}</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-    
-    checkoutItemsContainer.innerHTML = html;
-}
-
-// 注文合計の更新
-function updateOrderTotals() {
-    // カートマネージャーからアイテムを取得
-    const cartItems = window.cartManager.items;
-    if (!cartItems || cartItems.length === 0) return;
-    
-    // 小計を計算
-    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    
-    // 税金（小計の10%と仮定）
-    const tax = subtotal * 0.1;
-    
-    // 送料（free shipping と仮定）
-    const shipping = 0;
-    
-    // 合計
-    const total = subtotal + tax + shipping;
-    
-    // 表示を更新
-    document.getElementById('checkout-subtotal').textContent = `${subtotal.toFixed(2)} CAD`;
-    document.getElementById('checkout-tax').textContent = `${tax.toFixed(2)} CAD`;
-    document.getElementById('checkout-shipping').textContent = shipping === 0 ? 'Free' : `${shipping.toFixed(2)} CAD`;
-    document.getElementById('checkout-total').textContent = `${total.toFixed(2)} CAD`;
-}
 
 // 支払い方法フィールドの切り替え
 function togglePaymentFields() {
@@ -379,10 +285,8 @@ function applyDiscount(discountRate) {
     document.getElementById('apply-promo').disabled = true;
 }
 
-// 注文フォームの送信処理
-function handleOrderSubmit(event) {
-    event.preventDefault();
-    
+// チェックアウトフォームの送信処理
+function handleCheckoutSubmit(event) {
     // フォームのバリデーション
     if (!validateForm()) {
         // スクロールしてエラー箇所を表示
@@ -400,8 +304,7 @@ function handleOrderSubmit(event) {
     localStorage.setItem('currentOrder', JSON.stringify(orderData));
     
     // カートをクリア
-    window.cartManager.items = [];
-    window.cartManager.saveCart();
+    window.cartManager.clearCart();
     
     // 注文確認ページへリダイレクト
     window.location.href = 'order-confirmation.html';
