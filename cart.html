@@ -343,6 +343,8 @@
             margin-top: 1.5rem;
             cursor: pointer;
             transition: background-color 0.2s;
+            text-align: center; /* テキストを中央揃えに */
+            text-decoration: none; /* リンクの下線を削除 */
         }
         
         .checkout-btn:hover {
@@ -413,14 +415,17 @@
         }
         
         .payment-icon {
-            width: 40px;
-            height: 24px;
+            width: 50px; /* 幅を広げる */
+            height: 30px; /* 高さを少し高くする */
             background-color: var(--surface-lighter);
             border-radius: 4px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            opacity: 0.7;
+            justify-content: center; /* テキストを中央に配置 */
+            opacity: 0.8; /* 少し不透明度を上げる */
+            font-size: 0.75rem; /* フォントサイズを小さく調整 */
+            font-weight: 500; /* 少し太く */
+            color: var(--text-primary); /* テキスト色を調整 */
         }
         
         .recently-viewed {
@@ -682,7 +687,7 @@
                                 <div class="payment-icon">Visa</div>
                                 <div class="payment-icon">MC</div>
                                 <div class="payment-icon">Amex</div>
-                                <div class="payment-icon">PP</div>
+                                <div class="payment-icon">PayPal</div>
                                 <div class="payment-icon">Apple</div>
                             </div>
                         </div>
@@ -740,7 +745,7 @@
                 </div>
             </section>
             
-            <!-- 空のカートの表示（通常は非表示・JavaScriptで切り替え） -->
+<!-- 空のカートの表示（通常は非表示・JavaScriptで切り替え） -->
             <section class="cart-section-empty" style="display: none;">
                 <div class="cart-container">
         <div class="cart-empty">
