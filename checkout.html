@@ -10,286 +10,256 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    /* チェックアウトページ用の洗練されたスタイル */
-<style>
-    /* 基本レイアウト */
-    .page-title {
-        margin: 2rem 0;
-        font-size: 1.8rem;
-        font-weight: 500;
-        color: white;
-    }
-    
-    .checkout-container {
-        display: grid;
-        grid-template-columns: 1fr 1.5fr;
-        gap: 2rem;
-        margin-bottom: 3rem;
-    }
-    
-    /* 注文サマリーの洗練されたデザイン */
-    .order-summary {
-        background-color: var(--surface);
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        padding: 1.5rem;
-        align-self: start;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-    }
-    
-    .order-summary h2 {
-        font-size: 1.2rem;
-        margin-bottom: 1.5rem;
-        font-weight: 500;
-        color: white;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid var(--border);
-        letter-spacing: 0.5px;
-    }
-    
-    #checkout-items {
-        margin-bottom: 1.5rem;
-    }
-    
-    .checkout-item {
-        display: flex;
-        margin-bottom: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid var(--border);
-        transition: all 0.2s ease;
-    }
-    
-    .checkout-item:last-child {
-        margin-bottom: 0;
-        padding-bottom: 0;
-        border-bottom: none;
-    }
-    
-    .checkout-item-image {
-        width: 60px;
-        height: 60px;
-        background-color: var(--surface-lighter);
-        border-radius: 6px;
-        margin-right: 1rem;
-        flex-shrink: 0;
-        border: 1px solid var(--border);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    .checkout-item-image svg {
-        width: 30px;
-        height: 30px;
-        opacity: 0.8;
-    }
-    
-    .checkout-item-details {
-        flex-grow: 1;
-        min-width: 0;
-    }
-    
-    .checkout-item-title {
-        font-size: 0.95rem;
-        font-weight: 500;
-        margin-bottom: 0.25rem;
-        color: white;
-    }
-    
-    .checkout-item-meta {
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-        margin-bottom: 0.25rem;
-    }
-    
-    .checkout-item-price {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.9rem;
-    }
-    
-    .checkout-item-price .price {
-        font-weight: 500;
-        color: white;
-    }
-    
-    /* 注文合計部分のスタイル */
-    .order-totals {
-        margin-top: 1.5rem;
-        padding: 1rem;
-        border-top: 1px solid var(--border);
-        background-color: rgba(0, 0, 0, 0.1);
-        border-radius: 6px;
-    }
-    
-    .order-subtotal, .order-shipping, .order-tax {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.75rem;
-        font-size: 0.95rem;
-        color: var(--text-secondary);
-    }
-    
-    .order-total {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--border);
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: white;
-    }
-    
-    /* チェックアウトフォームの洗練されたスタイル */
-    .checkout-form {
-        background-color: var(--surface);
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-    
-    .checkout-form h2 {
-        font-size: 1.2rem;
-        margin-bottom: 1.5rem;
-        font-weight: 500;
-        color: white;
-        letter-spacing: 0.5px;
-    }
-    
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-    
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-    
-    label {
-        display: block;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-        color: var(--text-secondary);
-        font-weight: 500;
-        letter-spacing: 0.3px;
-    }
-    
-    input, select, textarea {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background-color: var(--surface-lighter);
-        color: var(--text-primary);
-        font-family: 'Inter', sans-serif;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-    }
-    
-    input:focus, select:focus, textarea:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 2px rgba(187, 0, 0, 0.2);
-    }
-    
-    input:hover, select:hover, textarea:hover {
-        border-color: rgba(187, 0, 0, 0.4);
-    }
-    
-    select {
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 0.75rem center;
-        background-size: 16px;
-        padding-right: 2.5rem;
-    }
-    
-    .payment-notice {
-        margin-bottom: 1.5rem;
-        padding: 1rem;
-        background-color: rgba(255, 207, 51, 0.1);
-        border: 1px solid rgba(255, 207, 51, 0.3);
-        border-radius: 6px;
-        color: #FFCF33;
-        font-size: 0.9rem;
-    }
-    
-    .payment-options {
-        margin-bottom: 2rem;
-    }
-    
-    .payment-option {
-        display: flex;
-        align-items: center;
-        margin-bottom: 0.75rem;
-    }
-    
-    .payment-option input[type="radio"] {
-        width: auto;
-        margin-right: 0.75rem;
-        accent-color: var(--primary);
-    }
-    
-    .payment-option label {
-        margin-bottom: 0;
-        font-size: 0.95rem;
-        color: var(--text-primary);
-    }
-    
-    .btn-checkout {
-        display: block;
-        width: 100%;
-        padding: 1rem 0;
-        background-color: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 1rem;
-        margin-top: 1.5rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 6px rgba(187, 0, 0, 0.3);
-    }
-    
-    .btn-checkout:hover {
-        background-color: var(--primary-hover);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(187, 0, 0, 0.4);
-    }
-    
-    .btn-checkout:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 4px rgba(187, 0, 0, 0.3);
-    }
-    
-    /* モバイル対応 */
-    @media (max-width: 992px) {
-        .checkout-container {
-            grid-template-columns: 1fr;
+    <style>
+        /* チェックアウトページ用スタイル */
+        .page-title {
+            margin: 2rem 0;
+            font-size: 1.8rem;
+            font-weight: 500;
         }
         
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        /* 注文サマリー部分のスタイル */
         .order-summary {
+            background-color: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            align-self: start;
+        }
+        
+        .order-summary h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            color: white;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        #checkout-items {
+            margin-bottom: 1.5rem;
+        }
+        
+        .checkout-item {
+            display: flex;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .checkout-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .checkout-item-image {
+            width: 60px;
+            height: 60px;
+            background-color: var(--surface-lighter);
+            border-radius: 4px;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .checkout-item-image svg {
+            width: 30px;
+            height: 30px;
+            opacity: 0.8;
+        }
+        
+        .checkout-item-details {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .checkout-item-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: white;
+        }
+        
+        .checkout-item-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .checkout-item-price {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+        
+        .checkout-item-price .price {
+            font-weight: 500;
+        }
+        
+        /* 注文合計部分のスタイル */
+        .order-totals {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .order-subtotal, .order-shipping, .order-tax {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: white;
+        }
+        
+        /* チェックアウトフォームのスタイル */
+        .checkout-form {
+            background-color: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+        
+        .checkout-form h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background-color: var(--surface-lighter);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--focus-ring);
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px;
+            padding-right: 2.5rem;
+        }
+        
+        .payment-notice {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(255, 207, 51, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: #FFCF33;
+            font-size: 0.9rem;
+        }
+        
+        .payment-options {
             margin-bottom: 2rem;
         }
-    }
-    
-    @media (max-width: 768px) {
-        .form-row {
-            grid-template-columns: 1fr;
-            gap: 0;
+        
+        .payment-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
         }
-    }
-</style>
+        
+        .payment-option input[type="radio"] {
+            width: auto;
+            margin-right: 0.75rem;
+        }
+        
+        .payment-option label {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+        
+        .btn-checkout {
+            display: block;
+            width: 100%;
+            padding: 0.9rem 0;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-align: center;
+        }
+        
+        .btn-checkout:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        /* モバイル対応 */
+        @media (max-width: 992px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-summary {
+                margin-bottom: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
