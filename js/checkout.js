@@ -40,16 +40,27 @@ function displayCheckoutItems() {
         const itemTotal = item.price * item.quantity;
         subtotal += itemTotal;
         
+        // 商品名が長い場合にはタイトル属性を使用して、ホバー時に完全な名前を表示できるようにする
+        const itemName = item.name || 'Unknown Item';
+        
         html += `
             <div class="checkout-item">
                 <div class="checkout-item-image">
-                    ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<div class="placeholder-image"></div>'}
+                    ${item.image ? `<img src="${item.image}" alt="${itemName}">` : `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01M17.32 5H6.68a4 4 0 00-3.978 3.59c-.006.052-.01.101-.01.15v6.52c0 1.66 1.34 3 3 3h14.64c1.66 0 3-1.34 3-3v-6.52c0-.049-.004-.098-.01-.15A4 4 0 0017.32 5z"></path>
+                    </svg>
+                    `}
                 </div>
                 <div class="checkout-item-details">
-                    <div class="checkout-item-title">${item.name}</div>
+                    <div class="checkout-item-title" title="${itemName}">${itemName}</div>
+                    <div class="checkout-item-meta">
+                        ${item.condition ? item.condition : ''} 
+                        ${item.platform ? ' | ' + item.platform : ''}
+                    </div>
                     <div class="checkout-item-price">
-                        ${item.price.toFixed(2)} CAD
-                        <span class="checkout-item-quantity">x${item.quantity}</span>
+                        <span>Qty: ${item.quantity}</span>
+                        <span class="price">${item.price.toFixed(2)} CAD</span>
                     </div>
                 </div>
             </div>
