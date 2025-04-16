@@ -9,6 +9,63 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* チェックアウトページ固有のスタイル */
+        .page-title {
+            margin: 2rem 0;
+            font-size: 1.8rem;
+            font-weight: 500;
+        }
+        
+        /* エラーメッセージスタイル */
+        .error-message {
+            color: #f44336;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            min-height: 1.25rem;
+        }
+        
+        input.invalid, select.invalid {
+            border-color: #f44336;
+        }
+        
+        input.valid, select.valid {
+            border-color: #4caf50;
+        }
+        
+        /* 支払い方法アイコンのスタイル */
+        .payment-methods {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .payment-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .payment-icons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .payment-icon {
+            width: 50px;
+            height: 30px;
+            background-color: var(--surface-lighter);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+    </style>
 </head>
 <body>
     <!-- ヘッダー -->
@@ -55,7 +112,7 @@
             
             <section class="checkout-section">
                 <div class="checkout-container">
-                    <!-- 注文サマリー - 修正したHTML構造 -->
+                    <!-- 注文サマリー -->
                     <div class="cart-order-summary">
                         <h2 class="summary-title">Order Summary</h2>
                         
