@@ -233,9 +233,37 @@
         }
         
         .checkout-form h2 {
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
             font-weight: 500;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        /* フォーム改善のためのスタイル */
+        .form-row-compact {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .form-group-wide {
+            grid-column: span 2;
+        }
+        
+        .checkout-form label {
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .checkout-form input, 
+        .checkout-form select {
+            padding: 0.6rem 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
         }
         
         .checkout-btn {
@@ -267,6 +295,24 @@
             
             .cart-order-summary {
                 margin-bottom: 2rem;
+            }
+            
+            .form-row-compact {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .form-group-wide {
+                grid-column: span 2;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .form-row-compact {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group-wide {
+                grid-column: span 1;
             }
         }
     </style>
@@ -383,7 +429,7 @@
                                     <div class="error-message" id="email-error"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="phone">Phone Number</label>
+                                    <label for="phone">Phone</label>
                                     <input type="tel" id="phone" name="phone" required>
                                     <div class="error-message" id="phone-error"></div>
                                 </div>
@@ -395,32 +441,31 @@
                                 <div class="error-message" id="address-error"></div>
                             </div>
                             
-                            <div class="form-row">
+                            <div class="form-row-compact">
                                 <div class="form-group">
                                     <label for="city">City</label>
                                     <input type="text" id="city" name="city" required>
                                     <div class="error-message" id="city-error"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="postal-code">Postal/ZIP Code</label>
+                                    <label for="postal-code">Postal Code</label>
                                     <input type="text" id="postal-code" name="postal-code" required>
                                     <div class="error-message" id="postal-error"></div>
                                 </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="country">Country</label>
-                                <select id="country" name="country" required>
-                                    <option value="">Select Country</option>
-                                    <option value="CA">Canada</option>
-                                    <option value="US">United States</option>
-                                    <option value="JP">Japan</option>
-                                    <option value="GB">United Kingdom</option>
-                                    <option value="AU">Australia</option>
-                                    <option value="DE">Germany</option>
-                                    <option value="FR">France</option>
-                                </select>
-                                <div class="error-message" id="country-error"></div>
+                                <div class="form-group">
+                                    <label for="country">Country</label>
+                                    <select id="country" name="country" required>
+                                        <option value="">Select</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="US">United States</option>
+                                        <option value="JP">Japan</option>
+                                        <option value="GB">United Kingdom</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="FR">France</option>
+                                    </select>
+                                    <div class="error-message" id="country-error"></div>
+                                </div>
                             </div>
                             
                             <div class="form-group checkbox-group">
