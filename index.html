@@ -3,322 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - PlayPortJP</title>
-    <meta name="description" content="Complete your purchase at PlayPortJP - Premium Japanese games, books, music, and collectibles.">
+    <title>PlayPortJP - Japanese Treasures</title>
+    <meta name="description" content="Premium Japanese games, books, music, and collectibles delivered worldwide.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        /* チェックアウトページ固有のスタイル */
-        .page-title {
-            margin: 2rem 0;
-            font-size: 1.8rem;
-            font-weight: 500;
-        }
-        
-        /* エラーメッセージスタイル */
-        .error-message {
-            color: #f44336;
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
-            min-height: 1.25rem;
-        }
-        
-        input.invalid, select.invalid {
-            border-color: #f44336;
-        }
-        
-        input.valid, select.valid {
-            border-color: #4caf50;
-        }
-        
-        /* 商品表示のスタイル調整 */
-        .checkout-items {
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-        }
-        
-        .checkout-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .checkout-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0.5rem;
-        }
-        
-        .checkout-item-image {
-            width: 60px;
-            height: 60px;
-            background-color: var(--surface-lighter);
-            margin-right: 1rem;
-            border-radius: 4px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-        
-        .checkout-item-details {
-            flex-grow: 1;
-        }
-        
-        .checkout-item-title {
-            font-size: 0.95rem;
-            font-weight: 500;
-            margin-bottom: 0.4rem;
-            color: var(--text-primary);
-        }
-        
-        .checkout-item-price {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-        }
-        
-        .checkout-item-quantity {
-            background-color: var(--surface-lighter);
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin-left: 0.5rem;
-            color: var(--text-secondary);
-        }
-        
-        /* カート注文サマリーのスタイル調整 */
-        .cart-order-summary {
-            background-color: var(--surface);
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            align-self: start;
-        }
-        
-        .summary-title {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-            color: white;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
-        
-        .summary-row.total {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: white;
-            padding-top: 1rem;
-            margin-top: 1rem;
-            border-top: 1px solid var(--border);
-        }
-        
-        .summary-label {
-            color: var(--text-secondary);
-        }
-        
-        .summary-value {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-        
-        /* プロモーションコードのスタイル */
-        .promo-code {
-            margin-top: 1.5rem;
-        }
-        
-        .promo-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .promo-input-group {
-            display: flex;
-        }
-        
-        .promo-input {
-            flex-grow: 1;
-            padding: 0.6rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 4px 0 0 4px;
-            background-color: var(--surface-lighter);
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-        
-        .promo-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--focus-ring);
-        }
-        
-        .promo-btn {
-            padding: 0.6rem 1rem;
-            background-color: var(--surface-lighter);
-            border: 1px solid var(--border);
-            border-left: none;
-            border-radius: 0 4px 4px 0;
-            color: var(--text-primary);
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .promo-btn:hover {
-            background-color: var(--card);
-        }
-        
-        /* 支払い方法アイコンのスタイル */
-        .payment-methods {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-        }
-        
-        .payment-title {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-        
-        .payment-icons {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-        
-        .payment-icon {
-            width: 50px;
-            height: 30px;
-            background-color: var(--surface-lighter);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.8;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-        
-        /* チェックアウトコンテナのスタイル調整 */
-        .checkout-container {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 2rem;
-            margin-top: 2rem;
-            margin-bottom: 3rem;
-        }
-        
-        /* フォームのスタイル調整 */
-        .checkout-form {
-            background-color: var(--surface);
-            border-radius: 8px;
-            padding: 2rem;
-            border: 1px solid var(--border);
-        }
-        
-        .checkout-form h2 {
-            font-size: 1.2rem;
-            margin-bottom: 1.2rem;
-            font-weight: 500;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        /* フォーム改善のためのスタイル */
-        .form-row-compact {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 1rem;
-        }
-        
-        .form-group-wide {
-            grid-column: span 2;
-        }
-        
-        .checkout-form label {
-            font-size: 0.85rem;
-            margin-bottom: 0.3rem;
-        }
-        
-        .checkout-form input, 
-        .checkout-form select {
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        
-        .checkout-btn {
-            display: block;
-            width: 100%;
-            padding: 0.9rem 0;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-top: 1.5rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            text-align: center;
-            text-decoration: none;
-        }
-        
-        .checkout-btn:hover {
-            background-color: var(--primary-hover);
-        }
-        
-        /* レスポンシブ対応 */
-        @media (max-width: 768px) {
-            .checkout-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .cart-order-summary {
-                margin-bottom: 2rem;
-            }
-            
-            .form-row-compact {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .form-group-wide {
-                grid-column: span 2;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .form-row-compact {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-group-wide {
-                grid-column: span 1;
-            }
-        }
-    </style>
 </head>
 <body>
-    <!-- ヘッダー -->
+    <!-- Header -->
     <header>
         <div class="container header-container">
             <div class="logo">
@@ -357,184 +50,115 @@
     </header>
 
     <main>
-        <div class="container">
-            <h1 class="page-title">Checkout</h1>
-            
-            <section class="checkout-section">
-                <div class="checkout-container">
-                    <!-- 注文サマリー -->
-                    <div class="cart-order-summary">
-                        <h2 class="summary-title">Order Summary</h2>
-                        
-                        <!-- 商品リスト -->
-                        <div id="checkout-items" class="checkout-items">
-                            <!-- チェックアウト商品がここに表示されます -->
-                        </div>
-                        
-                        <!-- 合計金額 -->
-                        <div class="summary-row">
-                            <span class="summary-label">Subtotal</span>
-                            <span class="summary-value" id="checkout-subtotal">0.00 CAD</span>
-                        </div>
-                        <div class="summary-row">
-                            <span class="summary-label">Shipping</span>
-                            <span class="summary-value" id="checkout-shipping">Free</span>
-                        </div>
-                        <div class="summary-row">
-                            <span class="summary-label">Estimated Tax</span>
-                            <span class="summary-value" id="checkout-tax">0.00 CAD</span>
-                        </div>
-                        <div class="summary-row total">
-                            <span class="summary-label">Total</span>
-                            <span class="summary-value" id="checkout-total">0.00 CAD</span>
-                        </div>
-                        
-                        <!-- プロモーションコード -->
-                        <div class="promo-code">
-                            <div class="promo-label">Have a promo code?</div>
-                            <div class="promo-input-group">
-                                <input type="text" class="promo-input" placeholder="Enter code" id="promo-code-input">
-                                <button class="promo-btn" id="apply-promo">Apply</button>
-                            </div>
-                        </div>
-                        
-                        <!-- 支払い方法アイコン -->
-                        <div class="payment-methods">
-                            <div class="payment-title">Accepted Payment Methods</div>
-                            <div class="payment-icons">
-                                <div class="payment-icon">Visa</div>
-                                <div class="payment-icon">MC</div>
-                                <div class="payment-icon">Amex</div>
-                                <div class="payment-icon">PayPal</div>
-                                <div class="payment-icon">Apple</div>
-                            </div>
+        <section id="categories" class="categories">
+            <div class="container">
+                <h2>Browse by Category</h2>
+                <div class="category-grid">
+                    <a href="category.html?cat=games" class="category-card" data-category="games">
+                        <div class="category-image"></div>
+                        <h3>Games</h3>
+                    </a>
+                    <a href="category.html?cat=books" class="category-card" data-category="books">
+                        <div class="category-image"></div>
+                        <h3>Books</h3>
+                    </a>
+                    <a href="category.html?cat=music" class="category-card" data-category="music">
+                        <div class="category-image"></div>
+                        <h3>Music</h3>
+                    </a>
+                    <a href="category.html?cat=collectibles" class="category-card" data-category="collectibles">
+                        <div class="category-image"></div>
+                        <h3>Collectibles</h3>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="featured" class="featured-products">
+            <div class="container">
+                <h2>Featured Products</h2>
+                <div class="product-grid">
+                    <!-- Product Card 1 -->
+                    <div class="product-card" data-product-id="001" data-product-price="69.99" data-product-image="images/products/gamecube-controller.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>GameCube Controller (Original)</h3>
+                            <p class="product-condition">Excellent condition</p>
+                            <p class="product-price">69.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
                         </div>
                     </div>
                     
-                    <!-- チェックアウトフォーム -->
-                    <div class="checkout-form">
-                        <form id="order-form">
-                            <h2>Shipping Information</h2>
-                            
-                            <div class="form-group">
-                                <label for="full-name">Full Name</label>
-                                <input type="text" id="full-name" name="full-name" required>
-                                <div class="error-message" id="name-error"></div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="email">Email Address</label>
-                                    <input type="email" id="email" name="email" required>
-                                    <div class="error-message" id="email-error"></div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="phone">Phone</label>
-                                    <input type="tel" id="phone" name="phone" required>
-                                    <div class="error-message" id="phone-error"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="address">Street Address</label>
-                                <input type="text" id="address" name="address" required>
-                                <div class="error-message" id="address-error"></div>
-                            </div>
-                            
-                            <div class="form-row-compact">
-                                <div class="form-group">
-                                    <label for="city">City</label>
-                                    <input type="text" id="city" name="city" required>
-                                    <div class="error-message" id="city-error"></div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="postal-code">Postal Code</label>
-                                    <input type="text" id="postal-code" name="postal-code" required>
-                                    <div class="error-message" id="postal-error"></div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="country">Country</label>
-                                    <select id="country" name="country" required>
-                                        <option value="">Select</option>
-                                        <option value="CA">Canada</option>
-                                        <option value="US">United States</option>
-                                        <option value="JP">Japan</option>
-                                        <option value="GB">United Kingdom</option>
-                                        <option value="AU">Australia</option>
-                                        <option value="DE">Germany</option>
-                                        <option value="FR">France</option>
-                                    </select>
-                                    <div class="error-message" id="country-error"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group checkbox-group">
-                                <input type="checkbox" id="save-info" name="save-info">
-                                <label for="save-info">Save this information for next time</label>
-                            </div>
-                            
-                            <h2>Payment Method</h2>
-                            
-                            <div class="payment-notice">
-                                All transactions are secure and encrypted. Credit card information is never stored on our servers.
-                            </div>
-                            
-                            <div class="payment-options">
-                                <div class="payment-option">
-                                    <input type="radio" id="credit-card" name="payment-method" value="credit" checked>
-                                    <label for="credit-card">Credit / Debit Card</label>
-                                </div>
-                                
-                                <div class="payment-option">
-                                    <input type="radio" id="paypal" name="payment-method" value="paypal">
-                                    <label for="paypal">PayPal</label>
-                                </div>
-                            </div>
-                            
-                            <!-- クレジットカード情報フィールド -->
-                            <div id="credit-card-fields">
-                                <div class="form-group">
-                                    <label for="card-number">Card Number</label>
-                                    <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456">
-                                    <div class="error-message" id="card-number-error"></div>
-                                </div>
-                                
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="expiry-date">Expiry Date</label>
-                                        <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/YY">
-                                        <div class="error-message" id="expiry-error"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="cvv">CVV</label>
-                                        <input type="text" id="cvv" name="cvv" placeholder="123">
-                                        <div class="error-message" id="cvv-error"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- PayPalフィールド (通常は非表示) -->
-                            <div id="paypal-fields" style="display: none;">
-                                <div class="form-group">
-                                    <p>You will be redirected to PayPal to complete your payment.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group checkbox-group">
-                                <input type="checkbox" id="terms" name="terms" required>
-                                <label for="terms">I agree to the <a href="terms.html">Terms and Conditions</a> and <a href="privacy.html">Privacy Policy</a></label>
-                                <div class="error-message" id="terms-error"></div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-checkout">Complete Order</button>
-                        </form>
+                    <!-- Product Card 2 -->
+                    <div class="product-card" data-product-id="002" data-product-price="119.99" data-product-image="images/products/snes-classic.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>Super Nintendo Classic Set</h3>
+                            <p class="product-condition">New</p>
+                            <p class="product-price">119.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 3 -->
+                    <div class="product-card" data-product-id="003" data-product-price="89.99" data-product-image="images/products/zelda-oot.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>Zelda: Ocarina of Time (N64)</h3>
+                            <p class="product-condition">Good condition</p>
+                            <p class="product-price">89.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 4 -->
+                    <div class="product-card" data-product-id="004" data-product-price="79.99" data-product-image="images/products/gundam-model.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>Gundam RX-78 Model Kit</h3>
+                            <p class="product-condition">New</p>
+                            <p class="product-price">79.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 5 -->
+                    <div class="product-card" data-product-id="005" data-product-price="99.99" data-product-image="images/products/jp-rock-collection.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>Japanese Rock Collection (5 CDs)</h3>
+                            <p class="product-condition">Mint condition</p>
+                            <p class="product-price">99.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Card 6 -->
+                    <div class="product-card" data-product-id="006" data-product-price="149.99" data-product-image="images/products/pokemon-jp.jpg">
+                        <div class="product-image"></div>
+                        <div class="product-details">
+                            <h3>Pokémon Red/Green Japanese Edition</h3>
+                            <p class="product-condition">Excellent condition</p>
+                            <p class="product-price">149.99 CAD</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="container">
+                <div class="about-content">
+                    <h2>About PlayPortJP</h2>
+                    <p>We specialize in bringing authentic Japanese gaming treasures and collectibles to enthusiasts worldwide. Our journey began with GameCube controllers and has expanded to a curated selection of games, books, music, and collectible items.</p>
+                    <p>Every item is carefully selected for quality and authenticity.</p>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- フッター -->
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -570,9 +194,9 @@
             </div>
         </div>
     </footer>
-
-    <!-- JavaScriptファイルの読み込み -->
+    
+    <!-- JavaScript file loading -->
     <script src="js/common.js"></script>
-    <script src="js/checkout.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>
