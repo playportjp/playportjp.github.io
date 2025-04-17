@@ -2,14 +2,6 @@
 function handleCheckoutSubmit(event) {
     console.log('Handling checkout submission...');
     
-    // プロセス中の表示を追加
-    const submitButton = document.querySelector('button[type="submit"]');
-    if (submitButton) {
-        const originalText = submitButton.textContent;
-        submitButton.textContent = 'Processing...';
-        submitButton.disabled = true;
-    }
-    
     // フォームのバリデーション
     if (!validateForm()) {
         console.log('Form validation failed');
@@ -17,12 +9,6 @@ function handleCheckoutSubmit(event) {
         const firstError = document.querySelector('.error-message:not(:empty)');
         if (firstError) {
             firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        
-        // ボタンを元に戻す
-        if (submitButton) {
-            submitButton.textContent = originalText;
-            submitButton.disabled = false;
         }
         return;
     }
@@ -41,17 +27,17 @@ function handleCheckoutSubmit(event) {
         window.cartManager.clearCart();
         console.log('Cart cleared');
         
-        // 注文確認ページへリダイレクト
+        // 注文確認ページへ直接リダイレクト
         console.log('Redirecting to order-confirmation.html');
         window.location.href = 'order-confirmation.html';
     } catch (error) {
         console.error('Error during checkout process:', error);
-        alert('An error occurred while processing your order. Please try again.');
-        
-        // ボタンを元に戻す
-        if (submitButton) {
-            submitButton.textContent = originalText;
-            submitButton.disabled = false;
+        // エラーメッセージを表示する要素があれば、そこにエラーを表示
+        const errorContainer = document.getElementById('checkout-error');
+        if (errorContainer) {
+            errorContainer.textContent = 'An error occurred while processing your order. Please try again.';
+            errorContainer.style.display = 'block';
+            errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
 }
