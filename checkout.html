@@ -12,17 +12,17 @@
     <style>
         /* チェックアウトページ固有のスタイル */
         .page-title {
-            margin: 2rem 0;
-            font-size: 1.8rem;
+            margin: 1.5rem 0;
+            font-size: t.5rem;
             font-weight: 500;
         }
         
         /* エラーメッセージスタイル */
         .error-message {
             color: #f44336;
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
-            min-height: 1.25rem;
+            font-size: 0.75rem;
+            margin-top: 0.1rem;
+            min-height: 1rem;
         }
         
         input.invalid, select.invalid {
@@ -36,27 +36,28 @@
         /* 商品表示のスタイル調整 */
         .checkout-items {
             border-bottom: 1px solid var(--border);
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
         }
         
         .checkout-item {
             display: flex;
             align-items: center;
-            padding: 0.75rem 0;
+            padding: 0.5rem 0;
             border-bottom: 1px solid var(--border);
         }
         
         .checkout-item:last-child {
             border-bottom: none;
-            margin-bottom: 0.5rem;
         }
         
         .checkout-item-image {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background-color: var(--surface-lighter);
-            margin-right: 1rem;
+            margin-right: 0.75rem;
             border-radius: 4px;
             flex-shrink: 0;
             display: flex;
@@ -71,14 +72,14 @@
         }
         
         .checkout-item-title {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.25rem;
             color: var(--text-primary);
         }
         
         .checkout-item-price {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
             display: flex;
             align-items: center;
@@ -86,9 +87,9 @@
         
         .checkout-item-quantity {
             background-color: var(--surface-lighter);
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
             margin-left: 0.5rem;
             color: var(--text-secondary);
         }
@@ -98,32 +99,34 @@
             background-color: var(--surface);
             border-radius: 8px;
             border: 1px solid var(--border);
-            padding: 1.5rem;
+            padding: 1.25rem;
             align-self: start;
+            position: sticky;
+            top: 100px;
         }
         
         .summary-title {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
             font-weight: 500;
             color: white;
-            padding-bottom: 1rem;
+            padding-bottom: 0.75rem;
             border-bottom: 1px solid var(--border);
         }
         
         .summary-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
         }
         
         .summary-row.total {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 500;
             color: white;
-            padding-top: 1rem;
-            margin-top: 1rem;
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
             border-top: 1px solid var(--border);
         }
         
@@ -138,13 +141,13 @@
         
         /* プロモーションコードのスタイル */
         .promo-code {
-            margin-top: 1.5rem;
+            margin-top: 1rem;
         }
         
         .promo-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
         
         .promo-input-group {
@@ -153,12 +156,12 @@
         
         .promo-input {
             flex-grow: 1;
-            padding: 0.6rem 1rem;
+            padding: 0.5rem 0.75rem;
             border: 1px solid var(--border);
             border-radius: 4px 0 0 4px;
             background-color: var(--surface-lighter);
             color: var(--text-primary);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         
         .promo-input:focus {
@@ -167,7 +170,7 @@
         }
         
         .promo-btn {
-            padding: 0.6rem 1rem;
+            padding: 0.5rem 0.75rem;
             background-color: var(--surface-lighter);
             border: 1px solid var(--border);
             border-left: none;
@@ -184,33 +187,33 @@
         
         /* 支払い方法アイコンのスタイル */
         .payment-methods {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
             border-top: 1px solid var(--border);
         }
         
         .payment-title {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
         
         .payment-icons {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
             flex-wrap: wrap;
         }
         
         .payment-icon {
-            width: 50px;
-            height: 30px;
+            width: 45px;
+            height: 28px;
             background-color: var(--surface-lighter);
-            border-radius: 4px;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0.8;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 500;
             color: var(--text-secondary);
         }
@@ -218,58 +221,79 @@
         /* チェックアウトコンテナのスタイル調整 */
         .checkout-container {
             display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 2rem;
-            margin-top: 2rem;
-            margin-bottom: 3rem;
+            grid-template-columns: 350px 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
         }
         
         /* フォームのスタイル調整 */
         .checkout-form {
             background-color: var(--surface);
             border-radius: 8px;
-            padding: 2rem;
+            padding: 1.5rem;
             border: 1px solid var(--border);
         }
         
         .checkout-form h2 {
-            font-size: 1.2rem;
-            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
             font-weight: 500;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--border);
+            color: white;
         }
         
         /* フォーム改善のためのスタイル */
-        .form-row-compact {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 1rem;
-        }
-        
-        .form-group-wide {
-            grid-column: span 2;
-        }
-        
         .checkout-form label {
-            font-size: 0.85rem;
-            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
+            margin-bottom: 0.2rem;
+            display: block;
+            color: var(--text-secondary);
         }
         
         .checkout-form input, 
         .checkout-form select {
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .col-12 {
+            grid-column: span 12;
+        }
+        
+        .col-6 {
+            grid-column: span 6;
+        }
+        
+        .col-4 {
+            grid-column: span 4;
+        }
+        
+        .col-3 {
+            grid-column: span 3;
+        }
+        
+        .payment-section {
+            margin-top: 1.5rem;
         }
         
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
         
         .checkout-btn {
             display: block;
             width: 100%;
-            padding: 0.9rem 0;
+            padding: 0.75rem 0;
             background-color: var(--primary);
             color: white;
             border: none;
@@ -287,32 +311,91 @@
             background-color: var(--primary-hover);
         }
         
+        /* チェックボックス用のスタイル */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 0.25rem;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .checkbox-group label {
+            font-size: 0.85rem;
+            margin-bottom: 0;
+            color: var(--text-primary);
+        }
+        
+        /* ラジオボタン用のスタイル */
+        .radio-group {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            margin-right: 1.5rem;
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+        
+        .radio-option label {
+            font-size: 0.85rem;
+            margin-bottom: 0;
+            display: inline;
+            color: var(--text-primary);
+        }
+        
+        /* お知らせのスタイル */
+        .notice {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background-color: var(--surface-lighter);
+            border-radius: 4px;
+        }
+        
         /* レスポンシブ対応 */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .checkout-container {
                 grid-template-columns: 1fr;
             }
             
             .cart-order-summary {
-                margin-bottom: 2rem;
+                position: static;
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                gap: 0.5rem;
             }
             
-            .form-row-compact {
-                grid-template-columns: 1fr 1fr;
+            .col-6 {
+                grid-column: span 12;
             }
             
-            .form-group-wide {
-                grid-column: span 2;
+            .col-4 {
+                grid-column: span 6;
+            }
+            
+            .col-3 {
+                grid-column: span 6;
             }
         }
         
         @media (max-width: 480px) {
-            .form-row-compact {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-group-wide {
-                grid-column: span 1;
+            .col-4, .col-3 {
+                grid-column: span 12;
             }
         }
     </style>
@@ -416,43 +499,44 @@
                         <form id="order-form">
                             <h2>Shipping Information</h2>
                             
-                            <div class="form-group">
-                                <label for="full-name">Full Name</label>
-                                <input type="text" id="full-name" name="full-name" required>
-                                <div class="error-message" id="name-error"></div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
+                            <div class="form-grid">
+                                <div class="form-group col-12">
+                                    <label for="full-name">Full Name</label>
+                                    <input type="text" id="full-name" name="full-name" required>
+                                    <div class="error-message" id="name-error"></div>
+                                </div>
+                                
+                                <div class="form-group col-6">
                                     <label for="email">Email Address</label>
                                     <input type="email" id="email" name="email" required>
                                     <div class="error-message" id="email-error"></div>
                                 </div>
-                                <div class="form-group">
+                                
+                                <div class="form-group col-6">
                                     <label for="phone">Phone</label>
                                     <input type="tel" id="phone" name="phone" required>
                                     <div class="error-message" id="phone-error"></div>
                                 </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="address">Street Address</label>
-                                <input type="text" id="address" name="address" required>
-                                <div class="error-message" id="address-error"></div>
-                            </div>
-                            
-                            <div class="form-row-compact">
-                                <div class="form-group">
+                                
+                                <div class="form-group col-12">
+                                    <label for="address">Street Address</label>
+                                    <input type="text" id="address" name="address" required>
+                                    <div class="error-message" id="address-error"></div>
+                                </div>
+                                
+                                <div class="form-group col-6">
                                     <label for="city">City</label>
                                     <input type="text" id="city" name="city" required>
                                     <div class="error-message" id="city-error"></div>
                                 </div>
-                                <div class="form-group">
+                                
+                                <div class="form-group col-3">
                                     <label for="postal-code">Postal Code</label>
                                     <input type="text" id="postal-code" name="postal-code" required>
                                     <div class="error-message" id="postal-error"></div>
                                 </div>
-                                <div class="form-group">
+                                
+                                <div class="form-group col-3">
                                     <label for="country">Country</label>
                                     <select id="country" name="country" required>
                                         <option value="">Select</option>
@@ -466,67 +550,72 @@
                                     </select>
                                     <div class="error-message" id="country-error"></div>
                                 </div>
-                            </div>
-                            
-                            <div class="form-group checkbox-group">
-                                <input type="checkbox" id="save-info" name="save-info">
-                                <label for="save-info">Save this information for next time</label>
-                            </div>
-                            
-                            <h2>Payment Method</h2>
-                            
-                            <div class="payment-notice">
-                                All transactions are secure and encrypted. Credit card information is never stored on our servers.
-                            </div>
-                            
-                            <div class="payment-options">
-                                <div class="payment-option">
-                                    <input type="radio" id="credit-card" name="payment-method" value="credit" checked>
-                                    <label for="credit-card">Credit / Debit Card</label>
-                                </div>
                                 
-                                <div class="payment-option">
-                                    <input type="radio" id="paypal" name="payment-method" value="paypal">
-                                    <label for="paypal">PayPal</label>
-                                </div>
-                            </div>
-                            
-                            <!-- クレジットカード情報フィールド -->
-                            <div id="credit-card-fields">
-                                <div class="form-group">
-                                    <label for="card-number">Card Number</label>
-                                    <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456">
-                                    <div class="error-message" id="card-number-error"></div>
-                                </div>
-                                
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="expiry-date">Expiry Date</label>
-                                        <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/YY">
-                                        <div class="error-message" id="expiry-error"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="cvv">CVV</label>
-                                        <input type="text" id="cvv" name="cvv" placeholder="123">
-                                        <div class="error-message" id="cvv-error"></div>
+                                <div class="col-12">
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="save-info" name="save-info">
+                                        <label for="save-info">Save this information for next time</label>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- PayPalフィールド (通常は非表示) -->
-                            <div id="paypal-fields" style="display: none;">
-                                <div class="form-group">
-                                    <p>You will be redirected to PayPal to complete your payment.</p>
+                            <div class="payment-section">
+                                <h2>Payment Method</h2>
+                                
+                                <div class="notice">
+                                    All transactions are secure and encrypted. Credit card information is never stored on our servers.
                                 </div>
+                                
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" id="credit-card" name="payment-method" value="credit" checked>
+                                        <label for="credit-card">Credit / Debit Card</label>
+                                    </div>
+                                    
+                                    <div class="radio-option">
+                                        <input type="radio" id="paypal" name="payment-method" value="paypal">
+                                        <label for="paypal">PayPal</label>
+                                    </div>
+                                </div>
+                                
+                                <!-- クレジットカード情報フィールド -->
+                                <div id="credit-card-fields">
+                                    <div class="form-grid">
+                                        <div class="form-group col-12">
+                                            <label for="card-number">Card Number</label>
+                                            <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456">
+                                            <div class="error-message" id="card-number-error"></div>
+                                        </div>
+                                        
+                                        <div class="form-group col-6">
+                                            <label for="expiry-date">Expiry Date</label>
+                                            <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/YY">
+                                            <div class="error-message" id="expiry-error"></div>
+                                        </div>
+                                        
+                                        <div class="form-group col-6">
+                                            <label for="cvv">CVV</label>
+                                            <input type="text" id="cvv" name="cvv" placeholder="123">
+                                            <div class="error-message" id="cvv-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- PayPalフィールド (通常は非表示) -->
+                                <div id="paypal-fields" style="display: none;">
+                                    <div class="notice">
+                                        You will be redirected to PayPal to complete your payment.
+                                    </div>
+                                </div>
+                                
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="terms" name="terms" required>
+                                    <label for="terms">I agree to the <a href="terms.html">Terms and Conditions</a> and <a href="privacy.html">Privacy Policy</a></label>
+                                    <div class="error-message" id="terms-error"></div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-checkout">Complete Order</button>
                             </div>
-                            
-                            <div class="form-group checkbox-group">
-                                <input type="checkbox" id="terms" name="terms" required>
-                                <label for="terms">I agree to the <a href="terms.html">Terms and Conditions</a> and <a href="privacy.html">Privacy Policy</a></label>
-                                <div class="error-message" id="terms-error"></div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-checkout">Complete Order</button>
                         </form>
                     </div>
                 </div>
