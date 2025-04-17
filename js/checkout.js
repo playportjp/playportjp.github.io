@@ -32,14 +32,28 @@ function handleCheckoutSubmit(event) {
         window.location.href = 'order-confirmation.html';
     } catch (error) {
         console.error('Error during checkout process:', error);
-        // エラーメッセージを表示する要素があれば、そこにエラーを表示
-        const errorContainer = document.getElementById('checkout-error');
-        if (errorContainer) {
-            errorContainer.textContent = 'An error occurred while processing your order. Please try again.';
-            errorContainer.style.display = 'block';
-            errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // エラーメッセージを画面に表示
+        const errorMessage = document.createElement('div');
+        errorMessage.id = 'checkout-error';
+        errorMessage.className = 'error-message';
+        errorMessage.style.display = 'block';
+        errorMessage.style.color = 'red';
+        errorMessage.style.padding = '10px';
+        errorMessage.style.marginTop = '10px';
+        errorMessage.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+        errorMessage.style.borderRadius = '4px';
+        errorMessage.style.fontWeight = 'bold';
+        errorMessage.textContent = 'An error occurred while processing your order. Please try again.';
+        
+        // エラーメッセージをフォームの先頭に挿入
+        const form = document.getElementById('order-form');
+        if (form) {
+            form.insertBefore(errorMessage, form.firstChild);
+            errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
+}
 }
 
 // 注文データの収集
