@@ -497,6 +497,9 @@
                     <!-- チェックアウトフォーム -->
                     <div class="checkout-form">
                         <form id="order-form">
+                            <!-- エラーメッセージ表示用の要素（先頭に配置） -->
+                            <div id="checkout-error" class="error-message" style="display: none; margin-bottom: 15px; padding: 10px; background-color: rgba(244, 67, 54, 0.1); border-radius: 4px; text-align: center; font-size: 0.9rem;"></div>
+                            
                             <h2>Shipping Information</h2>
                             
                             <div class="form-grid">
@@ -614,7 +617,8 @@
                                     <div class="error-message" id="terms-error"></div>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-checkout">Complete Order</button>
+                                <!-- クラス名を checkout-btn に変更 -->
+                                <button type="submit" class="checkout-btn">Complete Order</button>
                             </div>
                         </form>
                     </div>
