@@ -382,8 +382,16 @@ function setupFiltersAndSort() {
             // クリックされたオプションをアクティブに
             this.classList.add('active');
             
-            // フィルタリングを適用（実際の実装は必要に応じて）
-            // applyFilters();
+            // フィルタリングを適用
+            if (parentGroup.querySelector('.filter-heading').textContent === 'Category') {
+                const selectedCategory = this.textContent;
+                if (selectedCategory === 'All') {
+                    loadAllProducts();
+                } else {
+                    loadProductsByCategory(selectedCategory);
+                }
+            }
+            // 他のフィルター（今後実装）
         });
     });
     
