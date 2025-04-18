@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // URLから検索クエリを取得
+    // URLからパラメータを取得
     const urlParams = new URLSearchParams(window.location.search);
     const searchQuery = urlParams.get('query');
+    const category = urlParams.get('category');
     
-    // 検索クエリがある場合、検索を実行
+    // 検索クエリまたはカテゴリがある場合、それに基づいて表示
     if (searchQuery) {
         console.log('Search query found:', searchQuery);
         // 検索クエリを表示
@@ -20,9 +21,24 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 商品を検索して表示
         searchProducts(searchQuery);
+    } else if (category) {
+        console.log('Category filter found:', category);
+        // カテゴリタイトルを表示
+        const searchInfoTitle = document.querySelector('.search-info h1');
+        if (searchInfoTitle) {
+            // カテゴリ名の最初の文字を大文字に
+            const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+            searchInfoTitle.textContent = `Browse: ${categoryName}`;
+        }
+        
+        // カテゴリフィルターを更新
+        updateCategoryFilter(category);
+        
+        // カテゴリに基づいて商品を読み込む
+        loadProductsByCategory(category);
     } else {
-        console.log('No search query found, loading all products');
-        // 検索クエリがない場合は全商品を表示
+        console.log('No search query or category found, loading all products');
+        // 検索クエリもカテゴリもない場合は全商品を表示
         loadAllProducts();
         
         // タイトルを更新
@@ -76,6 +92,80 @@ function searchProducts(query) {
                 </div>
             `;
         });
+}
+
+// カテゴリフィルターを更新
+function updateCategoryFilter(category) {
+    // カテゴリフィルターオプションを取得
+    const categoryFilters = document.querySelectorAll('.filter-group:nth-child(1) .filter-option');
+    
+    // すべてのフィルターからアクティブクラスを削除
+    categoryFilters.forEach(filter => {
+        filter.classList.remove('active');
+    });
+    
+    // 選択されたカテゴリに応じてフィルターをアクティブに
+    categoryFilters.forEach(filter => {
+        const filterText = filter.textContent.toLowerCase();
+        
+        if (filterText === category.toLowerCase() || 
+            (filterText === 'all' && category === 'all')) {
+            filter.classList.add('active');
+        }
+    });
+}
+
+// カテゴリに基づいて商品を読み込む
+function loadProductsByCategory(category) {
+    console.log('Loading products for category:', category);
+    
+    // データ取得
+    fetch('data/products.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load products');
+            }
+            return response.json();
+        })
+        .then(products => {
+            console.log(`Loaded ${products.length} total products`);
+            
+            // カテゴリに基づいて商品をフィルタリング
+            const filteredProducts = filterProductsByCategory(products, category);
+            console.log(`Found ${filteredProducts.length} products in category "${category}"`);
+            
+            // デバッグ: フィルタリングされた商品の名前をログに出力
+            if (filteredProducts.length > 0) {
+                console.log('Filtered products:', filteredProducts.map(p => p.name));
+            }
+            
+            // 検索結果数を更新
+            updateResultCount(filteredProducts.length);
+            
+            // 商品を表示
+            displaySearchResults(filteredProducts);
+        })
+        .catch(error => {
+            console.error('Error loading products by category:', error);
+            document.querySelector('.results-grid').innerHTML = `
+                <div class="error-message">
+                    <h2>カテゴリの読み込みに失敗しました</h2>
+                    <p>${error.message}</p>
+                    <a href="index.html" class="btn btn-primary">トップページに戻る</a>
+                </div>
+            `;
+        });
+}
+
+// カテゴリに基づいて商品をフィルタリング
+function filterProductsByCategory(products, category) {
+    if (category === 'all') return products;
+    
+    return products.filter(product => {
+        // カテゴリが一致する商品をフィルタリング
+        // 注意: JSON内のカテゴリ名と一致する必要があります
+        return product.category && product.category.toLowerCase() === category.toLowerCase();
+    });
 }
 
 // 全商品を読み込み
