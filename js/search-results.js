@@ -56,6 +56,16 @@ document.addEventListener('DOMContentLoaded', function() {
     setupFiltersAndSort();
 });
 
+// 現在のフィルター状態を保存するオブジェクト
+let currentFilters = {
+    category: 'All',
+    condition: 'All',
+    priceRange: 'All'
+};
+
+// すべての商品データを保存する変数
+let allProducts = [];
+
 // 商品を検索して表示
 function searchProducts(query) {
     console.log('Searching products for query:', query);
@@ -70,6 +80,7 @@ function searchProducts(query) {
         })
         .then(products => {
             console.log(`Loaded ${products.length} total products`);
+            allProducts = products; // すべての商品を保存
             
             // 検索クエリに基づいて商品をフィルタリング
             const filteredProducts = filterProductsByQuery(products, query);
@@ -140,10 +151,14 @@ function updateCategoryFilter(category) {
             filter.classList.add('active');
             foundMatch = true;
             console.log('Match found! Setting', filterText, 'as active');
-        } else if (filterText === 'All' && normalizedCategory === 'All') {
+            // フィルター状態を更新
+            currentFilters.category = filterText;
+        } else if (normalizedCategory.toLowerCase() === 'all' && filterText === 'All') {
             filter.classList.add('active');
             foundMatch = true;
             console.log('Setting All filter as active');
+            // フィルター状態を更新
+            currentFilters.category = 'All';
         }
     });
     
@@ -153,8 +168,112 @@ function updateCategoryFilter(category) {
         categoryFilters.forEach(filter => {
             if (filter.textContent.trim() === 'All') {
                 filter.classList.add('active');
+                // フィルター状態を更新
+                currentFilters.category = 'All';
             }
         });
+    }
+}
+
+// コンディションフィルターを更新
+function updateConditionFilter(condition) {
+    console.log('Updating condition filter for:', condition);
+    
+    // コンディションフィルターオプションを取得
+    const filterGroups = document.querySelectorAll('.filter-group');
+    let conditionFilters;
+    
+    // コンディションフィルターグループを探す
+    filterGroups.forEach(group => {
+        const heading = group.querySelector('.filter-heading');
+        if (heading && heading.textContent.trim() === 'Condition') {
+            conditionFilters = group.querySelectorAll('.filter-option');
+            console.log('Found condition filters:', conditionFilters.length);
+        }
+    });
+    
+    if (!conditionFilters || conditionFilters.length === 0) {
+        console.error('Condition filters not found');
+        return;
+    }
+    
+    // すべてのフィルターからアクティブクラスを削除
+    conditionFilters.forEach(filter => {
+        filter.classList.remove('active');
+    });
+    
+    // 選択されたコンディションに応じてフィルターをアクティブに
+    let foundMatch = false;
+    
+    conditionFilters.forEach(filter => {
+        const filterText = filter.textContent.trim();
+        console.log('Checking filter:', filterText, 'against condition:', condition);
+        
+        if (filterText === condition) {
+            filter.classList.add('active');
+            foundMatch = true;
+            console.log('Match found! Setting', filterText, 'as active');
+            // フィルター状態を更新
+            currentFilters.condition = filterText;
+        }
+    });
+    
+    // マッチするフィルターが見つからなかった場合、状態をAllに設定
+    if (!foundMatch) {
+        console.log('No matching filter found, defaulting to All');
+        // フィルター状態を更新
+        currentFilters.condition = 'All';
+    }
+}
+
+// 価格フィルターを更新
+function updatePriceFilter(priceRange) {
+    console.log('Updating price filter for:', priceRange);
+    
+    // 価格フィルターオプションを取得
+    const filterGroups = document.querySelectorAll('.filter-group');
+    let priceFilters;
+    
+    // 価格フィルターグループを探す
+    filterGroups.forEach(group => {
+        const heading = group.querySelector('.filter-heading');
+        if (heading && heading.textContent.trim() === 'Price Range') {
+            priceFilters = group.querySelectorAll('.filter-option');
+            console.log('Found price filters:', priceFilters.length);
+        }
+    });
+    
+    if (!priceFilters || priceFilters.length === 0) {
+        console.error('Price filters not found');
+        return;
+    }
+    
+    // すべてのフィルターからアクティブクラスを削除
+    priceFilters.forEach(filter => {
+        filter.classList.remove('active');
+    });
+    
+    // 選択された価格範囲に応じてフィルターをアクティブに
+    let foundMatch = false;
+    
+    priceFilters.forEach(filter => {
+        const filterText = filter.textContent.trim();
+        console.log('Checking filter:', filterText, 'against price range:', priceRange);
+        
+        if (filterText === priceRange) {
+            filter.classList.add('active');
+            foundMatch = true;
+            console.log('Match found! Setting', filterText, 'as active');
+            // フィルター状態を更新
+            currentFilters.priceRange = filterText;
+        }
+    });
+    
+    // マッチするフィルターが見つからなかった場合、状態をAllに設定
+    if (!foundMatch) {
+        console.log('No matching filter found, defaulting to All');
+        // フィルター状態を更新
+        currentFilters.priceRange = 'All';
     }
 }
 
@@ -172,6 +291,7 @@ function loadProductsByCategory(category) {
         })
         .then(products => {
             console.log(`Loaded ${products.length} total products`);
+            allProducts = products; // すべての商品を保存
             
             // カテゴリに基づいて商品をフィルタリング
             const filteredProducts = filterProductsByCategory(products, category);
@@ -213,6 +333,38 @@ function filterProductsByCategory(products, category) {
     });
 }
 
+// 商品の状態（New/Used）に基づいて商品をフィルタリング
+function filterProductsByCondition(products, condition) {
+    if (condition === 'All') return products;
+    
+    return products.filter(product => {
+        if (condition === 'NEW') {
+            return product.new === true;
+        } else if (condition === 'USED') {
+            return product.new === false;
+        }
+        return true;
+    });
+}
+
+// 価格範囲に基づいて商品をフィルタリング
+function filterProductsByPrice(products, priceRange) {
+    if (priceRange === 'All') return products;
+    
+    return products.filter(product => {
+        const price = product.price;
+        
+        if (priceRange === 'Under 70 CAD') {
+            return price < 70;
+        } else if (priceRange === '70-100 CAD') {
+            return price >= 70 && price <= 100;
+        } else if (priceRange === '100+ CAD') {
+            return price > 100;
+        }
+        return true;
+    });
+}
+
 // 全商品を読み込み
 function loadAllProducts() {
     console.log('Loading all products for search results');
@@ -227,6 +379,7 @@ function loadAllProducts() {
         })
         .then(products => {
             console.log(`Loaded ${products.length} products`);
+            allProducts = products; // すべての商品を保存
             
             // 検索結果数を更新
             updateResultCount(products.length);
@@ -258,6 +411,41 @@ function filterProductsByQuery(products, query) {
         // いずれかの検索語が商品のテキストに含まれているかチェック
         return searchTerms.some(term => searchableText.includes(term));
     });
+}
+
+// 現在のフィルターに基づいて商品をフィルタリング
+function applyAllFilters() {
+    console.log('Applying all filters:', currentFilters);
+    
+    if (allProducts.length === 0) {
+        console.log('No products to filter');
+        return;
+    }
+    
+    let filteredProducts = [...allProducts];
+    
+    // カテゴリフィルターを適用
+    if (currentFilters.category !== 'All') {
+        filteredProducts = filterProductsByCategory(filteredProducts, currentFilters.category);
+    }
+    
+    // 商品状態フィルターを適用
+    if (currentFilters.condition !== 'All') {
+        filteredProducts = filterProductsByCondition(filteredProducts, currentFilters.condition);
+    }
+    
+    // 価格範囲フィルターを適用
+    if (currentFilters.priceRange !== 'All') {
+        filteredProducts = filterProductsByPrice(filteredProducts, currentFilters.priceRange);
+    }
+    
+    console.log(`After filtering: ${filteredProducts.length} products remain`);
+    
+    // 検索結果数を更新
+    updateResultCount(filteredProducts.length);
+    
+    // 商品を表示
+    displaySearchResults(filteredProducts);
 }
 
 // 検索結果数を更新
@@ -428,27 +616,34 @@ function setupFiltersAndSort() {
             this.classList.add('active');
             
             // フィルタリングを適用
-            if (parentGroup.querySelector('.filter-heading').textContent.trim() === 'Category') {
-                const selectedCategory = this.textContent.trim();
-                console.log('Category filter clicked:', selectedCategory);
+            const filterType = parentGroup.querySelector('.filter-heading').textContent.trim();
+            const filterValue = this.textContent.trim();
+            console.log(`Filter clicked: ${filterType} = ${filterValue}`);
+            
+            // フィルタータイプに応じて処理
+            if (filterType === 'Category') {
+                console.log('Category filter clicked:', filterValue);
+                currentFilters.category = filterValue;
                 
-                if (selectedCategory === 'All') {
-                    loadAllProducts();
-                } else {
-                    loadProductsByCategory(selectedCategory);
-                }
-                
-                // ページのタイトルを更新
+                // ページのタイトルを更新（カテゴリフィルターの場合のみ）
                 const searchInfoTitle = document.querySelector('.search-info h1');
                 if (searchInfoTitle) {
-                    if (selectedCategory === 'All') {
+                    if (filterValue === 'All') {
                         searchInfoTitle.textContent = 'All Products';
                     } else {
-                        searchInfoTitle.textContent = `Browse: ${selectedCategory}`;
+                        searchInfoTitle.textContent = `Browse: ${filterValue}`;
                     }
                 }
+            } else if (filterType === 'Condition') {
+                console.log('Condition filter clicked:', filterValue);
+                currentFilters.condition = filterValue;
+            } else if (filterType === 'Price Range') {
+                console.log('Price range filter clicked:', filterValue);
+                currentFilters.priceRange = filterValue;
             }
-            // 他のフィルター（今後実装）
+            
+            // すべてのフィルターを適用
+            applyAllFilters();
         });
     });
     
@@ -456,8 +651,8 @@ function setupFiltersAndSort() {
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
         sortSelect.addEventListener('change', function() {
-            // ソートを適用（実際の実装は必要に応じて）
-            // applySort(this.value);
+            // ソートを適用
+            applySorting(this.value);
         });
     }
     
@@ -475,4 +670,61 @@ function setupFiltersAndSort() {
             // changePage(this.textContent);
         });
     });
+}
+
+// ソート機能を適用
+function applySorting(sortOption) {
+    console.log('Applying sort:', sortOption);
+    
+    if (allProducts.length === 0) {
+        console.log('No products to sort');
+        return;
+    }
+    
+    // 現在のフィルター状態を取得して、再フィルタリング
+    let filteredProducts = [...allProducts];
+    
+    // カテゴリフィルターを適用
+    if (currentFilters.category !== 'All') {
+        filteredProducts = filterProductsByCategory(filteredProducts, currentFilters.category);
+    }
+    
+    // 商品状態フィルターを適用
+    if (currentFilters.condition !== 'All') {
+        filteredProducts = filterProductsByCondition(filteredProducts, currentFilters.condition);
+    }
+    
+    // 価格範囲フィルターを適用
+    if (currentFilters.priceRange !== 'All') {
+        filteredProducts = filterProductsByPrice(filteredProducts, currentFilters.priceRange);
+    }
+    
+    // ソートオプションに基づいてソート
+    switch (sortOption) {
+        case 'Price: Low to High':
+            filteredProducts.sort((a, b) => a.price - b.price);
+            break;
+        case 'Price: High to Low':
+            filteredProducts.sort((a, b) => b.price - a.price);
+            break;
+        case 'Newest Arrivals':
+            // 日付が含まれていると仮定（実際のデータ構造によって変更が必要）
+            if (filteredProducts[0].date) {
+                filteredProducts.sort((a, b) => new Date(b.date) - new Date(a.date));
+            }
+            break;
+        case 'Most Popular':
+            // 人気度が含まれていると仮定（実際のデータ構造によって変更が必要）
+            if (filteredProducts[0].popularity) {
+                filteredProducts.sort((a, b) => b.popularity - a.popularity);
+            }
+            break;
+        // デフォルトは関連度（何もしない）
+        case 'Relevance':
+        default:
+            break;
+    }
+    
+    // 商品を表示
+    displaySearchResults(filteredProducts);
 }
