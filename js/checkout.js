@@ -8,8 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 注文フォーム要素の取得
     const orderForm = document.getElementById('order-form');
     
-    // フォーム送信イベントリスナーの追加
+    // フォームにnovalidate属性を追加してブラウザのデフォルトバリデーションを無効化
     if (orderForm) {
+        orderForm.setAttribute('novalidate', 'novalidate');
         orderForm.addEventListener('submit', handleCheckoutSubmit);
     }
     
@@ -241,10 +242,12 @@ function initFormValidation() {
     const inputs = document.querySelectorAll('input, select');
     
     inputs.forEach(input => {
+        // フォーカスを失った時にバリデーション
         input.addEventListener('blur', function() {
             validateInput(this);
         });
         
+        // 入力中にエラーが表示されている場合はリアルタイムでバリデーション
         input.addEventListener('input', function() {
             if (this.classList.contains('invalid')) {
                 validateInput(this);
