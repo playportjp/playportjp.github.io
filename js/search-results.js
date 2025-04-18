@@ -650,6 +650,9 @@ function displaySearchResults(products, page = 1) {
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
         productCard.setAttribute('data-product-id', product.id);
+        productCard.setAttribute('data-product-name', product.name);
+        productCard.setAttribute('data-product-price', product.price);
+        productCard.setAttribute('data-product-image', product.image || '');
         
         // 商品カードの内容を設定 - 配送時間と商品説明を削除
         productCard.innerHTML = `
@@ -724,160 +727,9 @@ function displaySearchResults(products, page = 1) {
                     setTimeout(() => {
                         this.textContent = 'Add to Cart';
                     }, 1000);
-                }
-            });
-        }
-        
-        // 商品カードをグリッドに追加
-        resultsGrid.appendChild(productCard);
-    }
-}
-// 商品カードのクリックイベントを設定
-function setupProductCardClicks() {
-    // Googleボタンのクリックが商品カードのクリックとして伝播しないようにする
-    document.querySelectorAll('.search-image-link').forEach(link => {
-        link.addEventListener('click', function(event) {
-            event.stopPropagation();
-        });
-    });
-    
-    // Add to Cartボタンのクリックが商品カードのクリックとして伝播しないようにする
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.stopPropagation();
-            event.preventDefault();
-        });
-    });
-}
-
-// カートに追加ボタンの設定
-function setupAddToCartButtons(products) {
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
-    
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
-            // リンクのナビゲーションを防止
-            event.preventDefault();
-            event.stopPropagation();
-            
-            const productId = this.getAttribute('data-id');
-            const product = products.find(p => p.id === productId) || 
-                            allProducts.find(p => p.id === productId);
-            
-            if (product && window.cartManager) {
-                window.cartManager.addItem(
-                    product.id, 
-                    product.name, 
-                    product.price, 
-                    product.image,
-                    1
-                );
-                
-                // クリック時のフィードバック
-                this.textContent = 'Added!';
-                setTimeout(() => {
-                    this.textContent = 'Add to Cart';
-                }, 1000);
-            }
-        });
-    });
-}
-
-// フィルターとソートのイベントリスナーを設定
-function setupFiltersAndSort() {
-    // フィルターオプションにイベントリスナーを追加
-    const filterOptions = document.querySelectorAll('.filter-option');
-    filterOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            // 同じグループ内の他のオプションからアクティブクラスを削除
-            const parentGroup = this.closest('.filter-group');
-            parentGroup.querySelectorAll('.filter-option').forEach(opt => {
-                opt.classList.remove('active');
-            });
-            
-            // クリックされたオプションをアクティブに
-            this.classList.add('active');
-            
-            // フィルタリングを適用
-            const filterType = parentGroup.querySelector('.filter-heading').textContent.trim();
-            const filterValue = this.textContent.trim();
-            console.log(`Filter clicked: ${filterType} = ${filterValue}`);
-            
-            // フィルタータイプに応じて処理
-            if (filterType === 'Category') {
-                console.log('Category filter clicked:', filterValue);
-                currentFilters.category = filterValue;
-                
-                // ページのタイトルを更新（カテゴリフィルターの場合のみ）
-                const searchInfoTitle = document.querySelector('.search-info h1');
-                if (searchInfoTitle) {
-                    if (filterValue === 'All') {
-                        searchInfoTitle.textContent = 'All Products';
-                    } else {
-                        searchInfoTitle.textContent = `Browse: ${filterValue}`;
+                    
+                    // 追加：右下に通知を表示（common.jsのshowAddedToCartFeedback関数を呼び出し）
+                    if (typeof showAddedToCartFeedback === 'function') {
+                        showAddedToCartFeedback(productCard);
                     }
                 }
-            } else if (filterType === 'Condition') {
-                console.log('Condition filter clicked:', filterValue);
-                currentFilters.condition = filterValue;
-            } else if (filterType === 'Price Range') {
-                console.log('Price range filter clicked:', filterValue);
-                currentFilters.priceRange = filterValue;
-            }
-            
-            // 全フィルターを適用（ページ1から表示）
-            applyAllFilters(1);
-        });
-    });
-    
-    // ソートセレクトにイベントリスナーを追加
-    const sortSelect = document.getElementById('sort-select');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', function() {
-            // ソートを適用
-            applySorting(this.value);
-        });
-    }
-}
-
-// ソート機能を適用
-function applySorting(sortOption) {
-    console.log('Applying sort:', sortOption);
-    
-    if (allProducts.length === 0) {
-        console.log('No products to sort');
-        return;
-    }
-    
-    // 現在のフィルター状態を取得して、再フィルタリング
-    let filteredProducts = [...currentFilteredProducts];
-    
-    // ソートオプションに基づいてソート
-    switch (sortOption) {
-        case 'Price: Low to High':
-            filteredProducts.sort((a, b) => a.price - b.price);
-            break;
-        case 'Price: High to Low':
-            filteredProducts.sort((a, b) => b.price - a.price);
-            break;
-        case 'Newest Arrivals':
-            // 日付が含まれていると仮定（実際のデータ構造によって変更が必要）
-            if (filteredProducts[0].date) {
-                filteredProducts.sort((a, b) => new Date(b.date) - new Date(a.date));
-            }
-            break;
-        case 'Most Popular':
-            // 人気度が含まれていると仮定（実際のデータ構造によって変更が必要）
-            if (filteredProducts[0].popularity) {
-                filteredProducts.sort((a, b) => b.popularity - a.popularity);
-            }
-            break;
-        // デフォルトは関連度（何もしない）
-        case 'Relevance':
-        default:
-            break;
-    }
-    
-    // 商品を表示
-    displaySearchResults(filteredProducts);
-}
