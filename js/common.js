@@ -6,31 +6,43 @@ window.cartManager = {
     
     // カートにアイテムを追加
     addItem: function(productId, name, price, image, quantity = 1) {
+        console.log(`Adding to cart: ${name}, ID: ${productId}, Price: ${price}, Quantity: ${quantity}`);
+        
+        // 既存のアイテムがあるか確認
         const existingItem = this.items.find(item => item.id === productId);
         
         if (existingItem) {
+            // 既存アイテムの数量を増やす
             existingItem.quantity += quantity;
+            console.log(`Updated quantity for ${name} to ${existingItem.quantity}`);
         } else {
+            // 新しいアイテムを追加
             this.items.push({
                 id: productId,
                 name: name,
-                price: price,
+                price: parseFloat(price), // 確実に数値として扱う
                 image: image,
                 quantity: quantity
             });
+            console.log(`Added new item: ${name}`);
         }
         
+        // カートを保存
         this.saveCart();
+        
+        // カート数量を更新
         this.updateCartCount();
-        console.log(`Added to cart: ${name}`);
         
         // カート更新イベントを発火
         document.dispatchEvent(new CustomEvent('cart:updated'));
+        
+        return true; // 成功を示す
     },
     
     // カートを保存
     saveCart: function() {
         localStorage.setItem('cart', JSON.stringify(this.items));
+        console.log('Cart saved to localStorage:', this.items);
     },
     
     // カートを読み込み
@@ -57,6 +69,7 @@ window.cartManager = {
         if (cartCountElement) {
             const itemCount = this.items.reduce((count, item) => count + item.quantity, 0);
             cartCountElement.textContent = itemCount;
+            console.log(`Cart count updated: ${itemCount} items`);
         }
     },
     
@@ -65,12 +78,13 @@ window.cartManager = {
         const itemIndex = this.items.findIndex(item => item.id === productId);
         
         if (itemIndex !== -1) {
-            this.items[itemIndex].quantity = quantity;
+            this.items[itemIndex].quantity = parseInt(quantity);
             this.saveCart();
             this.updateCartCount();
             
             // カート更新イベントを発火
             document.dispatchEvent(new CustomEvent('cart:updated'));
+            console.log(`Updated quantity for product ${productId} to ${quantity}`);
         }
     },
     
@@ -79,13 +93,19 @@ window.cartManager = {
         const itemIndex = this.items.findIndex(item => item.id === productId);
         
         if (itemIndex !== -1) {
+            const removedItem = this.items[itemIndex];
             this.items.splice(itemIndex, 1);
             this.saveCart();
             this.updateCartCount();
             
             // カート更新イベントを発火
             document.dispatchEvent(new CustomEvent('cart:updated'));
+            console.log(`Removed product ${productId} from cart`);
+            
+            return removedItem; // 削除したアイテムを返す
         }
+        
+        return null; // アイテムが見つからなかった
     },
     
     // カートの合計金額を計算
@@ -111,6 +131,7 @@ window.cartManager = {
         
         // カート更新イベントを発火
         document.dispatchEvent(new CustomEvent('cart:updated'));
+        console.log('Cart cleared');
     }
 };
 
@@ -123,6 +144,9 @@ document.addEventListener('DOMContentLoaded', function() {
         window.cartManager.loadCart();
         window.cartManager.updateCartCount();
         console.log('Cart initialized with items:', window.cartManager.items);
+        
+        // 商品カードのイベントリスナーを設定
+        setupProductCardEvents();
     } else {
         console.error('Cart manager not available');
     }
@@ -130,6 +154,126 @@ document.addEventListener('DOMContentLoaded', function() {
     // チェックアウトページ用の処理
     initCheckoutPage();
 });
+
+// 商品カードのイベントリスナーを設定
+function setupProductCardEvents() {
+    // 全ページの「Add to Cart」ボタンに対してイベントリスナーを設定
+    const addToCartButtons = document.querySelectorAll('.product-card .add-to-cart');
+    
+    addToCartButtons.forEach(button => {
+        // 既存のイベントリスナーを削除（重複防止）
+        button.removeEventListener('click', handleAddToCart);
+        // 新しいイベントリスナーを追加
+        button.addEventListener('click', handleAddToCart);
+    });
+    
+    console.log(`Set up event listeners for ${addToCartButtons.length} product cards`);
+}
+
+// 「Add to Cart」ボタンのクリックハンドラ
+function handleAddToCart(event) {
+    // イベントの伝播を停止
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // 商品カード要素を取得
+    const productCard = this.closest('.product-card');
+    if (!productCard) {
+        console.error('Product card not found');
+        return;
+    }
+    
+    // 商品情報を取得
+    const productId = productCard.dataset.productId;
+    const productName = productCard.dataset.productName || productCard.querySelector('h3')?.textContent || 'Unknown Product';
+    const productPrice = parseFloat(productCard.dataset.productPrice) || parseFloat(productCard.querySelector('.product-price')?.textContent) || 0;
+    const productImage = productCard.dataset.productImage || '';
+    
+    console.log('Add to cart clicked:', {
+        id: productId,
+        name: productName,
+        price: productPrice,
+        image: productImage
+    });
+    
+    // カートに追加
+    if (window.cartManager && productId) {
+        const success = window.cartManager.addItem(productId, productName, productPrice, productImage);
+        
+        if (success) {
+            // 視覚的なフィードバックを表示
+            showAddedToCartFeedback(productCard);
+        }
+    } else {
+        console.error('Cart manager not available or product ID missing');
+    }
+}
+
+// カートに追加された時の視覚的フィードバック
+function showAddedToCartFeedback(productCard) {
+    // 既存のフィードバック要素を削除
+    const existingFeedback = document.querySelector('.cart-feedback');
+    if (existingFeedback) {
+        existingFeedback.remove();
+    }
+    
+    // フィードバック要素を作成
+    const feedback = document.createElement('div');
+    feedback.className = 'cart-feedback';
+    feedback.innerHTML = `
+        <div class="cart-feedback-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="16 12 12 8 8 12"></polyline>
+                <line x1="12" y1="16" x2="12" y2="8"></line>
+            </svg>
+            <span>Added to cart</span>
+        </div>
+    `;
+    
+    // スタイルを設定
+    feedback.style.position = 'fixed';
+    feedback.style.bottom = '20px';
+    feedback.style.right = '20px';
+    feedback.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    feedback.style.color = 'white';
+    feedback.style.padding = '10px 20px';
+    feedback.style.borderRadius = '4px';
+    feedback.style.zIndex = '1000';
+    feedback.style.display = 'flex';
+    feedback.style.alignItems = 'center';
+    feedback.style.justifyContent = 'center';
+    feedback.style.animation = 'fadeInOut 2s forwards';
+    
+    // アニメーションを追加
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+        .cart-feedback-content {
+            display: flex;
+            align-items: center;
+        }
+        .cart-feedback-content svg {
+            margin-right: 8px;
+        }
+    `;
+    
+    // ドキュメントに追加
+    document.head.appendChild(style);
+    document.body.appendChild(feedback);
+    
+    // 自動的に削除
+    setTimeout(() => {
+        if (feedback.parentNode) {
+            feedback.parentNode.removeChild(feedback);
+        }
+    }, 2000);
+}
 
 // チェックアウトページの初期化
 function initCheckoutPage() {
@@ -141,7 +285,6 @@ function initCheckoutPage() {
     }
     
     // checkout.jsがすでにフォーム送信処理を行っている場合は、common.jsでは処理をスキップします
-    // 単独ページテスト用に限りますが、実際の実装ではcheckout.jsを使用します
     if (!window.checkoutJsLoaded) {
         const orderForm = document.getElementById('order-form');
         if (orderForm) {
@@ -240,31 +383,44 @@ function updateOrderTotals() {
 // 注文フォームの送信ハンドラ（基本的な実装）
 function handleOrderSubmit(event) {
     if (event) event.preventDefault();
-    console.log('Order form submitted - handled by common.js');
+    console.log('Order form submitted');
     
-    // checkout.jsが存在するかチェック
-    if (typeof validateForm === 'function' && !validateForm()) {
-        console.log('Form validation failed');
-        return false;
-    }
-    
-    // checkout.jsに実装を委ねるためのフラグを確認
+    // checkout.jsがすでに読み込まれている場合は処理をスキップ
     if (window.checkoutJsLoaded) {
         console.log('Checkout.js is handling form submission');
         return false;
     }
     
-    // checkout.jsがない場合の簡易的な処理（このコードは通常実行されません）
-    console.log('Performing basic checkout process (fallback)');
+    // checkout.jsがない場合のみバリデーションと処理を行う
+    if (typeof validateForm === 'function' && !validateForm()) {
+        console.log('Form validation failed');
+        return false;
+    }
     
-    // 処理中メッセージ（アラートを削除し、インライン表示に変更）
+    // Alertを表示せず、代わりにボタンを無効化して処理中メッセージを表示
     const submitButton = document.querySelector('.checkout-btn');
     if (submitButton) {
         submitButton.disabled = true;
         submitButton.textContent = 'Processing...';
     }
     
-    // 処理完了後、注文確認ページへ移動
+    // 処理中メッセージを表示
+    const processingMessage = document.createElement('div');
+    processingMessage.id = 'processing-message';
+    processingMessage.style.marginTop = '1rem';
+    processingMessage.style.padding = '0.75rem';
+    processingMessage.style.backgroundColor = 'rgba(0,0,0,0.1)';
+    processingMessage.style.borderRadius = '4px';
+    processingMessage.style.textAlign = 'center';
+    processingMessage.style.color = 'var(--text-primary)';
+    processingMessage.textContent = 'Processing your order. Please wait...';
+    
+    // 送信ボタンの後に追加
+    if (submitButton && submitButton.parentNode) {
+        submitButton.parentNode.appendChild(processingMessage);
+    }
+    
+    // しばらく待ってから注文確認ページへリダイレクト
     setTimeout(() => {
         window.location.href = 'order-confirmation.html';
     }, 1000);
