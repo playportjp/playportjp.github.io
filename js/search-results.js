@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchQuery = urlParams.get('query');
     const category = urlParams.get('category');
     
+    console.log('URL params:', { searchQuery, category });
+    
     // 検索クエリまたはカテゴリがある場合、それに基づいて表示
     if (searchQuery) {
         console.log('Search query found:', searchQuery);
@@ -31,8 +33,10 @@ document.addEventListener('DOMContentLoaded', function() {
             searchInfoTitle.textContent = `Browse: ${categoryName}`;
         }
         
-        // カテゴリフィルターを更新
-        updateCategoryFilter(category);
+        // カテゴリフィルターを更新（setTimeout でDOMが完全に読み込まれた後に実行）
+        setTimeout(() => {
+            updateCategoryFilter(category);
+        }, 100);
         
         // カテゴリに基づいて商品を読み込む
         loadProductsByCategory(category);
@@ -96,8 +100,29 @@ function searchProducts(query) {
 
 // カテゴリフィルターを更新
 function updateCategoryFilter(category) {
+    console.log('Updating category filter for:', category);
+    
+    // カテゴリ名を正規化（最初の文字を大文字に、残りを小文字に）
+    const normalizedCategory = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+    console.log('Normalized category name:', normalizedCategory);
+    
     // カテゴリフィルターオプションを取得
-    const categoryFilters = document.querySelectorAll('.filter-group:nth-child(1) .filter-option');
+    const filterGroups = document.querySelectorAll('.filter-group');
+    let categoryFilters;
+    
+    // カテゴリフィルターグループを探す
+    filterGroups.forEach(group => {
+        const heading = group.querySelector('.filter-heading');
+        if (heading && heading.textContent.trim() === 'Category') {
+            categoryFilters = group.querySelectorAll('.filter-option');
+            console.log('Found category filters:', categoryFilters.length);
+        }
+    });
+    
+    if (!categoryFilters || categoryFilters.length === 0) {
+        console.error('Category filters not found');
+        return;
+    }
     
     // すべてのフィルターからアクティブクラスを削除
     categoryFilters.forEach(filter => {
@@ -105,14 +130,32 @@ function updateCategoryFilter(category) {
     });
     
     // 選択されたカテゴリに応じてフィルターをアクティブに
+    let foundMatch = false;
+    
     categoryFilters.forEach(filter => {
-        const filterText = filter.textContent.toLowerCase();
+        const filterText = filter.textContent.trim();
+        console.log('Checking filter:', filterText, 'against category:', normalizedCategory);
         
-        if (filterText === category.toLowerCase() || 
-            (filterText === 'all' && category === 'all')) {
+        if (filterText === normalizedCategory) {
             filter.classList.add('active');
+            foundMatch = true;
+            console.log('Match found! Setting', filterText, 'as active');
+        } else if (filterText === 'All' && normalizedCategory === 'All') {
+            filter.classList.add('active');
+            foundMatch = true;
+            console.log('Setting All filter as active');
         }
     });
+    
+    // マッチするフィルターが見つからなかった場合、Allをアクティブに
+    if (!foundMatch) {
+        console.log('No matching filter found, defaulting to All');
+        categoryFilters.forEach(filter => {
+            if (filter.textContent.trim() === 'All') {
+                filter.classList.add('active');
+            }
+        });
+    }
 }
 
 // カテゴリに基づいて商品を読み込む
@@ -159,12 +202,14 @@ function loadProductsByCategory(category) {
 
 // カテゴリに基づいて商品をフィルタリング
 function filterProductsByCategory(products, category) {
-    if (category === 'all') return products;
+    if (category.toLowerCase() === 'all') return products;
+    
+    // カテゴリ名を正規化（最初の文字を大文字に、残りを小文字に）
+    const normalizedCategory = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
     
     return products.filter(product => {
         // カテゴリが一致する商品をフィルタリング
-        // 注意: JSON内のカテゴリ名と一致する必要があります
-        return product.category && product.category.toLowerCase() === category.toLowerCase();
+        return product.category === normalizedCategory;
     });
 }
 
@@ -383,12 +428,24 @@ function setupFiltersAndSort() {
             this.classList.add('active');
             
             // フィルタリングを適用
-            if (parentGroup.querySelector('.filter-heading').textContent === 'Category') {
-                const selectedCategory = this.textContent;
+            if (parentGroup.querySelector('.filter-heading').textContent.trim() === 'Category') {
+                const selectedCategory = this.textContent.trim();
+                console.log('Category filter clicked:', selectedCategory);
+                
                 if (selectedCategory === 'All') {
                     loadAllProducts();
                 } else {
                     loadProductsByCategory(selectedCategory);
+                }
+                
+                // ページのタイトルを更新
+                const searchInfoTitle = document.querySelector('.search-info h1');
+                if (searchInfoTitle) {
+                    if (selectedCategory === 'All') {
+                        searchInfoTitle.textContent = 'All Products';
+                    } else {
+                        searchInfoTitle.textContent = `Browse: ${selectedCategory}`;
+                    }
                 }
             }
             // 他のフィルター（今後実装）
