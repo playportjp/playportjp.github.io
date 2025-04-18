@@ -1,6 +1,11 @@
 // cart.js - カート画面の機能を管理
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Cart.js is loaded and initializing');
+    
+    // ローディング表示の参照
+    const loadingElement = document.getElementById('cart-loading');
+    
     // カートマネージャーとの連携
     if (window.cartManager) {
         // カート読み込み
@@ -15,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     } else {
         console.error('Cart manager is not available');
+        // カートマネージャーがない場合はエラーメッセージを表示
+        showLoadingError();
     }
 
     // プロモーションコードボタン
@@ -23,24 +30,93 @@ document.addEventListener('DOMContentLoaded', function() {
         promoBtn.addEventListener('click', function() {
             const promoInput = document.getElementById('promo-code-input');
             if (promoInput && promoInput.value.trim() !== '') {
-                alert('プロモーションコード「' + promoInput.value + '」が適用されました。');
+                // アラートを使わずにインラインメッセージで表示
+                showPromoMessage('Promo code "' + promoInput.value + '" applied successfully.', 'success');
                 // 実際の割引処理はここに実装
             } else {
-                alert('プロモーションコードを入力してください。');
+                showPromoMessage('Please enter a promo code.', 'error');
             }
         });
     }
+    
+    // 「Recently Viewed」セクションの「Add to Cart」ボタンのイベント設定
+    setupRecentlyViewedEvents();
 });
+
+// プロモーションコードのメッセージを表示
+function showPromoMessage(message, type) {
+    // 既存のメッセージ要素を探す
+    let messageElement = document.getElementById('promo-message');
+    
+    // なければ作成
+    if (!messageElement) {
+        messageElement = document.createElement('div');
+        messageElement.id = 'promo-message';
+        messageElement.style.marginTop = '0.5rem';
+        messageElement.style.padding = '0.5rem';
+        messageElement.style.borderRadius = '4px';
+        messageElement.style.fontSize = '0.85rem';
+        messageElement.style.textAlign = 'center';
+        
+        // プロモーションコード入力欄の後に追加
+        const promoElement = document.querySelector('.promo-code');
+        if (promoElement) {
+            promoElement.appendChild(messageElement);
+        }
+    }
+    
+    // メッセージのスタイルを設定
+    if (type === 'success') {
+        messageElement.style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
+        messageElement.style.color = '#4caf50';
+    } else {
+        messageElement.style.backgroundColor = 'rgba(244, 67, 54, 0.1)';
+        messageElement.style.color = '#f44336';
+    }
+    
+    // メッセージを設定して表示
+    messageElement.textContent = message;
+    messageElement.style.display = 'block';
+    
+    // 3秒後に消す
+    setTimeout(function() {
+        messageElement.style.display = 'none';
+    }, 3000);
+}
+
+// ローディングエラーを表示
+function showLoadingError() {
+    const loadingElement = document.getElementById('cart-loading');
+    if (loadingElement) {
+        loadingElement.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <p>There was an error loading your cart. Please refresh the page and try again.</p>
+        `;
+        loadingElement.style.display = 'block';
+    }
+}
 
 // カート表示の更新
 function updateCartDisplay() {
-    // カート商品セクションとカート空表示を取得
+    console.log('Updating cart display');
+    
+    // ローディング、カート商品セクション、カート空表示を取得
+    const loadingElement = document.getElementById('cart-loading');
     const cartSection = document.querySelector('.cart-section');
     const cartEmptySection = document.querySelector('.cart-section-empty');
     const cartItemsContainer = document.querySelector('.cart-items');
     
     // カート内のアイテムを取得
     const cartItems = window.cartManager.items;
+    
+    // ローディング表示を非表示
+    if (loadingElement) {
+        loadingElement.style.display = 'none';
+    }
     
     // カートが空の場合
     if (!cartItems || cartItems.length === 0) {
@@ -223,6 +299,77 @@ function setupCartItemEvents() {
             setTimeout(() => {
                 window.cartManager.removeItem(productId);
             }, 300);
+        });
+    });
+}
+
+// 「Recently Viewed」セクションのイベントリスナー設定
+function setupRecentlyViewedEvents() {
+    // 「Recently Viewed」セクションの「Add to Cart」ボタン
+    const addToCartButtons = document.querySelectorAll('.product-card .add-to-cart');
+    
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            // イベントの伝播を停止（商品リンクのクリックを防止）
+            event.stopPropagation();
+            
+            // 商品情報を取得
+            const productCard = this.closest('.product-card');
+            const productId = productCard.dataset.productId;
+            const productName = productCard.dataset.productName;
+            const productPrice = parseFloat(productCard.dataset.productPrice);
+            const productImage = productCard.dataset.productImage;
+            
+            // カートに追加
+            if (window.cartManager) {
+                window.cartManager.addItem(productId, productName, productPrice, productImage);
+                
+                // 追加成功メッセージを表示（オプション）
+                const successMessage = document.createElement('div');
+                successMessage.textContent = 'Added to cart!';
+                successMessage.style.position = 'absolute';
+                successMessage.style.backgroundColor = 'rgba(76, 175, 80, 0.8)';
+                successMessage.style.color = 'white';
+                successMessage.style.padding = '0.5rem 1rem';
+                successMessage.style.borderRadius = '4px';
+                successMessage.style.top = '50%';
+                successMessage.style.left = '50%';
+                successMessage.style.transform = 'translate(-50%, -50%)';
+                successMessage.style.zIndex = '100';
+                successMessage.style.animation = 'fadeIn 0.3s, fadeOut 0.3s 1s forwards';
+                
+                // アニメーションを定義
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    @keyframes fadeOut {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // メッセージを表示
+                productCard.style.position = 'relative';
+                productCard.appendChild(successMessage);
+                
+                // 1.5秒後にメッセージを削除
+                setTimeout(() => {
+                    productCard.removeChild(successMessage);
+                }, 1500);
+            }
+        });
+    });
+    
+    // 商品カードのリンクがクリック可能であることを確認
+    const productLinks = document.querySelectorAll('.product-card .product-link');
+    productLinks.forEach(link => {
+        // リンクのデフォルトの動作が機能することを確認
+        link.addEventListener('click', function(event) {
+            // リンクの動作を許可（何もしない）
         });
     });
 }
