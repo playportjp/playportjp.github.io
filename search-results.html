@@ -226,11 +226,11 @@
             font-weight: 500;
         }
         
-        .meta-tag.game {
+        .meta-tag.game, .meta-tag.games {
             background-color: #5755d9;
         }
         
-        .meta-tag.book {
+        .meta-tag.book, .meta-tag.books {
             background-color: #2e7d32;
         }
         
@@ -238,7 +238,7 @@
             background-color: #9c27b0;
         }
         
-        .meta-tag.collectible {
+        .meta-tag.collectible, .meta-tag.collectibles {
             background-color: #e65100;
         }
         
@@ -329,11 +329,22 @@
             background-color: var(--surface);
         }
         
+        /* ページネーションの余白を修正 */
         .pagination {
             display: flex;
             justify-content: center;
             gap: 0.5rem;
             margin-top: 2rem;
+            margin-bottom: 3rem; /* 下部の余白を増やす */
+            padding-bottom: 1.5rem; /* パディングも追加 */
+            border-bottom: none; /* 下部の境界線を削除 */
+        }
+
+        /* フッターの上部に余白とボーダーを追加 */
+        footer {
+            margin-top: 1rem;
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
         }
         
         .pagination-btn {
@@ -377,39 +388,47 @@
             }
         }
         
-        /* 商品カードのリンク機能追加用スタイル */
-        .product-link {
-            display: block;
-            height: 100%;
-            text-decoration: none;
-            color: inherit;
-        }
-        
+        /* 商品カードのクリック可能化のためのスタイル */
         .product-card {
             cursor: pointer;
-        }
-        
-        /* カートボタンやDetailsボタンのスタイル */
-        .product-card .add-to-cart,
-        .product-card .btn-secondary {
             position: relative;
-            z-index: 10; /* 高いz-indexを設定して最前面に表示 */
         }
-        
-        /* Googleリンクのz-index設定 */
+
+        /* Google検索リンクのスタイル */
         .search-image-link {
             position: absolute;
-            z-index: 10; /* 高いz-indexを設定して最前面に表示 */
+            top: 8px;
+            right: 8px;
+            z-index: 10;
+            cursor: pointer;
         }
-        
-        /* 明示的なカーソルスタイルを追加 */
-        .product-card h3,
+
+        /* Add to Cartボタンとデテールボタンのスタイル */
+        .product-actions .btn {
+            position: relative;
+            z-index: 5;
+            cursor: pointer;
+        }
+
+        /* 商品カード内の要素にカーソルポインタを設定 */
         .product-card .image-placeholder,
+        .product-card .product-details h3,
         .product-card .product-description,
         .product-card .product-meta,
-        .product-card .product-condition,
         .product-card .product-price {
             cursor: pointer;
+        }
+
+        /* ホバー効果を強化 */
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .product-card:hover .product-details h3 {
+            color: var(--primary);
+            text-decoration: underline;
         }
     </style>
 </head>
