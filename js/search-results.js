@@ -639,50 +639,94 @@ function displaySearchResults(products, page = 1) {
                 <div>No Image</div>
             `;
         
-        const productHtml = `
-            <div class="product-card" data-product-id="${product.id}">
-                <a href="product-detail.html?id=${product.id}" class="product-link">
-                    <div class="image-placeholder" style="${imageStyle}">
-                        ${!product.image ? imageContent : ''}
-                        <a href="https://www.google.com/search?q=${encodeURIComponent(product.name)}&tbm=isch" class="search-image-link" target="_blank" onclick="event.stopPropagation()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            Google
-                        </a>
-                    </div>
-                    <div class="product-details">
-                        <h3>${product.name}</h3>
-                        <div class="product-meta">
-                            ${categoryTagHtml}
-                        </div>
-                        <div class="product-condition">
-                            <span class="condition-badge ${conditionBadgeClass}">${conditionBadgeText}</span>
-                            <span class="stock-status ${stockStatusClass}">${stockStatusText}</span>
-                        </div>
-                        <div class="shipping-time">Ships within 1-2 business days</div>
-                        <p class="product-description">${product.description}</p>
-                        <p class="product-price">${product.price.toFixed(2)} CAD</p>
-                        <div class="product-actions">
-                            <button class="btn btn-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
-                            <a href="product-detail.html?id=${product.id}" class="btn btn-secondary">Details</a>
-                        </div>
-                    </div>
+        // 商品カードを作成
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+        productCard.setAttribute('data-product-id', product.id);
+        
+        // 商品カードの内容を設定
+        productCard.innerHTML = `
+            <div class="image-placeholder" style="${imageStyle}">
+                ${!product.image ? imageContent : ''}
+                <a href="https://www.google.com/search?q=${encodeURIComponent(product.name)}&tbm=isch" class="search-image-link" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    Google
                 </a>
+            </div>
+            <div class="product-details">
+                <h3>${product.name}</h3>
+                <div class="product-meta">
+                    ${categoryTagHtml}
+                </div>
+                <div class="product-condition">
+                    <span class="condition-badge ${conditionBadgeClass}">${conditionBadgeText}</span>
+                    <span class="stock-status ${stockStatusClass}">${stockStatusText}</span>
+                </div>
+                <div class="shipping-time">Ships within 1-2 business days</div>
+                <p class="product-description">${product.description}</p>
+                <p class="product-price">${product.price.toFixed(2)} CAD</p>
+                <div class="product-actions">
+                    <button class="btn btn-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
+                    <a href="product-detail.html?id=${product.id}" class="btn btn-secondary">Details</a>
+                </div>
             </div>
         `;
         
-        resultsGrid.innerHTML += productHtml;
+        // 商品カードのクリックイベントを設定
+        productCard.addEventListener('click', function(event) {
+            // イベントターゲットがボタンやGoogle検索リンクでない場合
+            if (!event.target.closest('.add-to-cart') && 
+                !event.target.closest('.btn-secondary') && 
+                !event.target.closest('.search-image-link')) {
+                
+                window.location.href = `product-detail.html?id=${product.id}`;
+            }
+        });
+        
+        // Googleリンククリックのイベント伝播を防止
+        const googleLink = productCard.querySelector('.search-image-link');
+        if (googleLink) {
+            googleLink.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        }
+        
+        // カートボタンクリックのイベント設定
+        const addToCartBtn = productCard.querySelector('.add-to-cart');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                const productId = this.getAttribute('data-id');
+                const product = products.find(p => p.id === productId) || 
+                                allProducts.find(p => p.id === productId);
+                
+                if (product && window.cartManager) {
+                    window.cartManager.addItem(
+                        product.id, 
+                        product.name, 
+                        product.price, 
+                        product.image,
+                        1
+                    );
+                    
+                    // クリック時のフィードバック
+                    this.textContent = 'Added!';
+                    setTimeout(() => {
+                        this.textContent = 'Add to Cart';
+                    }, 1000);
+                }
+            });
+        }
+        
+        // 商品カードをグリッドに追加
+        resultsGrid.appendChild(productCard);
     }
-    
-    // 商品カードのクリックイベントを設定
-    setupProductCardClicks();
-    
-    // カートボタンにイベントリスナーを追加
-    setupAddToCartButtons(displayProducts);
 }
-
 // 商品カードのクリックイベントを設定
 function setupProductCardClicks() {
     // Googleボタンのクリックが商品カードのクリックとして伝播しないようにする
