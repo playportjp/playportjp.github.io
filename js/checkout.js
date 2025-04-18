@@ -1,11 +1,31 @@
-// 注文フォームの送信処理
+// Wait for DOM content to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the order form element
+    const orderForm = document.getElementById('order-form');
+    
+    // Add event listener to the form submission
+    if (orderForm) {
+        orderForm.addEventListener('submit', handleCheckoutSubmit);
+    }
+    
+    // Initialize form validation on input fields
+    initFormValidation();
+    
+    // Load cart items into the checkout display
+    loadCartItems();
+});
+
+// Handle checkout form submission
 function handleCheckoutSubmit(event) {
+    // Prevent the default form submission
+    event.preventDefault();
+    
     console.log('Handling checkout submission...');
     
-    // フォームのバリデーション
+    // Form validation
     if (!validateForm()) {
         console.log('Form validation failed');
-        // スクロールしてエラー箇所を表示
+        // Scroll to the first error
         const firstError = document.querySelector('.error-message:not(:empty)');
         if (firstError) {
             firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -15,50 +35,397 @@ function handleCheckoutSubmit(event) {
     
     try {
         console.log('Form is valid, collecting order data...');
-        // 注文データの収集
+        // Collect order data
         const orderData = collectOrderData();
         console.log('Order data collected:', orderData);
         
-        // 注文データをlocalStorageに保存
+        // Save order data to localStorage
         localStorage.setItem('currentOrder', JSON.stringify(orderData));
         console.log('Order data saved to localStorage');
         
-        // カートをクリア
-        window.cartManager.clearCart();
-        console.log('Cart cleared');
+        // Clear the cart
+        if (window.cartManager) {
+            window.cartManager.clearCart();
+            console.log('Cart cleared');
+        }
         
-        // 注文確認ページへ直接リダイレクト
+        // Redirect to order confirmation page
         console.log('Redirecting to order-confirmation.html');
         window.location.href = 'order-confirmation.html';
     } catch (error) {
         console.error('Error during checkout process:', error);
         
-        // エラーメッセージを画面に表示
-        const errorMessage = document.createElement('div');
-        errorMessage.id = 'checkout-error';
-        errorMessage.className = 'error-message';
-        errorMessage.style.display = 'block';
-        errorMessage.style.color = 'red';
-        errorMessage.style.padding = '10px';
-        errorMessage.style.marginTop = '10px';
-        errorMessage.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
-        errorMessage.style.borderRadius = '4px';
-        errorMessage.style.fontWeight = 'bold';
-        errorMessage.textContent = 'An error occurred while processing your order. Please try again.';
+        // Display error message
+        showCheckoutError('An error occurred while processing your order. Please try again.');
+    }
+}
+
+// Show checkout error message
+function showCheckoutError(message) {
+    let errorElement = document.getElementById('checkout-error');
+    
+    if (!errorElement) {
+        errorElement = document.createElement('div');
+        errorElement.id = 'checkout-error';
+        errorElement.className = 'error-message';
         
-        // エラーメッセージをフォームの先頭に挿入
+        // Insert at the top of the form
         const form = document.getElementById('order-form');
         if (form) {
-            form.insertBefore(errorMessage, form.firstChild);
-            errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            form.insertBefore(errorElement, form.firstChild);
+        }
+    }
+    
+    errorElement.style.display = 'block';
+    errorElement.textContent = message;
+    errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Validate the form
+function validateForm() {
+    let isValid = true;
+    
+    // Clear all previous error messages
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(el => el.textContent = '');
+    
+    // Required fields validation
+    const requiredFields = [
+        { id: 'full-name', error: 'name-error', message: 'Please enter your full name' },
+        { id: 'email', error: 'email-error', message: 'Please enter a valid email address' },
+        { id: 'phone', error: 'phone-error', message: 'Please enter a valid phone number' },
+        { id: 'address', error: 'address-error', message: 'Please enter your street address' },
+        { id: 'city', error: 'city-error', message: 'Please enter your city' },
+        { id: 'postal-code', error: 'postal-error', message: 'Please enter a valid postal code' },
+        { id: 'country', error: 'country-error', message: 'Please select your country' }
+    ];
+    
+    requiredFields.forEach(field => {
+        const element = document.getElementById(field.id);
+        const errorElement = document.getElementById(field.error);
+        
+        if (!element || !errorElement) return;
+        
+        if (!element.value.trim()) {
+            errorElement.textContent = field.message;
+            element.classList.add('invalid');
+            isValid = false;
+        } else {
+            element.classList.remove('invalid');
+            element.classList.add('valid');
+        }
+    });
+    
+    // Email validation
+    const emailElement = document.getElementById('email');
+    const emailErrorElement = document.getElementById('email-error');
+    if (emailElement && emailErrorElement && emailElement.value.trim()) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailElement.value.trim())) {
+            emailErrorElement.textContent = 'Please enter a valid email address';
+            emailElement.classList.add('invalid');
+            isValid = false;
+        }
+    }
+    
+    // Check credit card fields if credit card option is selected
+    const paymentMethod = document.querySelector('input[name="payment-method"]:checked');
+    if (paymentMethod && paymentMethod.value === 'credit') {
+        const cardFields = [
+            { id: 'card-number', error: 'card-number-error', message: 'Please enter a valid card number' },
+            { id: 'expiry-date', error: 'expiry-error', message: 'Please enter a valid expiry date (MM/YY)' },
+            { id: 'cvv', error: 'cvv-error', message: 'Please enter a valid CVV code' }
+        ];
+        
+        cardFields.forEach(field => {
+            const element = document.getElementById(field.id);
+            const errorElement = document.getElementById(field.error);
+            
+            if (!element || !errorElement) return;
+            
+            if (!element.value.trim()) {
+                errorElement.textContent = field.message;
+                element.classList.add('invalid');
+                isValid = false;
+            } else {
+                element.classList.remove('invalid');
+                element.classList.add('valid');
+            }
+        });
+    }
+    
+    // Terms and conditions checkbox
+    const termsCheckbox = document.getElementById('terms');
+    const termsError = document.getElementById('terms-error');
+    if (termsCheckbox && termsError && !termsCheckbox.checked) {
+        termsError.textContent = 'You must agree to the Terms and Conditions';
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+// Initialize form validation on inputs
+function initFormValidation() {
+    const inputs = document.querySelectorAll('input, select');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateInput(this);
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.classList.contains('invalid')) {
+                validateInput(this);
+            }
+        });
+    });
+    
+    // Toggle payment method fields
+    const paymentRadios = document.querySelectorAll('input[name="payment-method"]');
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', togglePaymentFields);
+    });
+    
+    // Promo code button
+    const promoButton = document.getElementById('apply-promo');
+    if (promoButton) {
+        promoButton.addEventListener('click', applyPromoCode);
+    }
+}
+
+// Toggle payment fields based on selected payment method
+function togglePaymentFields() {
+    const creditFields = document.getElementById('credit-card-fields');
+    const paypalFields = document.getElementById('paypal-fields');
+    
+    if (this.value === 'credit') {
+        creditFields.style.display = 'block';
+        paypalFields.style.display = 'none';
+    } else if (this.value === 'paypal') {
+        creditFields.style.display = 'none';
+        paypalFields.style.display = 'block';
+    }
+}
+
+// Validate individual input field
+function validateInput(input) {
+    if (!input.id) return;
+    
+    let errorElement;
+    let errorMessage = '';
+    
+    switch (input.id) {
+        case 'full-name':
+            errorElement = document.getElementById('name-error');
+            if (!input.value.trim()) {
+                errorMessage = 'Please enter your full name';
+            }
+            break;
+            
+        case 'email':
+            errorElement = document.getElementById('email-error');
+            if (!input.value.trim()) {
+                errorMessage = 'Please enter your email address';
+            } else {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(input.value.trim())) {
+                    errorMessage = 'Please enter a valid email address';
+                }
+            }
+            break;
+            
+        case 'phone':
+            errorElement = document.getElementById('phone-error');
+            if (!input.value.trim()) {
+                errorMessage = 'Please enter your phone number';
+            }
+            break;
+            
+        case 'address':
+            errorElement = document.getElementById('address-error');
+            if (!input.value.trim()) {
+                errorMessage = 'Please enter your street address';
+            }
+            break;
+            
+        case 'city':
+            errorElement = document.getElementById('city-error');
+            if (!input.value.trim()) {
+                errorMessage = 'Please enter your city';
+            }
+            break;
+            
+        case 'postal-code':
+            errorElement = document.getElementById('postal-error');
+            if (!input.value.trim()) {
+                errorMessage = 'Please enter your postal code';
+            }
+            break;
+            
+        case 'country':
+            errorElement = document.getElementById('country-error');
+            if (!input.value) {
+                errorMessage = 'Please select your country';
+            }
+            break;
+            
+        case 'card-number':
+            errorElement = document.getElementById('card-number-error');
+            if (!input.value.trim()) {
+                errorMessage = 'Please enter your card number';
+            }
+            break;
+            
+        case 'expiry-date':
+            errorElement = document.getElementById('expiry-error');
+            if (!input.value.trim()) {
+                errorMessage = 'Please enter the expiry date';
+            } else {
+                const expiryPattern = /^(0[1-9]|1[0-2])\/\d{2}$/;
+                if (!expiryPattern.test(input.value.trim())) {
+                    errorMessage = 'Please use MM/YY format';
+                }
+            }
+            break;
+            
+        case 'cvv':
+            errorElement = document.getElementById('cvv-error');
+            if (!input.value.trim()) {
+                errorMessage = 'Please enter the CVV code';
+            } else if (!/^\d{3,4}$/.test(input.value.trim())) {
+                errorMessage = 'CVV must be 3 or 4 digits';
+            }
+            break;
+    }
+    
+    if (errorElement) {
+        errorElement.textContent = errorMessage;
+        
+        if (errorMessage) {
+            input.classList.add('invalid');
+            input.classList.remove('valid');
+        } else {
+            input.classList.remove('invalid');
+            input.classList.add('valid');
         }
     }
 }
+
+// Apply promo code
+function applyPromoCode() {
+    const promoInput = document.getElementById('promo-code-input');
+    
+    if (!promoInput || !promoInput.value.trim()) {
+        return;
+    }
+    
+    const promoCode = promoInput.value.trim().toUpperCase();
+    
+    // Simulate promo code validation (in a real app, this would be server-side)
+    if (promoCode === 'WELCOME10') {
+        // Apply 10% discount
+        applyDiscount(0.1);
+        alert('Promo code applied: 10% discount!');
+    } else {
+        alert('Invalid promo code. Please try again.');
+    }
 }
 
-// 注文データの収集
+// Apply discount to order total
+function applyDiscount(discountPercentage) {
+    const subtotalElement = document.getElementById('checkout-subtotal');
+    const totalElement = document.getElementById('checkout-total');
+    
+    if (!subtotalElement || !totalElement) {
+        return;
+    }
+    
+    const subtotal = parseFloat(subtotalElement.textContent.replace(/[^0-9.]/g, ''));
+    const discountAmount = subtotal * discountPercentage;
+    
+    // Update the total
+    const currentTotal = parseFloat(totalElement.textContent.replace(/[^0-9.]/g, ''));
+    const newTotal = currentTotal - discountAmount;
+    
+    totalElement.textContent = newTotal.toFixed(2) + ' CAD';
+}
+
+// Load cart items into checkout display
+function loadCartItems() {
+    if (!window.cartManager || !window.cartManager.items || window.cartManager.items.length === 0) {
+        return;
+    }
+    
+    const checkoutItemsContainer = document.getElementById('checkout-items');
+    if (!checkoutItemsContainer) {
+        return;
+    }
+    
+    // Clear existing items
+    checkoutItemsContainer.innerHTML = '';
+    
+    // Add each cart item
+    let subtotal = 0;
+    
+    window.cartManager.items.forEach(item => {
+        // Create item element
+        const itemElement = document.createElement('div');
+        itemElement.className = 'checkout-item';
+        
+        // Create item content
+        const itemPrice = parseFloat(item.price);
+        const itemTotal = itemPrice * item.quantity;
+        subtotal += itemTotal;
+        
+        itemElement.innerHTML = `
+            <div class="checkout-item-image">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+            </div>
+            <div class="checkout-item-details">
+                <div class="checkout-item-title">${item.name}</div>
+                <div class="checkout-item-price">${item.price} CAD <span class="checkout-item-quantity">x${item.quantity}</span></div>
+            </div>
+        `;
+        
+        // Add to container
+        checkoutItemsContainer.appendChild(itemElement);
+    });
+    
+    // Update order summary
+    updateOrderSummary(subtotal);
+}
+
+// Update order summary with calculated values
+function updateOrderSummary(subtotal) {
+    const subtotalElement = document.getElementById('checkout-subtotal');
+    const taxElement = document.getElementById('checkout-tax');
+    const totalElement = document.getElementById('checkout-total');
+    
+    if (!subtotalElement || !taxElement || !totalElement) {
+        return;
+    }
+    
+    // Calculate tax (10% for example)
+    const taxRate = 0.1;
+    const tax = subtotal * taxRate;
+    
+    // Calculate total
+    const total = subtotal + tax;
+    
+    // Update display
+    subtotalElement.textContent = subtotal.toFixed(2) + ' CAD';
+    taxElement.textContent = tax.toFixed(2) + ' CAD';
+    totalElement.textContent = total.toFixed(2) + ' CAD';
+}
+
+// Collect order data for submission
 function collectOrderData() {
-    // カートアイテム
+    // Cart items
     if (!window.cartManager || !window.cartManager.items) {
         throw new Error('Cart is not available');
     }
@@ -68,7 +435,7 @@ function collectOrderData() {
         throw new Error('Cart is empty');
     }
     
-    // 小計、税金、合計を取得
+    // Get subtotal, tax, total
     const subtotalElement = document.getElementById('checkout-subtotal');
     const taxElement = document.getElementById('checkout-tax');
     const totalElement = document.getElementById('checkout-total');
@@ -83,10 +450,10 @@ function collectOrderData() {
     
     const subtotal = parseFloat(subtotalText.replace(/[^0-9.]/g, ''));
     const tax = parseFloat(taxText.replace(/[^0-9.]/g, ''));
-    const shipping = 0; // 送料無料と仮定
+    const shipping = 0; // Assume free shipping
     const total = parseFloat(totalText.replace(/[^0-9.]/g, ''));
     
-    // フォームから顧客情報を取得
+    // Get customer information from form
     const fullNameElement = document.getElementById('full-name');
     const emailElement = document.getElementById('email');
     const phoneElement = document.getElementById('phone');
@@ -100,7 +467,7 @@ function collectOrderData() {
         throw new Error('Customer information form elements not found');
     }
     
-    // 顧客情報
+    // Customer info
     const customerInfo = {
         name: fullNameElement.value.trim(),
         email: emailElement.value.trim(),
@@ -111,14 +478,14 @@ function collectOrderData() {
         country: countryElement.value
     };
     
-    // 支払い方法
+    // Payment method
     const paymentMethodElement = document.querySelector('input[name="payment-method"]:checked');
     if (!paymentMethodElement) {
         throw new Error('Payment method not selected');
     }
     const paymentMethod = paymentMethodElement.value;
     
-    // 支払い情報（クレジットカードの場合）
+    // Payment details (for credit card)
     let paymentDetails = {};
     if (paymentMethod === 'credit') {
         const cardNumberElement = document.getElementById('card-number');
@@ -129,7 +496,7 @@ function collectOrderData() {
             throw new Error('Credit card form elements not found');
         }
         
-        // セキュリティのため、カード番号の最後の4桁だけを保存
+        // For security, only save the last 4 digits
         const cardNumber = cardNumberElement.value.replace(/\s/g, '');
         const lastFourDigits = cardNumber.slice(-4);
         
@@ -140,10 +507,10 @@ function collectOrderData() {
         };
     }
     
-    // 注文番号の生成
+    // Generate order number
     const orderNumber = generateOrderNumber();
     
-    // 注文日時
+    // Order date
     const orderDate = new Date();
     
     return {
@@ -162,9 +529,9 @@ function collectOrderData() {
     };
 }
 
-// カード種類の判別
+// Detect credit card type from number
 function detectCardType(cardNumber) {
-    // カード番号の先頭から種類を判別
+    // Identify card type from first digits
     if (/^4/.test(cardNumber)) {
         return 'Visa';
     } else if (/^5[1-5]/.test(cardNumber)) {
@@ -178,9 +545,9 @@ function detectCardType(cardNumber) {
     }
 }
 
-// 注文番号の生成
+// Generate an order number
 function generateOrderNumber() {
-    // 現在の時刻からランダムな注文番号を生成
+    // Generate a random order number using timestamp and random number
     const timestamp = new Date().getTime().toString().slice(-10);
     const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     return `PP-${timestamp}-${random}`;
