@@ -90,23 +90,25 @@ function searchProducts(query, page = 1) {
             
             // 検索クエリに基づいて商品をフィルタリング
             const filteredProducts = filterProductsByQuery(products, query);
-            currentFilteredProducts = filteredProducts; // 現在のフィルター結果を保存
+            // Out of Stockの商品を除外
+            const inStockProducts = filteredProducts.filter(product => product.stock > 0);
+            currentFilteredProducts = inStockProducts; // 現在のフィルター結果を保存
             
-            console.log(`Found ${filteredProducts.length} products matching query "${query}"`);
+            console.log(`Found ${inStockProducts.length} in-stock products matching query "${query}" (from ${filteredProducts.length} total matches)`);
             
             // デバッグ: フィルタリングされた商品の名前をログに出力
-            if (filteredProducts.length > 0) {
-                console.log('Filtered products sample:', filteredProducts.slice(0, 3).map(p => p.name));
+            if (inStockProducts.length > 0) {
+                console.log('Filtered products sample:', inStockProducts.slice(0, 3).map(p => p.name));
             }
             
             // ページネーション設定
-            setupPagination(filteredProducts.length, page);
+            setupPagination(inStockProducts.length, page);
             
             // 検索結果数を更新
-            updateResultCount(filteredProducts.length, page);
+            updateResultCount(inStockProducts.length, page);
             
             // 商品を表示（ページネーション付き）
-            displaySearchResults(filteredProducts, page);
+            displaySearchResults(inStockProducts, page);
         })
         .catch(error => {
             console.error('Error searching products:', error);
@@ -306,23 +308,25 @@ function loadProductsByCategory(category, page = 1) {
             
             // カテゴリに基づいて商品をフィルタリング
             const filteredProducts = filterProductsByCategory(products, category);
-            currentFilteredProducts = filteredProducts; // 現在のフィルター結果を保存
+            // Out of Stockの商品を除外
+            const inStockProducts = filteredProducts.filter(product => product.stock > 0);
+            currentFilteredProducts = inStockProducts; // 現在のフィルター結果を保存
             
-            console.log(`Found ${filteredProducts.length} products in category "${category}"`);
+            console.log(`Found ${inStockProducts.length} in-stock products in category "${category}" (from ${filteredProducts.length} total matches)`);
             
             // デバッグ: フィルタリングされた商品の名前をログに出力
-            if (filteredProducts.length > 0) {
-                console.log('Filtered products sample:', filteredProducts.slice(0, 3).map(p => p.name));
+            if (inStockProducts.length > 0) {
+                console.log('Filtered products sample:', inStockProducts.slice(0, 3).map(p => p.name));
             }
             
             // ページネーション設定
-            setupPagination(filteredProducts.length, page);
+            setupPagination(inStockProducts.length, page);
             
             // 検索結果数を更新
-            updateResultCount(filteredProducts.length, page);
+            updateResultCount(inStockProducts.length, page);
             
             // 商品を表示（ページネーション付き）
-            displaySearchResults(filteredProducts, page);
+            displaySearchResults(inStockProducts, page);
         })
         .catch(error => {
             console.error('Error loading products by category:', error);
@@ -396,16 +400,21 @@ function loadAllProducts(page = 1) {
         .then(products => {
             console.log(`Loaded ${products.length} products`);
             allProducts = products; // すべての商品を保存
-            currentFilteredProducts = products; // 現在のフィルター結果を保存
+            
+            // Out of Stockの商品を除外
+            const inStockProducts = products.filter(product => product.stock > 0);
+            currentFilteredProducts = inStockProducts; // 現在のフィルター結果を保存
+            
+            console.log(`Found ${inStockProducts.length} in-stock products (from ${products.length} total products)`);
             
             // ページネーション設定
-            setupPagination(products.length, page);
+            setupPagination(inStockProducts.length, page);
             
             // 検索結果数を更新
-            updateResultCount(products.length, page);
+            updateResultCount(inStockProducts.length, page);
             
             // 商品を表示（ページネーション付き）
-            displaySearchResults(products, page);
+            displaySearchResults(inStockProducts, page);
         })
         .catch(error => {
             console.error('Error loading products:', error);
@@ -443,6 +452,9 @@ function applyAllFilters(page = 1) {
     }
     
     let filteredProducts = [...allProducts];
+    
+    // Out of Stockの商品を除外
+    filteredProducts = filteredProducts.filter(product => product.stock > 0);
     
     // カテゴリフィルターを適用
     if (currentFilters.category !== 'All') {
@@ -609,18 +621,13 @@ function displaySearchResults(products, page = 1) {
         const conditionBadgeClass = product.new ? 'new' : 'used';
         const conditionBadgeText = product.new ? 'NEW' : 'USED';
         
-        // 在庫状況を生成
+        // 在庫状況を生成 - 単純化してIn Stock/Out of Stockのみに
         let stockStatusClass = 'in-stock';
         let stockStatusText = 'In Stock';
         
-        if (product.stock !== undefined) {
-            if (product.stock <= 0) {
-                stockStatusClass = 'out-of-stock';
-                stockStatusText = 'Out of Stock';
-            } else if (product.stock <= 5) {
-                stockStatusClass = 'low-stock';
-                stockStatusText = 'Low Stock';
-            }
+        if (product.stock !== undefined && product.stock <= 0) {
+            stockStatusClass = 'out-of-stock';
+            stockStatusText = 'Out of Stock';
         }
         
         // 商品画像の表示を決定
@@ -644,7 +651,7 @@ function displaySearchResults(products, page = 1) {
         productCard.className = 'product-card';
         productCard.setAttribute('data-product-id', product.id);
         
-        // 商品カードの内容を設定
+        // 商品カードの内容を設定 - 配送時間と商品説明を削除
         productCard.innerHTML = `
             <div class="image-placeholder" style="${imageStyle}">
                 ${!product.image ? imageContent : ''}
@@ -665,8 +672,6 @@ function displaySearchResults(products, page = 1) {
                     <span class="condition-badge ${conditionBadgeClass}">${conditionBadgeText}</span>
                     <span class="stock-status ${stockStatusClass}">${stockStatusText}</span>
                 </div>
-                <div class="shipping-time">Ships within 1-2 business days</div>
-                <p class="product-description">${product.description}</p>
                 <p class="product-price">${product.price.toFixed(2)} CAD</p>
                 <div class="product-actions">
                     <button class="btn btn-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
