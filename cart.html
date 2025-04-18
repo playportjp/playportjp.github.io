@@ -637,7 +637,94 @@
             </section>
             
             <!-- 最近見た商品 -->
-search-results.html
+            <section class="recently-viewed">
+                <h2>Recently Viewed</h2>
+                <div class="product-grid">
+                    <!-- 製品1 -->
+                    <div class="product-card" data-product-id="jp001" data-product-price="79.99" data-product-name="Final Fantasy VII Remake Deluxe Edition" data-product-image="images/products/ff7-remake.jpg">
+                        <a href="product-detail.html?id=jp001" class="product-link">
+                            <div class="product-image"></div>
+                            <div class="product-details">
+                                <h3>Final Fantasy VII Remake Deluxe Edition</h3>
+                                <div class="product-meta">
+                                    <span class="meta-tag game">Game</span>
+                                </div>
+                                <div class="product-condition">
+                                    <span class="condition-badge new">NEW</span>
+                                    <span class="stock-status in-stock">In Stock</span>
+                                </div>
+                                <p class="product-price">79.99 CAD</p>
+                            </div>
+                        </a>
+                        <div class="product-action-container">
+                            <button class="btn btn-primary add-to-cart" data-id="jp001">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 製品2 -->
+                    <div class="product-card" data-product-id="jp002" data-product-price="149.99" data-product-name="Demon Slayer Nezuko Kamado Figure" data-product-image="images/products/nezuko-figure.jpg">
+                        <a href="product-detail.html?id=jp002" class="product-link">
+                            <div class="product-image"></div>
+                            <div class="product-details">
+                                <h3>Demon Slayer Nezuko Kamado Figure</h3>
+                                <div class="product-meta">
+                                    <span class="meta-tag collectible">Collectible</span>
+                                </div>
+                                <div class="product-condition">
+                                    <span class="condition-badge new">NEW</span>
+                                    <span class="stock-status in-stock">In Stock</span>
+                                </div>
+                                <p class="product-price">149.99 CAD</p>
+                            </div>
+                        </a>
+                        <div class="product-action-container">
+                            <button class="btn btn-primary add-to-cart" data-id="jp002">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 製品3 -->
+                    <div class="product-card" data-product-id="jp003" data-product-price="299.99" data-product-name="Nintendo Switch Animal Crossing Edition" data-product-image="images/products/switch-ac.jpg">
+                        <a href="product-detail.html?id=jp003" class="product-link">
+                            <div class="product-image"></div>
+                            <div class="product-details">
+                                <h3>Nintendo Switch Animal Crossing Edition</h3>
+                                <div class="product-meta">
+                                    <span class="meta-tag console">Console</span>
+                                </div>
+                                <div class="product-condition">
+                                    <span class="condition-badge new">NEW</span>
+                                    <span class="stock-status in-stock">In Stock</span>
+                                </div>
+                                <p class="product-price">299.99 CAD</p>
+                            </div>
+                        </a>
+                        <div class="product-action-container">
+                            <button class="btn btn-primary add-to-cart" data-id="jp003">Add to Cart</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 製品4 -->
+                    <div class="product-card" data-product-id="jp004" data-product-price="59.99" data-product-name="Pokémon Legends: Arceus" data-product-image="images/products/pokemon-arceus.jpg">
+                        <a href="product-detail.html?id=jp004" class="product-link">
+                            <div class="product-image"></div>
+                            <div class="product-details">
+                                <h3>Pokémon Legends: Arceus</h3>
+                                <div class="product-meta">
+                                    <span class="meta-tag game">Game</span>
+                                </div>
+                                <div class="product-condition">
+                                    <span class="condition-badge new">NEW</span>
+                                    <span class="stock-status in-stock">In Stock</span>
+                                </div>
+                                <p class="product-price">59.99 CAD</p>
+                            </div>
+                        </a>
+                        <div class="product-action-container">
+                            <button class="btn btn-primary add-to-cart" data-id="jp004">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <style>
                 /* 商品カードのレイアウト修正 */
@@ -693,21 +780,24 @@ search-results.html
                     padding: 0 1rem 1rem 1rem;
                 }
 
-                .add-to-cart {
+                /* ボタンスタイルをsearch-results.htmlに合わせる */
+                .product-action-container .btn-primary {
                     width: 100%;
-                    padding: 0.6rem 0;
+                    padding: 0.6rem 1rem;
                     border-radius: 4px;
-                    text-align: center;
+                    cursor: pointer;
                     font-weight: 600;
+                    font-size: 0.85rem;
+                    text-align: center;
+                    transition: background-color 0.2s;
                     background-color: var(--primary);
                     color: white;
                     border: none;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
                 }
 
-                .add-to-cart:hover {
+                .product-action-container .btn-primary:hover {
                     background-color: var(--primary-hover);
+                    color: white;
                 }
 
                 /* アクションリンクを調整 */
@@ -719,6 +809,42 @@ search-results.html
                     color: inherit;
                 }
             </style>
+
+            <script>
+                // 最近見た商品のAdd to Cartボタンのイベントリスナーを設定
+                document.addEventListener('DOMContentLoaded', function() {
+                    const addToCartButtons = document.querySelectorAll('.recently-viewed .add-to-cart');
+                    
+                    addToCartButtons.forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            
+                            const productId = this.getAttribute('data-id');
+                            const productCard = this.closest('.product-card');
+                            const productName = productCard.getAttribute('data-product-name');
+                            const productPrice = parseFloat(productCard.getAttribute('data-product-price'));
+                            const productImage = productCard.getAttribute('data-product-image');
+                            
+                            if (window.cartManager) {
+                                window.cartManager.addItem(
+                                    productId,
+                                    productName,
+                                    productPrice,
+                                    productImage,
+                                    1
+                                );
+                                
+                                // クリック時のフィードバック - search-results.htmlと同様
+                                this.textContent = 'Added!';
+                                setTimeout(() => {
+                                    this.textContent = 'Add to Cart';
+                                }, 1000);
+                            }
+                        });
+                    });
+                });
+            </script>
         </div>
     </main>
 
