@@ -39,8 +39,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 「Recently Viewed」セクションの「Add to Cart」ボタンのイベント設定
-    setupRecentlyViewedEvents();
+    // common.js がすでに商品カードのイベントを設定しているので、
+    // ここでは設定しない（二重登録による二重追加を防止）
+    // setupRecentlyViewedEvents()はコメントアウトまたは削除します
 });
 
 // プロモーションコードのメッセージを表示
@@ -303,76 +304,13 @@ function setupCartItemEvents() {
     });
 }
 
-// 「Recently Viewed」セクションのイベントリスナー設定
+// setupRecentlyViewedEvents関数は削除または非アクティブ化
+// この関数は不要になりました。common.jsの同様の機能が使用されます
+/* 
 function setupRecentlyViewedEvents() {
-    // 「Recently Viewed」セクションの「Add to Cart」ボタン
-    const addToCartButtons = document.querySelectorAll('.product-card .add-to-cart');
-    
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
-            // イベントの伝播を停止（商品リンクのクリックを防止）
-            event.stopPropagation();
-            
-            // 商品情報を取得
-            const productCard = this.closest('.product-card');
-            const productId = productCard.dataset.productId;
-            const productName = productCard.dataset.productName;
-            const productPrice = parseFloat(productCard.dataset.productPrice);
-            const productImage = productCard.dataset.productImage;
-            
-            // カートに追加
-            if (window.cartManager) {
-                window.cartManager.addItem(productId, productName, productPrice, productImage);
-                
-                // 追加成功メッセージを表示（オプション）
-                const successMessage = document.createElement('div');
-                successMessage.textContent = 'Added to cart!';
-                successMessage.style.position = 'absolute';
-                successMessage.style.backgroundColor = 'rgba(76, 175, 80, 0.8)';
-                successMessage.style.color = 'white';
-                successMessage.style.padding = '0.5rem 1rem';
-                successMessage.style.borderRadius = '4px';
-                successMessage.style.top = '50%';
-                successMessage.style.left = '50%';
-                successMessage.style.transform = 'translate(-50%, -50%)';
-                successMessage.style.zIndex = '100';
-                successMessage.style.animation = 'fadeIn 0.3s, fadeOut 0.3s 1s forwards';
-                
-                // アニメーションを定義
-                const style = document.createElement('style');
-                style.textContent = `
-                    @keyframes fadeIn {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
-                    }
-                    @keyframes fadeOut {
-                        from { opacity: 1; }
-                        to { opacity: 0; }
-                    }
-                `;
-                document.head.appendChild(style);
-                
-                // メッセージを表示
-                productCard.style.position = 'relative';
-                productCard.appendChild(successMessage);
-                
-                // 1.5秒後にメッセージを削除
-                setTimeout(() => {
-                    productCard.removeChild(successMessage);
-                }, 1500);
-            }
-        });
-    });
-    
-    // 商品カードのリンクがクリック可能であることを確認
-    const productLinks = document.querySelectorAll('.product-card .product-link');
-    productLinks.forEach(link => {
-        // リンクのデフォルトの動作が機能することを確認
-        link.addEventListener('click', function(event) {
-            // リンクの動作を許可（何もしない）
-        });
-    });
+    // この関数はcommon.jsの重複を避けるため削除
 }
+*/
 
 // 注文サマリーを更新
 function updateOrderSummary(cartItems) {
