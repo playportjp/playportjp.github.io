@@ -230,7 +230,7 @@ function validateForm() {
     const termsCheckbox = document.getElementById('terms');
     const termsError = document.getElementById('terms-error');
     if (termsCheckbox && termsError && !termsCheckbox.checked) {
-        termsError.textContent = 'You must agree to the Terms and Conditions';
+        termsError.textContent = 'Please check this box to continue';
         isValid = false;
     }
     
