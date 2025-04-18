@@ -376,6 +376,41 @@
                 width: 100%;
             }
         }
+        
+        /* 商品カードのリンク機能追加用スタイル */
+        .product-link {
+            display: block;
+            height: 100%;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .product-card {
+            cursor: pointer;
+        }
+        
+        /* カートボタンやDetailsボタンのスタイル */
+        .product-card .add-to-cart,
+        .product-card .btn-secondary {
+            position: relative;
+            z-index: 10; /* 高いz-indexを設定して最前面に表示 */
+        }
+        
+        /* Googleリンクのz-index設定 */
+        .search-image-link {
+            position: absolute;
+            z-index: 10; /* 高いz-indexを設定して最前面に表示 */
+        }
+        
+        /* 明示的なカーソルスタイルを追加 */
+        .product-card h3,
+        .product-card .image-placeholder,
+        .product-card .product-description,
+        .product-card .product-meta,
+        .product-card .product-condition,
+        .product-card .product-price {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -469,51 +504,46 @@
 
             <!-- Pagination -->
             <div class="pagination">
-                <button class="pagination-btn active">1</button>
-                <button class="pagination-btn">2</button>
-                <button class="pagination-btn">3</button>
-                <button class="pagination-btn">4</button>
-                <button class="pagination-btn">5</button>
-                <button class="pagination-btn">Next →</button>
+                <!-- JavaScript でページネーションが動的に生成されます -->
             </div>
         </div>
     </main>
 
     <footer>
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-nav">
-                        <h3>Categories</h3>
-                        <ul>
-                            <li><a href="search-results.html?category=games">Games</a></li>
-                            <li><a href="search-results.html?category=books">Books</a></li>
-                            <li><a href="search-results.html?category=music">Music</a></li>
-                            <li><a href="search-results.html?category=collectibles">Collectibles</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-nav">
-                        <h3>Information</h3>
-                        <ul>
-                            <li><a href="shipping.html">Shipping</a></li>
-                            <li><a href="returns.html">Returns</a></li>
-                            <li><a href="about.html">About Us</a></li>
-                            <li><a href="contact.html">Contact</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-newsletter">
-                        <h3>Stay Updated</h3>
-                        <p>Subscribe for updates on new arrivals and special offers.</p>
-                        <form id="newsletter-form">
-                            <input type="email" placeholder="Your email" aria-label="Email for newsletter" id="newsletter-email" required>
-                            <button type="submit">Subscribe</button>
-                        </form>
-                    </div>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-nav">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="search-results.html?category=games">Games</a></li>
+                        <li><a href="search-results.html?category=books">Books</a></li>
+                        <li><a href="search-results.html?category=music">Music</a></li>
+                        <li><a href="search-results.html?category=collectibles">Collectibles</a></li>
+                    </ul>
                 </div>
-                <div class="copyright">
-                    <p>&copy; 2025 PlayPortJP. All rights reserved.</p>
+                <div class="footer-nav">
+                    <h3>Information</h3>
+                    <ul>
+                        <li><a href="shipping.html">Shipping</a></li>
+                        <li><a href="returns.html">Returns</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe for updates on new arrivals and special offers.</p>
+                    <form id="newsletter-form">
+                        <input type="email" placeholder="Your email" aria-label="Email for newsletter" id="newsletter-email" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
                 </div>
             </div>
-        </footer>
+            <div class="copyright">
+                <p>&copy; 2025 PlayPortJP. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
     
     <!-- JavaScriptファイルの読み込み -->
     <script src="js/common.js"></script>
