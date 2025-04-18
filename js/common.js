@@ -140,10 +140,13 @@ function initCheckoutPage() {
         displayCheckoutItems();
     }
     
-    // 注文フォームの送信処理
-    const orderForm = document.getElementById('order-form');
-    if (orderForm) {
-        orderForm.addEventListener('submit', handleOrderSubmit);
+    // checkout.jsがすでにフォーム送信処理を行っている場合は、common.jsでは処理をスキップします
+    // 単独ページテスト用に限りますが、実際の実装ではcheckout.jsを使用します
+    if (!window.checkoutJsLoaded) {
+        const orderForm = document.getElementById('order-form');
+        if (orderForm) {
+            orderForm.addEventListener('submit', handleOrderSubmit);
+        }
     }
 }
 
@@ -237,14 +240,34 @@ function updateOrderTotals() {
 // 注文フォームの送信ハンドラ（基本的な実装）
 function handleOrderSubmit(event) {
     if (event) event.preventDefault();
-    console.log('Order form submitted');
+    console.log('Order form submitted - handled by common.js');
     
-    // 実際の実装はcheckout.jsにあります
+    // checkout.jsが存在するかチェック
     if (typeof validateForm === 'function' && !validateForm()) {
         console.log('Form validation failed');
         return false;
     }
     
-    alert('Processing your order...');
+    // checkout.jsに実装を委ねるためのフラグを確認
+    if (window.checkoutJsLoaded) {
+        console.log('Checkout.js is handling form submission');
+        return false;
+    }
+    
+    // checkout.jsがない場合の簡易的な処理（このコードは通常実行されません）
+    console.log('Performing basic checkout process (fallback)');
+    
+    // 処理中メッセージ（アラートを削除し、インライン表示に変更）
+    const submitButton = document.querySelector('.checkout-btn');
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Processing...';
+    }
+    
+    // 処理完了後、注文確認ページへ移動
+    setTimeout(() => {
+        window.location.href = 'order-confirmation.html';
+    }, 1000);
+    
     return false;
 }
