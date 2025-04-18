@@ -1,4 +1,4 @@
-// Wait for DOM content to be fully loaded
+// DOM ready event
 document.addEventListener('DOMContentLoaded', function() {
     // Get the order form element
     const orderForm = document.getElementById('order-form');
@@ -35,6 +35,10 @@ function handleCheckoutSubmit(event) {
     
     try {
         console.log('Form is valid, collecting order data...');
+        
+        // Show processing state
+        showProcessingState();
+        
         // Collect order data
         const orderData = collectOrderData();
         console.log('Order data collected:', orderData);
@@ -49,14 +53,78 @@ function handleCheckoutSubmit(event) {
             console.log('Cart cleared');
         }
         
-        // Redirect to order confirmation page
-        console.log('Redirecting to order-confirmation.html');
-        window.location.href = 'order-confirmation.html';
+        // Set a small timeout to allow the processing message to be seen
+        // This is optional - you can make it redirect immediately by setting this to 0
+        setTimeout(function() {
+            // Redirect to order confirmation page
+            console.log('Redirecting to order-confirmation.html');
+            window.location.href = 'order-confirmation.html';
+        }, 800); // Short delay to show the processing message
+        
     } catch (error) {
         console.error('Error during checkout process:', error);
         
+        // Hide processing state
+        hideProcessingState();
+        
         // Display error message
         showCheckoutError('An error occurred while processing your order. Please try again.');
+    }
+}
+
+// Show processing state
+function showProcessingState() {
+    // Get the submit button
+    const submitButton = document.querySelector('.checkout-btn');
+    if (submitButton) {
+        // Store original text
+        submitButton.dataset.originalText = submitButton.textContent;
+        
+        // Show processing text and disable button
+        submitButton.textContent = 'Processing order...';
+        submitButton.disabled = true;
+        submitButton.style.backgroundColor = '#999';
+        submitButton.style.cursor = 'wait';
+    }
+    
+    // Create or update processing message
+    let processingMessage = document.getElementById('processing-message');
+    if (!processingMessage) {
+        processingMessage = document.createElement('div');
+        processingMessage.id = 'processing-message';
+        processingMessage.style.marginTop = '1rem';
+        processingMessage.style.padding = '0.75rem';
+        processingMessage.style.backgroundColor = 'rgba(0,0,0,0.1)';
+        processingMessage.style.borderRadius = '4px';
+        processingMessage.style.textAlign = 'center';
+        processingMessage.style.color = 'var(--text-primary)';
+        
+        // Add after the submit button
+        const submitButton = document.querySelector('.checkout-btn');
+        if (submitButton && submitButton.parentNode) {
+            submitButton.parentNode.appendChild(processingMessage);
+        }
+    }
+    
+    processingMessage.textContent = 'Processing your order. Please wait...';
+    processingMessage.style.display = 'block';
+}
+
+// Hide processing state
+function hideProcessingState() {
+    // Restore submit button
+    const submitButton = document.querySelector('.checkout-btn');
+    if (submitButton && submitButton.dataset.originalText) {
+        submitButton.textContent = submitButton.dataset.originalText;
+        submitButton.disabled = false;
+        submitButton.style.backgroundColor = '';
+        submitButton.style.cursor = '';
+    }
+    
+    // Hide processing message
+    const processingMessage = document.getElementById('processing-message');
+    if (processingMessage) {
+        processingMessage.style.display = 'none';
     }
 }
 
@@ -326,10 +394,52 @@ function applyPromoCode() {
     if (promoCode === 'WELCOME10') {
         // Apply 10% discount
         applyDiscount(0.1);
-        alert('Promo code applied: 10% discount!');
+        // Use a non-blocking notification instead of alert
+        showPromoMessage('Promo code applied: 10% discount!', 'success');
     } else {
-        alert('Invalid promo code. Please try again.');
+        showPromoMessage('Invalid promo code. Please try again.', 'error');
     }
+}
+
+// Show promo message
+function showPromoMessage(message, type) {
+    // Find or create message element
+    let messageElement = document.getElementById('promo-message');
+    
+    if (!messageElement) {
+        messageElement = document.createElement('div');
+        messageElement.id = 'promo-message';
+        messageElement.style.marginTop = '0.5rem';
+        messageElement.style.padding = '0.5rem';
+        messageElement.style.borderRadius = '4px';
+        messageElement.style.fontSize = '0.8rem';
+        messageElement.style.textAlign = 'center';
+        
+        // Insert after promo button
+        const promoGroup = document.querySelector('.promo-input-group');
+        if (promoGroup && promoGroup.parentNode) {
+            promoGroup.parentNode.appendChild(messageElement);
+        }
+    }
+    
+    // Set message and style based on type
+    messageElement.textContent = message;
+    
+    if (type === 'success') {
+        messageElement.style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
+        messageElement.style.color = '#4caf50';
+    } else {
+        messageElement.style.backgroundColor = 'rgba(244, 67, 54, 0.1)';
+        messageElement.style.color = '#f44336';
+    }
+    
+    // Show the message
+    messageElement.style.display = 'block';
+    
+    // Automatically hide after a few seconds
+    setTimeout(function() {
+        messageElement.style.display = 'none';
+    }, 3000);
 }
 
 // Apply discount to order total
