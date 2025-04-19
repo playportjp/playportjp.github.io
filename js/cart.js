@@ -316,20 +316,20 @@ function setupRecentlyViewedEvents() {
 function updateOrderSummary(cartItems) {
     if (!cartItems || cartItems.length === 0) return;
     
-    // 小計を計算（すでに税込みの価格）
-    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    // 合計金額（税込み価格）を計算
+    const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
     // 税金計算（小計の10%と仮定して逆算）
     const taxRate = 0.1;
-    const estimatedTax = (subtotal * taxRate) / (1 + taxRate);
+    const estimatedTax = (total * taxRate) / (1 + taxRate);
     
-    // 合計（税込みなので小計と同じ）
-    const total = subtotal;
+    // 小計（税抜き価格）を計算
+    const subtotal = total - estimatedTax;
     
     // 各要素を直接取得して更新
     const summaryRows = document.querySelectorAll('.cart-order-summary .summary-row');
     
-    // 小計の表示を更新
+    // 小計の表示を更新（税抜き価格）
     if (summaryRows[0]) {
         const valueElement = summaryRows[0].querySelector('.summary-value');
         if (valueElement) {
@@ -355,7 +355,7 @@ function updateOrderSummary(cartItems) {
     if (summaryRows[2]) {
         const valueElement = summaryRows[2].querySelector('.summary-value');
         if (valueElement) {
-            valueElement.textContent = `-${estimatedTax.toFixed(2)} CAD`;
+            valueElement.textContent = `${estimatedTax.toFixed(2)} CAD`;
         }
     }
     
