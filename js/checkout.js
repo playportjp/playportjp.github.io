@@ -555,20 +555,18 @@ function collectOrderData() {
     
     // 小計、税金、合計を取得
     const subtotalElement = document.getElementById('checkout-subtotal');
-    const taxElement = document.getElementById('checkout-tax');
     const totalElement = document.getElementById('checkout-total');
-    
-    if (!subtotalElement || !taxElement || !totalElement) {
+
+    if (!subtotalElement || !totalElement) {
         throw new Error('Price summary elements not found');
     }
-    
+
     const subtotalText = subtotalElement.textContent;
-    const taxText = taxElement.textContent;
     const totalText = totalElement.textContent;
-    
+
     const subtotal = parseFloat(subtotalText.replace(/[^0-9.]/g, ''));
-    const tax = parseFloat(taxText.replace(/[^0-9.]/g, ''));
     const shipping = 0; // 送料無料と仮定
+    const tax = 0; // 税込み価格のため、別途計算しない
     const total = parseFloat(totalText.replace(/[^0-9.]/g, ''));
     
     // フォームから顧客情報を取得
