@@ -349,6 +349,7 @@ function displayCheckoutItems() {
 }
 
 // 注文合計の更新
+// 注文合計の更新
 function updateOrderTotals() {
     // DOMに要素が存在するか確認
     const subtotalElement = document.getElementById('checkout-subtotal');
@@ -361,22 +362,23 @@ function updateOrderTotals() {
     const cartItems = window.cartManager.items;
     if (!cartItems || cartItems.length === 0) return;
     
-    // 小計を計算
-    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    // 合計（税込み価格）
+    const total = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     
-    // 税金（小計の10%と仮定）
-    const tax = subtotal * 0.1;
+    // 小計（表示上は同じ金額に設定）
+    const subtotal = total;
+    
+    // 税金（表示用の計算 - 小計の10%と仮定して逆算）
+    const taxRate = 0.1;
+    const estimatedTax = (total * taxRate) / (1 + taxRate);
     
     // 送料（free shipping と仮定）
     const shipping = 0;
     
-    // 合計
-    const total = subtotal + tax + shipping;
-    
     // 表示を更新
     subtotalElement.textContent = `${subtotal.toFixed(2)} CAD`;
-    taxElement.textContent = `${tax.toFixed(2)} CAD`;
-    document.getElementById('checkout-shipping').textContent = shipping === 0 ? 'Free' : `${shipping.toFixed(2)} CAD`;
+    taxElement.textContent = `Included in price`;
+    document.getElementById('checkout-shipping').textContent = `Free`;
     totalElement.textContent = `${total.toFixed(2)} CAD`;
 }
 
