@@ -116,7 +116,7 @@ window.cartManager = {
     // カートの税金を計算（10%と仮定）
     getCartTax: function() {
         return this.getCartTotal() * 0.1;
-    },
+    }
     
     // カートの商品数を取得
     getItemCount: function() {
