@@ -319,11 +319,8 @@ function updateOrderSummary(cartItems) {
     // 小計を計算
     const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     
-    // 税金（小計の10%と仮定）
-    const tax = subtotal * 0.1;
-    
-    // 合計
-    const total = subtotal + tax;
+    // 合計（税込みなので小計と同じ）
+    const total = subtotal;
     
     // 小計の表示を更新
     const subtotalElement = document.querySelector('.summary-row:nth-child(1) .summary-value');
@@ -334,7 +331,7 @@ function updateOrderSummary(cartItems) {
     // 税金の表示を更新
     const taxElement = document.querySelector('.summary-row:nth-child(3) .summary-value');
     if (taxElement) {
-        taxElement.textContent = `${tax.toFixed(2)} CAD`;
+        taxElement.textContent = `-.-`;
     }
     
     // 合計の表示を更新
