@@ -523,7 +523,7 @@ function loadCartItems() {
 }
 
 // 注文サマリーを計算値で更新
-function updateOrderSummary(subtotal) {
+function updateOrderSummary(subtotalWithTax) {
     const subtotalElement = document.getElementById('checkout-subtotal');
     const taxElement = document.getElementById('checkout-tax');
     const totalElement = document.getElementById('checkout-total');
@@ -532,12 +532,19 @@ function updateOrderSummary(subtotal) {
         return;
     }
     
-    // 合計計算（税込みなので小計と同じ）
-    const total = subtotal;
+    // 合計金額（税込み）
+    const total = subtotalWithTax;
+    
+    // 税金計算（合計の10%と仮定して逆算）
+    const taxRate = 0.1;
+    const tax = (total * taxRate) / (1 + taxRate);
+    
+    // 小計（税抜き）
+    const subtotal = total - tax;
     
     // 表示を更新
     subtotalElement.textContent = subtotal.toFixed(2) + ' CAD';
-    taxElement.textContent = 'Included in price';
+    taxElement.textContent = tax.toFixed(2) + ' CAD';
     totalElement.textContent = total.toFixed(2) + ' CAD';
 }
 
