@@ -532,16 +532,12 @@ function updateOrderSummary(subtotal) {
         return;
     }
     
-    // 税金計算（例として10%）
-    const taxRate = 0.1;
-    const tax = subtotal * taxRate;
-    
-    // 合計計算
-    const total = subtotal + tax;
+    // 合計計算（税込みなので小計と同じ）
+    const total = subtotal;
     
     // 表示を更新
     subtotalElement.textContent = subtotal.toFixed(2) + ' CAD';
-    taxElement.textContent = tax.toFixed(2) + ' CAD';
+    taxElement.textContent = 'Included in price';
     totalElement.textContent = total.toFixed(2) + ' CAD';
 }
 
