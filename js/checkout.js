@@ -522,30 +522,57 @@ function loadCartItems() {
     updateOrderSummary(subtotal);
 }
 
-// 注文サマリーを計算値で更新
-function updateOrderSummary(subtotalWithTax) {
-    const subtotalElement = document.getElementById('checkout-subtotal');
-    const taxElement = document.getElementById('checkout-tax');
-    const totalElement = document.getElementById('checkout-total');
+// 注文サマリーを更新
+function updateOrderSummary(cartItems) {
+    if (!cartItems || cartItems.length === 0) return;
     
-    if (!subtotalElement || !taxElement || !totalElement) {
-        return;
-    }
+    // 合計（税込み価格）
+    const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
-    // 合計金額（税込み）
-    const total = subtotalWithTax;
-    
-    // 税金計算（合計の10%と仮定して逆算）
-    const taxRate = 0.1;
-    const tax = (total * taxRate) / (1 + taxRate);
-    
-    // 小計（税抜き）- この場合は総合計と同じに設定
+    // 小計（表示上は同じ金額に設定）
     const subtotal = total;
     
-    // 表示を更新
-    subtotalElement.textContent = subtotal.toFixed(2) + ' CAD';
-    taxElement.textContent = 'Included in price';
-    totalElement.textContent = total.toFixed(2) + ' CAD';
+    // 各要素を直接取得して更新
+    const summaryRows = document.querySelectorAll('.cart-order-summary .summary-row');
+    
+    // 小計の表示を更新
+    if (summaryRows[0]) {
+        const valueElement = summaryRows[0].querySelector('.summary-value');
+        if (valueElement) {
+            valueElement.textContent = `${subtotal.toFixed(2)} CAD`;
+        }
+        
+        const labelElement = summaryRows[0].querySelector('.summary-label');
+        if (labelElement) {
+            const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+            labelElement.textContent = `Subtotal (${itemCount} item${itemCount !== 1 ? 's' : ''})`;
+        }
+    }
+    
+    // 送料の表示を更新
+    if (summaryRows[1]) {
+        const valueElement = summaryRows[1].querySelector('.summary-value');
+        if (valueElement) {
+            valueElement.textContent = `Free`;
+        }
+    }
+    
+    // 税金の表示を更新
+    if (summaryRows[2]) {
+        const valueElement = summaryRows[2].querySelector('.summary-value');
+        if (valueElement) {
+            valueElement.textContent = `Included in price`;
+        }
+    }
+    
+    // 合計の表示を更新
+    const totalRow = document.querySelector('.cart-order-summary .summary-row.total');
+    if (totalRow) {
+        const valueElement = totalRow.querySelector('.summary-value');
+        if (valueElement) {
+            valueElement.textContent = `${total.toFixed(2)} CAD`;
+        }
+    }
 }
 
 // 注文データ収集
