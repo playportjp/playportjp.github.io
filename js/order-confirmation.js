@@ -86,7 +86,7 @@ function displayOrderSummary(orderData) {
     const summary = orderData.summary;
     
     document.getElementById('summary-subtotal').textContent = `${summary.subtotal.toFixed(2)} CAD`;
-    document.getElementById('summary-shipping').textContent = `${summary.shipping.toFixed(2)} CAD`;
-    document.getElementById('summary-tax').textContent = `Included in price`;
+    document.getElementById('summary-shipping').textContent = `${summary.shipping === 0 ? 'Free' : summary.shipping.toFixed(2) + ' CAD'}`;
+    document.getElementById('summary-tax').textContent = `${summary.tax.toFixed(2)} CAD`;
     document.getElementById('summary-total').textContent = `${summary.total.toFixed(2)} CAD`;
 }
