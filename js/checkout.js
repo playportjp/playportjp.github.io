@@ -527,8 +527,9 @@ function updateOrderSummary(subtotalWithTax) {
     const subtotalElement = document.getElementById('checkout-subtotal');
     const taxElement = document.getElementById('checkout-tax');
     const totalElement = document.getElementById('checkout-total');
+    const shippingElement = document.getElementById('checkout-shipping');
     
-    if (!subtotalElement || !taxElement || !totalElement) {
+    if (!subtotalElement || !taxElement || !totalElement || !shippingElement) {
         return;
     }
     
@@ -539,12 +540,13 @@ function updateOrderSummary(subtotalWithTax) {
     const taxRate = 0.1;
     const tax = (total * taxRate) / (1 + taxRate);
     
-    // 小計（税抜き）- この場合は総合計と同じに設定
-    const subtotal = total;
+    // 小計（税抜き）
+    const subtotal = total - tax;
     
     // 表示を更新
     subtotalElement.textContent = subtotal.toFixed(2) + ' CAD';
-    taxElement.textContent = 'Included in price';
+    shippingElement.textContent = 'Free';
+    taxElement.textContent = tax.toFixed(2) + ' CAD';
     totalElement.textContent = total.toFixed(2) + ' CAD';
 }
 
