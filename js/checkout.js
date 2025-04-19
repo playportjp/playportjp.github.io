@@ -527,8 +527,9 @@ function updateOrderSummary(subtotalWithTax) {
     const subtotalElement = document.getElementById('checkout-subtotal');
     const taxElement = document.getElementById('checkout-tax');
     const totalElement = document.getElementById('checkout-total');
+    const shippingElement = document.getElementById('checkout-shipping');
     
-    if (!subtotalElement || !taxElement || !totalElement) {
+    if (!subtotalElement || !taxElement || !totalElement || !shippingElement) {
         return;
     }
     
@@ -544,6 +545,7 @@ function updateOrderSummary(subtotalWithTax) {
     
     // 表示を更新
     subtotalElement.textContent = subtotal.toFixed(2) + ' CAD';
+    shippingElement.textContent = 'Free';
     taxElement.textContent = tax.toFixed(2) + ' CAD';
     totalElement.textContent = total.toFixed(2) + ' CAD';
 }
