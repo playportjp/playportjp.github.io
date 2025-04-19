@@ -332,6 +332,12 @@ function updateOrderSummary(cartItems) {
         subtotalElement.textContent = `${subtotal.toFixed(2)} CAD`;
     }
     
+    // 送料の表示を更新
+    const shippingElement = document.querySelector('.summary-row:nth-child(2) .summary-value');
+    if (shippingElement) {
+        shippingElement.textContent = `Free`;
+    }
+    
     // 税金の表示を更新
     const taxElement = document.querySelector('.summary-row:nth-child(3) .summary-value');
     if (taxElement) {
