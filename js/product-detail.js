@@ -74,14 +74,31 @@ function displayProductDetails(product) {
     // 商品画像を更新
     const productImageMain = document.querySelector('.product-image-main');
     if (productImageMain && product.image) {
-        productImageMain.style.backgroundImage = `url('${product.image}')`;
-        productImageMain.style.backgroundSize = 'contain';
-        productImageMain.style.backgroundRepeat = 'no-repeat';
-        productImageMain.style.backgroundPosition = 'center';
-        
-        // SVGアイコンと説明テキストを非表示
-        const svgElements = productImageMain.querySelectorAll('svg, div');
-        svgElements.forEach(el => el.style.display = 'none');
+        // 画像を事前にロードして、読み込み完了後に表示する
+        const img = new Image();
+        img.onload = function() {
+            // 画像の読み込みが完了したら背景画像として設定
+            productImageMain.style.backgroundImage = `url('${product.image}')`;
+            productImageMain.style.backgroundSize = 'contain';
+            productImageMain.style.backgroundRepeat = 'no-repeat';
+            productImageMain.style.backgroundPosition = 'center';
+            
+            // SVGアイコンと説明テキストを非表示
+            const svgElements = productImageMain.querySelectorAll('svg, div');
+            svgElements.forEach(el => el.style.display = 'none');
+        };
+        img.onerror = function() {
+            // 画像のロードに失敗した場合はエラーメッセージを表示
+            const svgElements = productImageMain.querySelectorAll('svg');
+            const textElement = productImageMain.querySelector('div');
+            if (textElement) {
+                textElement.textContent = '画像を読み込めませんでした';
+                textElement.style.opacity = '1';
+            }
+            svgElements.forEach(el => el.style.opacity = '1');
+        };
+        // 画像のロード開始
+        img.src = product.image;
     }
     
     // 商品価格を更新
