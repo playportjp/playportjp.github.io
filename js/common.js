@@ -77,7 +77,7 @@ window.internationalPricing = {
         }
         
         if (importFeesElement) {
-            importFeesElement.textContent = `約${prices.importFees.toFixed(2)} CAD`;
+            importFeesElement.textContent = `~${prices.importFees.toFixed(2)} CAD`;
         }
         
         return prices;
