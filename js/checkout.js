@@ -533,21 +533,35 @@ function updateOrderSummary(subtotalWithTax) {
         return;
     }
     
+    // ユーザーの国を取得（実際の実装ではIPアドレスや選択から取得）
+    const userCountry = 'CA'; // デフォルトはカナダ
+    
     // 合計金額（税込み）
     const total = subtotalWithTax;
     
-    // 税金計算（合計の10%と仮定して逆算）
-    const taxRate = 0.1;
-    const tax = (total * taxRate) / (1 + taxRate);
-    
-    // 小計（税抜き）
-    const subtotal = total - tax;
-    
-    // 表示を更新
-    subtotalElement.textContent = subtotal.toFixed(2) + ' CAD';
-    shippingElement.textContent = 'Free';
-    taxElement.textContent = tax.toFixed(2) + ' CAD';
-    totalElement.textContent = total.toFixed(2) + ' CAD';
+    // 国際価格計算が利用可能な場合、それを使用
+    if (window.internationalPricing) {
+        const prices = window.internationalPricing.calculatePrices(total, userCountry);
+        
+        // 表示を更新
+        subtotalElement.textContent = `${prices.cardPayment.toFixed(2)} CAD`;
+        taxElement.textContent = `${prices.importFees.toFixed(2)} CAD`;
+        shippingElement.textContent = 'Free';
+        totalElement.textContent = `${prices.estimatedTotal.toFixed(2)} CAD`;
+    } else {
+        // 旧来の方法で計算（税金を10%と仮定して逆算）
+        const taxRate = 0.1;
+        const tax = (total * taxRate) / (1 + taxRate);
+        
+        // 小計（税抜き）
+        const subtotal = total - tax;
+        
+        // 表示を更新
+        subtotalElement.textContent = `${subtotal.toFixed(2)} CAD`;
+        taxElement.textContent = `${tax.toFixed(2)} CAD`;
+        shippingElement.textContent = 'Free';
+        totalElement.textContent = `${total.toFixed(2)} CAD`;
+    }
 }
 
 // 注文データ収集
