@@ -564,6 +564,20 @@
         position: relative;
         overflow: hidden;
     }
+    
+        /* 改行を防ぐための追加スタイル */
+    .summary-label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 220px; /* カート注文サマリーボックスのサイズに合わせて調整 */
+    }
+    
+    @media (max-width: 992px) {
+        .summary-label {
+            max-width: 60%; /* モバイルビューでは比率で設定 */
+        }
+    }
 </style>
 </head>
 <body>
@@ -637,11 +651,11 @@
                             <span class="summary-value" id="estimated-total">79.99 CAD</span>
                         </div>
                         <div class="summary-row">
-                            <span class="summary-label">↳ Card Payment (Charged now)</span>
+                            <span class="summary-label">↳ Card Payment (Charged&nbsp;now)</span>
                             <span class="summary-value" id="card-payment">72.72 CAD</span>
                         </div>
                         <div class="summary-row">
-                            <span class="summary-label">↳ Import Fees (Collected at delivery)</span>
+                            <span class="summary-label">↳ Import Fees (Collected&nbsp;at&nbsp;delivery)</span>
                             <span class="summary-value" id="import-fees">~7.27 CAD</span>
                         </div>
                         <div class="summary-row">
