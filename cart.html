@@ -552,9 +552,26 @@
         margin-top: 0.5rem;
         margin-bottom: 1.5rem;
         line-height: 1.4;
-        padding: 0.5rem;
+        padding: 0.75rem;
         border-radius: 4px;
         background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .summary-note p {
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .summary-note p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .summary-note ul {
+        margin: 0 0 0.5rem 0;
+        padding-left: 1.5rem;
+    }
+    
+    .summary-note li {
+        margin-bottom: 0.25rem;
     }
 
     /* 矢印付きラベルのスタイル調整 */
@@ -643,7 +660,12 @@
                             <span class="summary-value" id="import-fees">~7.27 CAD</span>
                         </div>
                         <div class="summary-note">
-                            * Card Payment is charged now. Import Fees are collected upon delivery. Total represents the complete purchase value. Actual fees may vary by ±10-15% based on local customs regulations and current exchange rates.
+                            <p>Your payment structure:</p>
+                            <ul>
+                                <li><strong>Card Payment:</strong> Charged now</li>
+                                <li><strong>Import Fees:</strong> Collected upon delivery (may vary by ±10-15%)</li>
+                            </ul>
+                            <p>Total amount reflects your complete purchase value. Variations in fees depend on local customs regulations and current exchange rates.</p>
                         </div>
                         
                         <a href="checkout.html" class="checkout-btn">Proceed to Checkout</a>
