@@ -63,7 +63,7 @@ window.internationalPricing = {
         // 各種金額を計算
         const prices = this.calculatePrices(estimatedTotal, countryCode);
         
-        // HTMLの更新
+       // HTMLの更新
         const estimatedTotalElement = document.getElementById('estimated-total');
         const cardPaymentElement = document.getElementById('card-payment');
         const importFeesElement = document.getElementById('import-fees');
