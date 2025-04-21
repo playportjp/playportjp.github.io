@@ -319,22 +319,6 @@
     font-size: 1.1rem;
     font-weight: 600;
     color: white;
-    padding-top: 1rem;
-    margin-top: 1rem;
-    margin-bottom: 1.2rem;
-    border-top: 1px solid var(--border);
-}
-
-.summary-row.total .summary-value {
-    color: white;
-    font-weight: 600;
-}
-
-/* 注文サマリーの色付け - 最終版 */
-.summary-row.total {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: white;
     margin-bottom: 1.2rem;
 }
 
@@ -350,13 +334,18 @@
 
 .summary-row.card-payment .summary-label::before {
     content: "↳ ";
-    color: var(--primary); /* 赤色の矢印 */
+    color: #4ade80; /* 明るい緑色の矢印 */
     font-weight: 500;
     margin-right: 4px;
 }
 
+/* (Now)部分を緑色に */
+.summary-row.card-payment .now-text {
+    color: #4ade80; /* 明るい緑色 */
+}
+
 .summary-row.card-payment .summary-value {
-    color: var(--primary); /* 赤色の価格 */
+    color: #4ade80; /* 明るい緑色の価格 */
     font-weight: 500;
 }
 
@@ -372,6 +361,11 @@
     margin-right: 4px;
 }
 
+/* (On delivery)部分を黄色に */
+.summary-row.import-fees .delivery-text {
+    color: #fcd34d; /* 黄色 */
+}
+
 .summary-row.import-fees .summary-value {
     color: #fcd34d; /* 黄色の価格 */
     font-weight: 500;
@@ -383,7 +377,25 @@
     color: var(--text-secondary); /* デフォルトの灰色 */
 }
 
-/* 注釈文のスタイル */
+.summary-label {
+    color: var(--text-secondary);
+    flex-grow: 1;
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px; /* カート注文サマリーボックスのサイズに合わせて調整 */
+}
+
+.summary-value {
+    font-weight: 500;
+    flex-shrink: 0;
+    min-width: 90px;
+    text-align: right;
+}
+
 .summary-note {
     font-size: 0.8rem;
     color: var(--text-secondary);
