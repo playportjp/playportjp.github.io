@@ -641,6 +641,12 @@
                 height: 100px;
             }
         }
+
+        /* プレースホルダー要素を初期状態で非表示にする */
+        .product-image-main svg, .product-image-main > div {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body>
