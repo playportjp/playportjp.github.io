@@ -1,5 +1,89 @@
 // common.js - 共通で使用される関数やオブジェクト
 
+// 国別税率データベース
+window.taxRates = {
+    'US': 0.00,  // アメリカ
+    'CA': 0.05,  // カナダ
+    'MX': 0.16,  // メキシコ
+    'UK': 0.20,  // イギリス
+    'DE': 0.19,  // ドイツ
+    'FR': 0.20,  // フランス
+    'IT': 0.22,  // イタリア
+    'ES': 0.21,  // スペイン
+    'NL': 0.21,  // オランダ
+    'BE': 0.21,  // ベルギー
+    'SE': 0.25,  // スウェーデン
+    'PL': 0.23,  // ポーランド
+    'AU': 0.10,  // オーストラリア
+    'SG': 0.08,  // シンガポール
+    'AE': 0.05,  // アラブ首長国連邦
+    'SA': 0.15,  // サウジアラビア
+    'JP': 0.10,  // 日本
+};
+
+// 国際販売用の価格計算ロジック
+window.internationalPricing = {
+    // 固定の推定総額から各種金額を計算する
+    calculatePrices: function(estimatedTotal, countryCode) {
+        // デフォルト値または指定された国の税率を取得
+        const taxRate = window.taxRates[countryCode] || 0.20;  // デフォルト値は20%
+        
+        // カード決済額（税抜金額）を計算 = 総額 / (1 + 税率)
+        const cardPayment = estimatedTotal / (1 + taxRate);
+        
+        // 輸入手数料（税金）を計算 = 総額 - カード決済額
+        const importFees = estimatedTotal - cardPayment;
+        
+        return {
+            estimatedTotal: estimatedTotal,
+            cardPayment: cardPayment,
+            importFees: importFees,
+            taxRate: taxRate
+        };
+    },
+    
+    // 固定金額に調整するためのヘルパー関数（.99などで終わるようにする）
+    adjustToNicePrice: function(price) {
+        // 整数部分を取得
+        const integerPart = Math.floor(price);
+        
+        // .99で終わる価格に調整
+        return integerPart + 0.99;
+    },
+    
+    // カート合計からの国際価格の計算と表示を更新
+    updateCartInternationalPricing: function(countryCode = 'CA') {
+        // カートの合計金額（元々の税込み価格）を取得
+        const cartTotal = window.cartManager.getCartTotal();
+        
+        // 表示用にきれいな固定金額に調整（オプション）
+        // const estimatedTotal = this.adjustToNicePrice(cartTotal);
+        const estimatedTotal = cartTotal; // 調整なしでそのまま使用する場合
+        
+        // 各種金額を計算
+        const prices = this.calculatePrices(estimatedTotal, countryCode);
+        
+        // HTMLの更新
+        const estimatedTotalElement = document.getElementById('estimated-total');
+        const cardPaymentElement = document.getElementById('card-payment');
+        const importFeesElement = document.getElementById('import-fees');
+        
+        if (estimatedTotalElement) {
+            estimatedTotalElement.textContent = `${prices.estimatedTotal.toFixed(2)} CAD`;
+        }
+        
+        if (cardPaymentElement) {
+            cardPaymentElement.textContent = `${prices.cardPayment.toFixed(2)} CAD`;
+        }
+        
+        if (importFeesElement) {
+            importFeesElement.textContent = `約${prices.importFees.toFixed(2)} CAD`;
+        }
+        
+        return prices;
+    }
+};
+
 // カート管理機能
 window.cartManager = {
     items: [],
@@ -116,7 +200,7 @@ window.cartManager = {
     // カートの税金を計算（10%と仮定）
     getCartTax: function() {
         return this.getCartTotal() * 0.1;
-    }, // カンマを追加
+    },
     
     // カートの商品数を取得
     getItemCount: function() {
@@ -153,6 +237,30 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // チェックアウトページ用の処理
     initCheckoutPage();
+    
+    // カートページの場合、国際価格計算を実行
+    if (document.querySelector('.cart-order-summary')) {
+        // ユーザーの国を取得（実際の実装ではIPアドレスや選択から取得）
+        const userCountry = 'CA'; // デフォルトはカナダ
+        
+        // 少し遅延させて既存の処理が終わった後に実行
+        setTimeout(function() {
+            if (window.internationalPricing) {
+                window.internationalPricing.updateCartInternationalPricing(userCountry);
+            }
+        }, 100);
+    }
+});
+
+// カート更新時に国際価格計算を実行
+document.addEventListener('cart:updated', function() {
+    // ユーザーの国を取得（実際の実装ではIPアドレスや選択から取得）
+    const userCountry = 'CA'; // デフォルトはカナダ
+    
+    // カートページの場合のみ実行
+    if (document.querySelector('.cart-order-summary') && window.internationalPricing) {
+        window.internationalPricing.updateCartInternationalPricing(userCountry);
+    }
 });
 
 // 商品カードのイベントリスナーを設定
@@ -349,7 +457,6 @@ function displayCheckoutItems() {
 }
 
 // 注文合計の更新
-// 注文合計の更新
 function updateOrderTotals() {
     // DOMに要素が存在するか確認
     const subtotalElement = document.getElementById('checkout-subtotal');
@@ -362,24 +469,33 @@ function updateOrderTotals() {
     const cartItems = window.cartManager.items;
     if (!cartItems || cartItems.length === 0) return;
     
+    // ユーザーの国を取得（実際の実装ではIPアドレスや選択から取得）
+    const userCountry = 'CA'; // デフォルトはカナダ
+    
     // 合計（税込み価格）
     const total = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     
-    // 小計（表示上は同じ金額に設定）
-    const subtotal = total;
-    
-    // 税金（表示用の計算 - 小計の10%と仮定して逆算）
-    const taxRate = 0.1;
-    const estimatedTax = (total * taxRate) / (1 + taxRate);
-    
-    // 送料（free shipping と仮定）
-    const shipping = 0;
-    
-    // 表示を更新
-    subtotalElement.textContent = `${subtotal.toFixed(2)} CAD`;
-    taxElement.textContent = `Included in price`;
-    document.getElementById('checkout-shipping').textContent = `Free`;
-    totalElement.textContent = `${total.toFixed(2)} CAD`;
+    // 国際価格計算が利用可能な場合、それを使用
+    if (window.internationalPricing) {
+        const prices = window.internationalPricing.calculatePrices(total, userCountry);
+        
+        // 表示を更新
+        subtotalElement.textContent = `${prices.cardPayment.toFixed(2)} CAD`;
+        taxElement.textContent = `${prices.importFees.toFixed(2)} CAD`;
+        document.getElementById('checkout-shipping').textContent = `Free`;
+        totalElement.textContent = `${prices.estimatedTotal.toFixed(2)} CAD`;
+    } else {
+        // 旧来の方法で計算
+        const subtotal = total;
+        const taxRate = 0.1;
+        const estimatedTax = (total * taxRate) / (1 + taxRate);
+        
+        // 表示を更新
+        subtotalElement.textContent = `${subtotal.toFixed(2)} CAD`;
+        taxElement.textContent = `Included in price`;
+        document.getElementById('checkout-shipping').textContent = `Free`;
+        totalElement.textContent = `${total.toFixed(2)} CAD`;
+    }
 }
 
 // 注文フォームの送信ハンドラ（基本的な実装）
