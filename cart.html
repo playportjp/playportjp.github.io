@@ -578,6 +578,50 @@
             max-width: 60%; /* モバイルビューでは比率で設定 */
         }
     }
+
+    /* 注文サマリーの色付け */
+    .summary-row.total {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 1.2rem;
+    }
+    
+    .summary-row.total .summary-value {
+        color: white;
+        font-weight: 600;
+    }
+    
+    .summary-row.card-payment .summary-label {
+        color: #a3e635; /* ライムグリーン - すぐに支払う項目に明るめの色 */
+    }
+    
+    .summary-row.card-payment .summary-value {
+        color: #a3e635;
+        font-weight: 500;
+    }
+    
+    .summary-row.import-fees .summary-label {
+        color: #fbbf24; /* 琥珀色 - 将来支払う項目に警告的な色 */
+    }
+    
+    .summary-row.import-fees .summary-value {
+        color: #fbbf24;
+        font-weight: 500;
+    }
+    
+    .shipping-value {
+        color: #22c55e; /* 緑色 - 無料項目に緑色を使用 */
+    }
+    
+    /* ↳ 矢印のスタイル */
+    .summary-label {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 </style>
 </head>
 <body>
