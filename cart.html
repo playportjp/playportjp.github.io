@@ -610,24 +610,23 @@
                         <!-- カートアイテムはJavaScriptで動的に追加されます -->
                     </div>
                     
-                    <!-- 注文サマリー -->
-                        <div class="cart-order-summary">
+                   <!-- 注文サマリー -->
+                    <div class="cart-order-summary">
                         <h2 class="summary-title">Order Summary</h2>
                         <div class="summary-row">
-                            <span class="summary-label">Subtotal (1 item)</span>
-                            <span class="summary-value">79.99 CAD</span>
+                            <span class="summary-label">推定総額</span>
+                            <span class="summary-value" id="estimated-total">79.99 CAD</span>
                         </div>
                         <div class="summary-row">
-                            <span class="summary-label">Shipping</span>
-                            <span class="summary-value">Free</span>
+                            <span class="summary-label">↳ カード決済額（確定）</span>
+                            <span class="summary-value" id="card-payment">72.72 CAD</span>
                         </div>
                         <div class="summary-row">
-                            <span class="summary-label">Tax</span>
-                            <span class="summary-value">-7.27 CAD</span>
+                            <span class="summary-label">↳ 受取時支払い（推定）</span>
+                            <span class="summary-value" id="import-fees">約7.27 CAD</span>
                         </div>
-                        <div class="summary-row total">
-                            <span class="summary-label">Total</span>
-                            <span class="summary-value">79.99 CAD</span>
+                        <div class="summary-note">
+                            ※ 実際の受取時支払い額は配送先国の税関によって計算されるため、推定額と異なる場合があります
                         </div>
                         
                         <a href="checkout.html" class="checkout-btn">Proceed to Checkout</a>
