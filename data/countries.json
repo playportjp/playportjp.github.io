@@ -69,6 +69,26 @@
         "position": "before",
         "name": "Australian Dollar"
       }
+    },
+    {
+      "code": "PL",
+      "name": "Poland",
+      "currency": {
+        "code": "PLN",
+        "symbol": "zł",
+        "position": "after",
+        "name": "Polish Złoty"
+      }
+    },
+    {
+      "code": "SE",
+      "name": "Sweden",
+      "currency": {
+        "code": "SEK",
+        "symbol": "kr",
+        "position": "after",
+        "name": "Swedish Krona"
+      }
     }
   ]
 }
