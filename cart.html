@@ -620,6 +620,53 @@
         }
     }
 
+        /* 国選択ドロップダウン用スタイル */
+    .summary-country-selector {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .summary-country-selector label {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .country-select {
+        width: 100%;
+        padding: 0.6rem 1rem;
+        border-radius: 4px;
+        background-color: var(--surface-lighter);
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        cursor: pointer;
+    }
+    
+    .country-select:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--focus-ring);
+    }
+    
+    .country-note {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+        line-height: 1.4;
+    }
+    
+    /* モバイル対応 */
+    @media (max-width: 992px) {
+        /* 既存のモバイルスタイル */
+    }
+</style>
+
     
 </style>
 </head>
@@ -689,6 +736,29 @@
                  <!-- 注文サマリー -->
                     <div class="cart-order-summary">
                         <h2 class="summary-title">Order Summary</h2>
+                        <div class="summary-country-selector">
+                            <label for="country-selector">Shipping to:</label>
+                            <select id="country-selector" class="country-select">
+                                <option value="US">United States</option>
+                                <option value="CA" selected>Canada</option>
+                                <option value="MX">Mexico</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="DE">Germany</option>
+                                <option value="FR">France</option>
+                                <option value="IT">Italy</option>
+                                <option value="ES">Spain</option>
+                                <option value="NL">Netherlands</option>
+                                <option value="BE">Belgium</option>
+                                <option value="SE">Sweden</option>
+                                <option value="PL">Poland</option>
+                                <option value="AU">Australia</option>
+                                <option value="SG">Singapore</option>
+                                <option value="AE">United Arab Emirates</option>
+                                <option value="SA">Saudi Arabia</option>
+                                <option value="JP">Japan</option>
+                            </select>
+                            <p class="country-note">Prices and taxes will be updated based on your location.</p>
+                        </div>
                         <div class="summary-row total">
                             <span class="summary-label">Estimated Total</span>
                             <span class="summary-value" id="estimated-total">159.98 CAD</span>
