@@ -15,8 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // フィルター機能を設定
     setupOrderFilters();
     
-    // モックデータをロード（実際のアプリではAPIからデータを取得）
-    loadOrderHistory();
+    // モックデータをロード
+    // サンプルデータをより確実に表示するために変更
+    setupOrderHistory();
 });
 
 // 注文詳細の表示/非表示切り替え機能を設定
@@ -199,115 +200,98 @@ function filterOrders() {
     }
 }
 
-// モックデータをロード（実際のアプリではAPIからデータを取得）
-function loadOrderHistory() {
-    // ページロード時に一時的にすべての注文を非表示にする
-    const orderItems = document.querySelectorAll('.order-item');
+// 注文履歴の設定と表示
+function setupOrderHistory() {
+    // サンプルデータがすでにHTMLに存在するので、一旦何もしない
+    console.log('Setting up order history with HTML sample data');
     
-    // ローディング表示
-    const orderList = document.getElementById('order-list');
-    if (orderList) {
-        // 既存のコンテンツを保存（後で復元するため）
-        const originalContent = orderList.innerHTML;
-        
-        // ローディング表示要素で置き換え
-        const loadingElement = document.createElement('div');
-        loadingElement.className = 'loading-indicator';
-        loadingElement.innerHTML = `
-            <div class="spinner"></div>
-            <p>Loading your order history...</p>
-        `;
-        orderList.innerHTML = '';
-        orderList.appendChild(loadingElement);
-        
-        // 実際のデータ取得処理
-        const mockApiCall = new Promise((resolve) => {
-            // 実際のアプリではここでAPIリクエストを実行
-            // ここでは短い遅延（100ms）に変更して、ユーザーエクスペリエンスを向上
-            setTimeout(() => {
-                // ローカルストレージから注文履歴を取得（デモ用）
-                const savedOrders = localStorage.getItem('order-history');
-                let orders = [];
-                
-                if (savedOrders) {
-                    try {
-                        orders = JSON.parse(savedOrders);
-                        console.log('Found saved order history:', orders);
-                    } catch (e) {
-                        console.error('Error parsing order history data:', e);
-                    }
-                } else {
-                    console.log('No order history found in localStorage');
-                }
-                
-                resolve({ orders: orders, originalContent: originalContent });
-            }, 100);  // 1000msから100msに変更して表示を高速化
-        });
-        
-        // データ取得後の処理
-        mockApiCall.then(data => {
-            // ローディング表示を削除
-            const loadingIndicator = document.querySelector('.loading-indicator');
-            if (loadingIndicator) {
-                loadingIndicator.remove();
-            }
-            
-            // 注文データとオリジナルHTMLを渡す
-            displayOrderHistory(data.orders, data.originalContent);
-        }).catch(error => {
-            console.error('Error loading order history:', error);
-            // エラー表示
-            const loadingIndicator = document.querySelector('.loading-indicator');
-            if (loadingIndicator) {
-                loadingIndicator.innerHTML = `
-                    <div class="error-message">
-                        <p>Error loading your order history. Please try again later.</p>
-                        <button class="btn" onclick="loadOrderHistory()">Retry</button>
-                    </div>
-                `;
-            }
-        });
-    }
-}
-
-// 注文履歴データを表示
-function displayOrderHistory(orders, originalContent) {
-    // 注文データが空の場合は空の状態を表示
+    // 空データチェックと表示
     const emptyOrdersElement = document.getElementById('empty-orders');
     const orderListElement = document.getElementById('order-list');
+    const orderItems = document.querySelectorAll('.order-item');
     
-    if (Array.isArray(orders) && orders.length === 0) {
-        if (emptyOrdersElement && orderListElement) {
-            // 本当に注文データがない場合は空状態を表示
-            orderListElement.style.display = 'none';
-            emptyOrdersElement.style.display = 'block';
-        }
-    } else if (orders.length > 0) {
-        // APIからの実際のデータがある場合は、それを表示
-        // ここでは実装されていないのでコメントとして説明
-        console.log('Would display actual order data here:', orders);
-        
-        // 現段階ではHTMLにハードコードされたデータを表示
-        if (orderListElement) {
-            // オリジナルのHTMLコンテンツを復元
-            orderListElement.innerHTML = originalContent;
-            orderListElement.style.display = 'block';
-            if (emptyOrdersElement) {
-                emptyOrdersElement.style.display = 'none';
-            }
-        }
+    if (orderItems.length === 0 && emptyOrdersElement && orderListElement) {
+        // 注文データが実際に空の場合
+        orderListElement.style.display = 'none';
+        emptyOrdersElement.style.display = 'block';
     } else {
-        // データがないがHTMLにサンプルデータがある場合
-        if (orderListElement) {
-            // オリジナルのHTMLコンテンツを復元
-            orderListElement.innerHTML = originalContent;
-            orderListElement.style.display = 'block';
-            if (emptyOrdersElement) {
-                emptyOrdersElement.style.display = 'none';
-            }
+        // サンプルデータがある場合
+        if (emptyOrdersElement) {
+            emptyOrdersElement.style.display = 'none';
         }
+        orderListElement.style.display = 'block';
     }
     
-    // フィルター初期化（すべての注文を表示）
+    // フィルター初期化
     filterOrders();
+    
+    // 実際のアプリでは、ここでAPIからデータを取得し、HTMLを動的に生成する
+    // サンプルデータをローカルストレージに保存（開発用）
+    // 本番環境では削除する必要があります
+    saveOrderHistoryToLocalStorage();
+}
+
+// サンプルデータをローカルストレージに保存（開発用）
+function saveOrderHistoryToLocalStorage() {
+    // すでにデータがある場合は何もしない
+    if (localStorage.getItem('order-history')) {
+        console.log('Order history already exists in localStorage');
+        return;
+    }
+    
+    // 現在のHTMLからサンプルデータを取得
+    const orderItems = document.querySelectorAll('.order-item');
+    const orders = [];
+    
+    orderItems.forEach(item => {
+        const orderId = item.getAttribute('data-order-id');
+        const orderNumber = item.querySelector('.order-number')?.textContent || '';
+        const orderDate = item.querySelector('.order-date')?.textContent || '';
+        const orderStatus = item.querySelector('.order-status')?.textContent || '';
+        const orderTotal = item.querySelector('.order-total')?.textContent || '';
+        const itemCount = item.querySelector('.item-count')?.textContent || '';
+        
+        // 詳細情報
+        const detailsElement = document.getElementById(`details-${orderId}`);
+        const orderDetails = {};
+        
+        if (detailsElement) {
+            // 商品情報を取得
+            const detailItems = Array.from(detailsElement.querySelectorAll('.details-item')).map(detailItem => {
+                return {
+                    name: detailItem.querySelector('.details-item-name')?.textContent || '',
+                    price: detailItem.querySelector('.details-item-price')?.textContent || '',
+                    quantity: detailItem.querySelector('.details-item-quantity')?.textContent || ''
+                };
+            });
+            
+            // 合計金額情報
+            const totals = {};
+            const totalRows = detailsElement.querySelectorAll('.total-row');
+            totalRows.forEach(row => {
+                const label = row.children[0]?.textContent.replace(':', '') || '';
+                const value = row.children[1]?.textContent || '';
+                if (label && value) {
+                    totals[label] = value;
+                }
+            });
+            
+            orderDetails.items = detailItems;
+            orderDetails.totals = totals;
+        }
+        
+        orders.push({
+            id: orderId,
+            number: orderNumber,
+            date: orderDate,
+            status: orderStatus,
+            total: orderTotal,
+            itemCount: itemCount,
+            details: orderDetails
+        });
+    });
+    
+    // ローカルストレージに保存
+    localStorage.setItem('order-history', JSON.stringify(orders));
+    console.log('Sample order history saved to localStorage:', orders);
 }
