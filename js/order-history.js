@@ -201,92 +201,110 @@ function filterOrders() {
 
 // モックデータをロード（実際のアプリではAPIからデータを取得）
 function loadOrderHistory() {
-    // ページ読み込み時にすべての注文アイテムを非表示にする
+    // ページロード時に一時的にすべての注文を非表示にする
     const orderItems = document.querySelectorAll('.order-item');
-    orderItems.forEach(item => {
-        item.style.display = 'none';
-    });
     
     // ローディング表示
     const orderList = document.getElementById('order-list');
     if (orderList) {
-        // ローディング表示要素を追加
+        // 既存のコンテンツを保存（後で復元するため）
+        const originalContent = orderList.innerHTML;
+        
+        // ローディング表示要素で置き換え
         const loadingElement = document.createElement('div');
         loadingElement.className = 'loading-indicator';
         loadingElement.innerHTML = `
             <div class="spinner"></div>
             <p>Loading your order history...</p>
         `;
-        orderList.prepend(loadingElement);
-    }
-    
-    // 実際のデータ取得処理
-    const mockApiCall = new Promise((resolve) => {
-        // 実際のアプリではここでAPIリクエストを実行
-        // ここでは短い遅延（100ms）に変更して、ユーザーエクスペリエンスを向上
-        setTimeout(() => {
-            // ローカルストレージから注文履歴を取得（デモ用）
-            const savedOrders = localStorage.getItem('order-history');
-            let orders = [];
-            
-            if (savedOrders) {
-                try {
-                    orders = JSON.parse(savedOrders);
-                    console.log('Found saved order history:', orders);
-                } catch (e) {
-                    console.error('Error parsing order history data:', e);
+        orderList.innerHTML = '';
+        orderList.appendChild(loadingElement);
+        
+        // 実際のデータ取得処理
+        const mockApiCall = new Promise((resolve) => {
+            // 実際のアプリではここでAPIリクエストを実行
+            // ここでは短い遅延（100ms）に変更して、ユーザーエクスペリエンスを向上
+            setTimeout(() => {
+                // ローカルストレージから注文履歴を取得（デモ用）
+                const savedOrders = localStorage.getItem('order-history');
+                let orders = [];
+                
+                if (savedOrders) {
+                    try {
+                        orders = JSON.parse(savedOrders);
+                        console.log('Found saved order history:', orders);
+                    } catch (e) {
+                        console.error('Error parsing order history data:', e);
+                    }
+                } else {
+                    console.log('No order history found in localStorage');
                 }
-            } else {
-                console.log('No order history found in localStorage');
+                
+                resolve({ orders: orders, originalContent: originalContent });
+            }, 100);  // 1000msから100msに変更して表示を高速化
+        });
+        
+        // データ取得後の処理
+        mockApiCall.then(data => {
+            // ローディング表示を削除
+            const loadingIndicator = document.querySelector('.loading-indicator');
+            if (loadingIndicator) {
+                loadingIndicator.remove();
             }
             
-            resolve(orders);
-        }, 100);  // 1000msから100msに変更して表示を高速化
-    });
-    
-    // データ取得後の処理
-    mockApiCall.then(orders => {
-        // ローディング表示を削除
-        const loadingIndicator = document.querySelector('.loading-indicator');
-        if (loadingIndicator) {
-            loadingIndicator.remove();
-        }
-        
-        displayOrderHistory(orders);
-    }).catch(error => {
-        console.error('Error loading order history:', error);
-        // エラー表示
-        const loadingIndicator = document.querySelector('.loading-indicator');
-        if (loadingIndicator) {
-            loadingIndicator.innerHTML = `
-                <div class="error-message">
-                    <p>Error loading your order history. Please try again later.</p>
-                    <button class="btn" onclick="loadOrderHistory()">Retry</button>
-                </div>
-            `;
-        }
-    });
+            // 注文データとオリジナルHTMLを渡す
+            displayOrderHistory(data.orders, data.originalContent);
+        }).catch(error => {
+            console.error('Error loading order history:', error);
+            // エラー表示
+            const loadingIndicator = document.querySelector('.loading-indicator');
+            if (loadingIndicator) {
+                loadingIndicator.innerHTML = `
+                    <div class="error-message">
+                        <p>Error loading your order history. Please try again later.</p>
+                        <button class="btn" onclick="loadOrderHistory()">Retry</button>
+                    </div>
+                `;
+            }
+        });
+    }
 }
 
 // 注文履歴データを表示
-function displayOrderHistory(orders) {
+function displayOrderHistory(orders, originalContent) {
     // 注文データが空の場合は空の状態を表示
     const emptyOrdersElement = document.getElementById('empty-orders');
     const orderListElement = document.getElementById('order-list');
     
     if (Array.isArray(orders) && orders.length === 0) {
         if (emptyOrdersElement && orderListElement) {
+            // 本当に注文データがない場合は空状態を表示
             orderListElement.style.display = 'none';
             emptyOrdersElement.style.display = 'block';
         }
-    } else {
-        // 実際のデータがある場合、またはHTMLにサンプルデータがある場合
+    } else if (orders.length > 0) {
+        // APIからの実際のデータがある場合は、それを表示
+        // ここでは実装されていないのでコメントとして説明
+        console.log('Would display actual order data here:', orders);
+        
+        // 現段階ではHTMLにハードコードされたデータを表示
         if (orderListElement) {
-            // HTMLにハードコードされた注文アイテムを表示
-            const orderItems = document.querySelectorAll('.order-item');
-            orderItems.forEach(item => {
-                item.style.display = 'block';
-            });
+            // オリジナルのHTMLコンテンツを復元
+            orderListElement.innerHTML = originalContent;
+            orderListElement.style.display = 'block';
+            if (emptyOrdersElement) {
+                emptyOrdersElement.style.display = 'none';
+            }
+        }
+    } else {
+        // データがないがHTMLにサンプルデータがある場合
+        if (orderListElement) {
+            // オリジナルのHTMLコンテンツを復元
+            orderListElement.innerHTML = originalContent;
+            orderListElement.style.display = 'block';
+            if (emptyOrdersElement) {
+                emptyOrdersElement.style.display = 'none';
+            }
         }
     }
     
