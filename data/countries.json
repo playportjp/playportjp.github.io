@@ -1,0 +1,74 @@
+{
+  "countries": [
+    {
+      "code": "CA",
+      "name": "Canada",
+      "currency": {
+        "code": "CAD",
+        "symbol": "C$",
+        "position": "before",
+        "name": "Canadian Dollar"
+      }
+    },
+    {
+      "code": "US",
+      "name": "United States",
+      "currency": {
+        "code": "USD",
+        "symbol": "$",
+        "position": "before",
+        "name": "US Dollar"
+      }
+    },
+    {
+      "code": "MX",
+      "name": "Mexico",
+      "currency": {
+        "code": "MXN",
+        "symbol": "MX$",
+        "position": "before",
+        "name": "Mexican Peso"
+      }
+    },
+    {
+      "code": "GB",
+      "name": "United Kingdom",
+      "currency": {
+        "code": "GBP",
+        "symbol": "£",
+        "position": "before",
+        "name": "British Pound"
+      }
+    },
+    {
+      "code": "EU",
+      "name": "European Union",
+      "currency": {
+        "code": "EUR",
+        "symbol": "€",
+        "position": "after",
+        "name": "Euro"
+      }
+    },
+    {
+      "code": "JP",
+      "name": "Japan",
+      "currency": {
+        "code": "JPY",
+        "symbol": "¥",
+        "position": "before",
+        "name": "Japanese Yen"
+      }
+    },
+    {
+      "code": "AU",
+      "name": "Australia",
+      "currency": {
+        "code": "AUD",
+        "symbol": "A$",
+        "position": "before",
+        "name": "Australian Dollar"
+      }
+    }
+  ]
+}
