@@ -19,6 +19,29 @@ window.taxRates = {
     'AE': 0.05,  // アラブ首長国連邦
     'SA': 0.15,  // サウジアラビア
     'JP': 0.10,  // 日本
+    'GB': 0.20,  // イギリス（GBコード用）
+    'EU': 0.21,  // EUの平均税率
+};
+
+// グローバル変数として現在選択されている国と通貨情報を保持
+window.currentCountry = null;
+window.countries = [];
+
+// 通貨表示用のフォーマッタ関数
+window.formatCurrency = function(price, country = null) {
+    // 通貨情報がない場合はデフォルト（CAD）を使用
+    if (!country && !window.currentCountry) {
+        return `${price.toFixed(2)} CAD`;
+    }
+    
+    const currencyInfo = country ? country.currency : window.currentCountry.currency;
+    
+    // 通貨シンボルの位置に基づいてフォーマット
+    if (currencyInfo.position === "before") {
+        return `${currencyInfo.symbol}${price.toFixed(2)} ${currencyInfo.code}`;
+    } else {
+        return `${price.toFixed(2)}${currencyInfo.symbol} ${currencyInfo.code}`;
+    }
 };
 
 // 国際販売用の価格計算ロジック
@@ -69,20 +92,131 @@ window.internationalPricing = {
         const importFeesElement = document.getElementById('import-fees');
         
         if (estimatedTotalElement) {
-            estimatedTotalElement.textContent = `${prices.estimatedTotal.toFixed(2)} CAD`;
+            estimatedTotalElement.textContent = window.formatCurrency(prices.estimatedTotal);
         }
         
         if (cardPaymentElement) {
-            cardPaymentElement.textContent = `${prices.cardPayment.toFixed(2)} CAD`;
+            cardPaymentElement.textContent = window.formatCurrency(prices.cardPayment);
         }
         
         if (importFeesElement) {
-            importFeesElement.textContent = `~${prices.importFees.toFixed(2)} CAD`;
+            importFeesElement.textContent = `~${window.formatCurrency(prices.importFees)}`;
         }
         
         return prices;
     }
 };
+
+// 国情報を取得する
+async function loadCountriesData() {
+    try {
+        const response = await fetch('data/countries.json');
+        const data = await response.json();
+        window.countries = data.countries;
+        
+        // ドロップダウンを設定
+        setupCountryDropdown();
+        
+        // ローカルストレージから国コードを取得するか、デフォルトを設定
+        const savedCountryCode = localStorage.getItem('selectedCountry') || 'CA'; // CAをデフォルトに
+        setCountry(savedCountryCode);
+        
+        // ページ上のすべての価格を更新
+        updateAllPrices();
+    } catch (error) {
+        console.error('Failed to load countries data:', error);
+    }
+}
+
+// 国選択ドロップダウンを設定
+function setupCountryDropdown() {
+    const dropdown = document.getElementById('country-dropdown');
+    if (!dropdown) return;
+    
+    // ドロップダウンをクリア
+    dropdown.innerHTML = '';
+    
+    // 各国のオプションを追加
+    window.countries.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country.code;
+        option.textContent = `${country.name} (${country.currency.code})`;
+        dropdown.appendChild(option);
+    });
+    
+    // 保存された選択を設定
+    const savedCountry = localStorage.getItem('selectedCountry');
+    if (savedCountry) {
+        dropdown.value = savedCountry;
+    }
+    
+    // 変更イベントリスナーを追加
+    dropdown.addEventListener('change', function() {
+        setCountry(this.value);
+        updateAllPrices();
+    });
+}
+
+// 国を設定する
+function setCountry(countryCode) {
+    // 国コードに一致する国オブジェクトを見つける
+    window.currentCountry = window.countries.find(country => country.code === countryCode);
+    
+    if (window.currentCountry) {
+        // 選択をローカルストレージに保存
+        localStorage.setItem('selectedCountry', countryCode);
+        
+        // ドロップダウンを更新（存在する場合）
+        const dropdown = document.getElementById('country-dropdown');
+        if (dropdown) {
+            dropdown.value = countryCode;
+        }
+    } else {
+        console.error('Invalid country code:', countryCode);
+    }
+}
+
+// ページ上のすべての価格表示を更新する
+function updateAllPrices() {
+    if (!window.currentCountry) return;
+    
+    // 商品カードの価格
+    const productPrices = document.querySelectorAll('.product-price');
+    productPrices.forEach(priceElement => {
+        const originalPrice = parseFloat(priceElement.getAttribute('data-price') || priceElement.textContent);
+        if (!isNaN(originalPrice)) {
+            priceElement.textContent = window.formatCurrency(originalPrice);
+        }
+    });
+    
+    // カートアイテムの価格
+    const cartItemPrices = document.querySelectorAll('.item-price');
+    cartItemPrices.forEach(priceElement => {
+        const originalPrice = parseFloat(priceElement.getAttribute('data-price') || priceElement.textContent);
+        if (!isNaN(originalPrice)) {
+            priceElement.textContent = window.formatCurrency(originalPrice);
+        }
+    });
+    
+    // カート合計の価格
+    if (window.internationalPricing && document.querySelector('.cart-order-summary')) {
+        window.internationalPricing.updateCartInternationalPricing(window.currentCountry.code);
+    }
+    
+    // チェックアウトページの価格
+    const checkoutPrices = document.querySelectorAll('.checkout-item-price');
+    checkoutPrices.forEach(priceElement => {
+        const priceText = priceElement.textContent;
+        const priceMatch = priceText.match(/(\d+\.\d+)/);
+        if (priceMatch) {
+            const originalPrice = parseFloat(priceMatch[1]);
+            // 数量表示を保持
+            const quantityElement = priceElement.querySelector('.checkout-item-quantity');
+            const quantityText = quantityElement ? quantityElement.outerHTML : '';
+            priceElement.innerHTML = `${window.formatCurrency(originalPrice)} ${quantityText}`;
+        }
+    });
+}
 
 // カート管理機能
 window.cartManager = {
@@ -221,7 +355,10 @@ window.cartManager = {
 
 // DOM読み込み完了時にカート情報を読み込む
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing cart manager');
+    console.log('DOM loaded, initializing cart manager and country selector');
+    
+    // 国情報を取得
+    loadCountriesData();
     
     // カート情報を読み込み、カウントを更新
     if (window.cartManager) {
@@ -240,13 +377,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // カートページの場合、国際価格計算を実行
     if (document.querySelector('.cart-order-summary')) {
-        // ユーザーの国を取得（実際の実装ではIPアドレスや選択から取得）
-        const userCountry = 'CA'; // デフォルトはカナダ
-        
         // 少し遅延させて既存の処理が終わった後に実行
         setTimeout(function() {
-            if (window.internationalPricing) {
-                window.internationalPricing.updateCartInternationalPricing(userCountry);
+            if (window.internationalPricing && window.currentCountry) {
+                window.internationalPricing.updateCartInternationalPricing(window.currentCountry.code);
             }
         }, 100);
     }
@@ -254,12 +388,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // カート更新時に国際価格計算を実行
 document.addEventListener('cart:updated', function() {
-    // ユーザーの国を取得（実際の実装ではIPアドレスや選択から取得）
-    const userCountry = 'CA'; // デフォルトはカナダ
+    // ユーザーの国情報
+    if (!window.currentCountry) return;
     
     // カートページの場合のみ実行
     if (document.querySelector('.cart-order-summary') && window.internationalPricing) {
-        window.internationalPricing.updateCartInternationalPricing(userCountry);
+        window.internationalPricing.updateCartInternationalPricing(window.currentCountry.code);
     }
 });
 
@@ -441,8 +575,8 @@ function displayCheckoutItems() {
                 </div>
                 <div class="checkout-item-details">
                     <div class="checkout-item-title">${item.name}</div>
-                    <div class="checkout-item-price">
-                        ${item.price.toFixed(2)} CAD
+                    <div class="checkout-item-price" data-price="${item.price}">
+                        ${window.formatCurrency(item.price)}
                         <span class="checkout-item-quantity">x${item.quantity}</span>
                     </div>
                 </div>
@@ -469,21 +603,18 @@ function updateOrderTotals() {
     const cartItems = window.cartManager.items;
     if (!cartItems || cartItems.length === 0) return;
     
-    // ユーザーの国を取得（実際の実装ではIPアドレスや選択から取得）
-    const userCountry = 'CA'; // デフォルトはカナダ
-    
     // 合計（税込み価格）
     const total = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     
     // 国際価格計算が利用可能な場合、それを使用
-    if (window.internationalPricing) {
-        const prices = window.internationalPricing.calculatePrices(total, userCountry);
+    if (window.internationalPricing && window.currentCountry) {
+        const prices = window.internationalPricing.calculatePrices(total, window.currentCountry.code);
         
         // 表示を更新
-        subtotalElement.textContent = `${prices.cardPayment.toFixed(2)} CAD`;
-        taxElement.textContent = `${prices.importFees.toFixed(2)} CAD`;
+        subtotalElement.textContent = window.formatCurrency(prices.cardPayment);
+        taxElement.textContent = window.formatCurrency(prices.importFees);
         document.getElementById('checkout-shipping').textContent = `Free`;
-        totalElement.textContent = `${prices.estimatedTotal.toFixed(2)} CAD`;
+        totalElement.textContent = window.formatCurrency(prices.estimatedTotal);
     } else {
         // 旧来の方法で計算
         const subtotal = total;
@@ -491,10 +622,10 @@ function updateOrderTotals() {
         const estimatedTax = (total * taxRate) / (1 + taxRate);
         
         // 表示を更新
-        subtotalElement.textContent = `${subtotal.toFixed(2)} CAD`;
+        subtotalElement.textContent = window.formatCurrency(subtotal);
         taxElement.textContent = `Included in price`;
         document.getElementById('checkout-shipping').textContent = `Free`;
-        totalElement.textContent = `${total.toFixed(2)} CAD`;
+        totalElement.textContent = window.formatCurrency(total);
     }
 }
 
