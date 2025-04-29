@@ -398,6 +398,48 @@
                 grid-column: span 12;
             }
         }
+        /* 注文サマリーの色付け */
+        .summary-row.card-payment .summary-label::before {
+            content: "↳ ";
+            color: #4ade80; /* 明るい緑色の矢印 */
+            font-weight: 500;
+            margin-right: 4px;
+        }
+
+        /* (Now)部分を緑色に */
+        .summary-row.card-payment .now-text {
+            color: #4ade80; /* 明るい緑色 */
+        }
+
+        .summary-row.card-payment .summary-value {
+            color: #4ade80; /* 明るい緑色の価格 */
+            font-weight: 500;
+        }
+
+        /* 輸入手数料の矢印とテキスト色 */
+        .summary-row.import-fees .summary-label::before {
+            content: "↳ ";
+            color: #fcd34d; /* 黄色の矢印 */
+            font-weight: 500;
+            margin-right: 4px;
+        }
+
+        /* (On delivery)部分を黄色に */
+        .summary-row.import-fees .delivery-text {
+            color: #fcd34d; /* 黄色 */
+        }
+
+        .summary-row.import-fees .summary-value {
+            color: #fcd34d; /* 黄色の価格 */
+            font-weight: 500;
+        }
+
+        /* 送料のテキスト色 */
+        .summary-row .shipping-label,
+        .shipping-value {
+            color: var(--text-secondary); /* デフォルトの灰色 */
+        }
+
     </style>
 </head>
 <body>
