@@ -524,11 +524,14 @@ function loadCartItems() {
 
 // 注文サマリーを計算値で更新
 function updateOrderSummary(subtotalWithTax) {
+    console.log("updateOrderSummary called with:", subtotalWithTax); // デバッグ用
+
     const totalElement = document.getElementById('checkout-total');
     const cardPaymentElement = document.getElementById('checkout-card-payment');
     const importFeesElement = document.getElementById('checkout-import-fees');
 
     if (!totalElement || !cardPaymentElement || !importFeesElement) {
+        console.log("Some elements not found"); // デバッグ用
         return;
     }
 
@@ -546,6 +549,8 @@ function updateOrderSummary(subtotalWithTax) {
     totalElement.textContent = `${total.toFixed(2)} CAD`;
     cardPaymentElement.textContent = `${cardPayment.toFixed(2)} CAD`;
     importFeesElement.textContent = `~${importFees.toFixed(2)} CAD`;
+
+    console.log("Updated values:", { total, cardPayment, importFees }); // デバッグ用
 }
 
 // 注文データ収集
