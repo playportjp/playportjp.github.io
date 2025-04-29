@@ -524,44 +524,28 @@ function loadCartItems() {
 
 // 注文サマリーを計算値で更新
 function updateOrderSummary(subtotalWithTax) {
-    const subtotalElement = document.getElementById('checkout-subtotal');
-    const taxElement = document.getElementById('checkout-tax');
     const totalElement = document.getElementById('checkout-total');
-    const shippingElement = document.getElementById('checkout-shipping');
-    
-    if (!subtotalElement || !taxElement || !totalElement || !shippingElement) {
+    const cardPaymentElement = document.getElementById('checkout-card-payment');
+    const importFeesElement = document.getElementById('checkout-import-fees');
+
+    if (!totalElement || !cardPaymentElement || !importFeesElement) {
         return;
     }
-    
-    // ユーザーの国を取得（実際の実装ではIPアドレスや選択から取得）
-    const userCountry = 'CA'; // デフォルトはカナダ
-    
+
     // 合計金額（税込み）
     const total = subtotalWithTax;
-    
-    // 国際価格計算が利用可能な場合、それを使用
-    if (window.internationalPricing) {
-        const prices = window.internationalPricing.calculatePrices(total, userCountry);
-        
-        // 表示を更新
-        subtotalElement.textContent = `${prices.cardPayment.toFixed(2)} CAD`;
-        taxElement.textContent = `${prices.importFees.toFixed(2)} CAD`;
-        shippingElement.textContent = 'Free';
-        totalElement.textContent = `${prices.estimatedTotal.toFixed(2)} CAD`;
-    } else {
-        // 旧来の方法で計算（税金を10%と仮定して逆算）
-        const taxRate = 0.1;
-        const tax = (total * taxRate) / (1 + taxRate);
-        
-        // 小計（税抜き）
-        const subtotal = total - tax;
-        
-        // 表示を更新
-        subtotalElement.textContent = `${subtotal.toFixed(2)} CAD`;
-        taxElement.textContent = `${tax.toFixed(2)} CAD`;
-        shippingElement.textContent = 'Free';
-        totalElement.textContent = `${total.toFixed(2)} CAD`;
-    }
+
+    // 輸入手数料を計算（合計の約10%と仮定）
+    const importFeesRate = 0.1;
+    const importFees = total * importFeesRate;
+
+    // カード支払い額を計算（合計 - 輸入手数料）
+    const cardPayment = total - importFees;
+
+    // 表示を更新
+    totalElement.textContent = `${total.toFixed(2)} CAD`;
+    cardPaymentElement.textContent = `${cardPayment.toFixed(2)} CAD`;
+    importFeesElement.textContent = `~${importFees.toFixed(2)} CAD`;
 }
 
 // 注文データ収集
