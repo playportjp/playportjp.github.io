@@ -350,36 +350,34 @@ function displayCheckoutItems() {
 
 // 注文合計の更新
 // 注文合計の更新
+// 注文合計の更新
 function updateOrderTotals() {
-    // DOMに要素が存在するか確認
-    const subtotalElement = document.getElementById('checkout-subtotal');
-    const taxElement = document.getElementById('checkout-tax');
-    const totalElement = document.getElementById('checkout-total');
-    
-    if (!subtotalElement || !taxElement || !totalElement) return;
-    
     // カートマネージャーからアイテムを取得
     const cartItems = window.cartManager.items;
     if (!cartItems || cartItems.length === 0) return;
-    
-    // 合計（税込み価格）
+
+    // 合計金額を計算
     const total = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    
-    // 小計（表示上は同じ金額に設定）
-    const subtotal = total;
-    
-    // 税金（表示用の計算 - 小計の10%と仮定して逆算）
-    const taxRate = 0.1;
-    const estimatedTax = (total * taxRate) / (1 + taxRate);
-    
-    // 送料（free shipping と仮定）
-    const shipping = 0;
-    
-    // 表示を更新
-    subtotalElement.textContent = `${subtotal.toFixed(2)} CAD`;
-    taxElement.textContent = `Included in price`;
-    document.getElementById('checkout-shipping').textContent = `Free`;
-    totalElement.textContent = `${total.toFixed(2)} CAD`;
+
+    console.log("Total calculated in updateOrderTotals:", total); // デバッグ用
+
+    // 注文サマリーを更新
+    if (typeof updateOrderSummary === 'function') {
+        // checkout.jsの新しい関数を呼び出す
+        updateOrderSummary(total);
+    } else {
+        // もし関数が見つからない場合は元のコード実行
+        const subtotalElement = document.getElementById('checkout-subtotal');
+        const taxElement = document.getElementById('checkout-tax');
+        const totalElement = document.getElementById('checkout-total');
+
+        if (!subtotalElement || !taxElement || !totalElement) return;
+
+        subtotalElement.textContent = `${total.toFixed(2)} CAD`;
+        taxElement.textContent = `Included in price`;
+        document.getElementById('checkout-shipping').textContent = `Free`;
+        totalElement.textContent = `${total.toFixed(2)} CAD`;
+    }
 }
 
 // 注文フォームの送信ハンドラ（基本的な実装）
