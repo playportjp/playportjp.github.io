@@ -316,55 +316,39 @@ function setupRecentlyViewedEvents() {
 function updateOrderSummary(cartItems) {
     if (!cartItems || cartItems.length === 0) return;
     
-    // 小計を計算（すでに税込みの価格）
-    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    // 合計金額を計算
+    const total = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     
-    // 税金計算（小計の10%と仮定して逆算）
-    const taxRate = 0.1;
-    const estimatedTax = (subtotal * taxRate) / (1 + taxRate);
+    // 輸入手数料を計算（合計の約10%と仮定）
+    const importFeesRate = 0.1;
+    const importFees = total * importFeesRate;
     
-    // 合計（税込みなので小計と同じ）
-    const total = subtotal;
+    // カード支払い額を計算（合計 - 輸入手数料）
+    const cardPayment = total - importFees;
     
-    // 各要素を直接取得して更新
-    const summaryRows = document.querySelectorAll('.cart-order-summary .summary-row');
-    
-    // 小計の表示を更新
-    if (summaryRows[0]) {
-        const valueElement = summaryRows[0].querySelector('.summary-value');
-        if (valueElement) {
-            valueElement.textContent = `${subtotal.toFixed(2)} CAD`;
-        }
-        
-        const labelElement = summaryRows[0].querySelector('.summary-label');
-        if (labelElement) {
-            const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
-            labelElement.textContent = `Subtotal (${itemCount} item${itemCount !== 1 ? 's' : ''})`;
-        }
+    // Order Summaryの表示を更新
+    // Estimated Total
+    const totalElement = document.querySelector('.summary-row.total .summary-value');
+    if (totalElement) {
+        totalElement.textContent = `${total.toFixed(2)} CAD`;
     }
     
-    // 送料の表示を更新
-    if (summaryRows[1]) {
-        const valueElement = summaryRows[1].querySelector('.summary-value');
-        if (valueElement) {
-            valueElement.textContent = `Free`;
-        }
+    // Card Payment (Now)
+    const cardPaymentElement = document.querySelector('.summary-row.card-payment .summary-value');
+    if (cardPaymentElement) {
+        cardPaymentElement.textContent = `${cardPayment.toFixed(2)} CAD`;
     }
     
-    // 税金の表示を更新
-    if (summaryRows[2]) {
-        const valueElement = summaryRows[2].querySelector('.summary-value');
-        if (valueElement) {
-            valueElement.textContent = `-${estimatedTax.toFixed(2)} CAD`;
-        }
+    // Import Fees (On delivery)
+    const importFeesElement = document.querySelector('.summary-row.import-fees .summary-value');
+    if (importFeesElement) {
+        importFeesElement.textContent = `~${importFees.toFixed(2)} CAD`;
     }
     
-    // 合計の表示を更新
-    const totalRow = document.querySelector('.cart-order-summary .summary-row.total');
-    if (totalRow) {
-        const valueElement = totalRow.querySelector('.summary-value');
-        if (valueElement) {
-            valueElement.textContent = `${total.toFixed(2)} CAD`;
-        }
+    // カートアイテム数の更新
+    const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+    const totalLabel = document.querySelector('.summary-row.total .summary-label');
+    if (totalLabel) {
+        totalLabel.textContent = `Estimated Total`;
     }
 }
