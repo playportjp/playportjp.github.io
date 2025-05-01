@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+
     <style>
         /* 商品詳細ページ用スタイル */
         .breadcrumb {
@@ -17,34 +17,34 @@
             color: var(--text-secondary);
             font-size: 0.85rem;
         }
-        
-        .breadcrumb a {
-            color: var(--text-secondary);
-            transition: color 0.2s;
-        }
-        
-        .breadcrumb a:hover {
-            color: var(--primary);
-        }
-        
+
+            .breadcrumb a {
+                color: var(--text-secondary);
+                transition: color 0.2s;
+            }
+
+                .breadcrumb a:hover {
+                    color: var(--primary);
+                }
+
         .breadcrumb-separator {
             margin: 0 0.5rem;
         }
-        
+
         .product-detail-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin-bottom: 3rem;
         }
-        
+
         .product-media {
             background-color: var(--surface);
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid var(--border);
         }
-        
+
         .product-image-main {
             height: 400px;
             background-color: var(--surface-lighter);
@@ -57,28 +57,28 @@
             background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
             box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
         }
-        
-        .product-image-main svg {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 1rem;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
-        }
-        
-        .product-image-main div {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            margin-top: 0.75rem;
-            font-weight: 500;
-        }
-        
+
+            .product-image-main svg {
+                width: 120px;
+                height: 120px;
+                margin-bottom: 1rem;
+                filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+            }
+
+            .product-image-main div {
+                font-size: 1rem;
+                color: var(--text-secondary);
+                margin-top: 0.75rem;
+                font-weight: 500;
+            }
+
         .product-image-gallery {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 0.5rem;
             padding: 0.75rem;
         }
-        
+
         .gallery-thumb {
             height: 80px;
             background-color: var(--surface-lighter);
@@ -90,22 +90,22 @@
             justify-content: center;
             align-items: center;
         }
-        
-        .gallery-thumb:hover, .gallery-thumb.active {
-            border-color: var(--primary);
-        }
-        
-        .gallery-thumb svg {
-            width: 32px;
-            height: 32px;
-            opacity: 0.8;
-        }
-        
+
+            .gallery-thumb:hover, .gallery-thumb.active {
+                border-color: var(--primary);
+            }
+
+            .gallery-thumb svg {
+                width: 32px;
+                height: 32px;
+                opacity: 0.8;
+            }
+
         .product-info {
             display: flex;
             flex-direction: column;
         }
-        
+
         .product-title {
             font-size: 1.8rem;
             font-weight: 500;
@@ -113,14 +113,14 @@
             color: white;
             line-height: 1.3;
         }
-        
+
         .product-meta {
             display: flex;
             gap: 0.5rem;
             margin-bottom: 1rem;
             flex-wrap: wrap;
         }
-        
+
         .meta-tag {
             font-size: 0.75rem;
             padding: 0.2rem 0.5rem;
@@ -128,75 +128,75 @@
             color: white;
             font-weight: 500;
         }
-        
-        .meta-tag.games {
-            background-color: #5755d9;
-        }
-        
-        .meta-tag.books {
-            background-color: #2e7d32;
-        }
-        
-        .meta-tag.music {
-            background-color: #9c27b0;
-        }
-        
-        .meta-tag.collectibles {
-            background-color: #e65100;
-        }
-        
-        .meta-tag.models {
-            background-color: #0277bd;
-        }
-        
-        .meta-tag.culture {
-            background-color: #9c27b0;
-        }
-        
-        .meta-tag.other {
-            background-color: var(--surface);
-            color: var(--text-secondary);
-        }
-        
+
+            .meta-tag.games {
+                background-color: #5755d9;
+            }
+
+            .meta-tag.books {
+                background-color: #2e7d32;
+            }
+
+            .meta-tag.music {
+                background-color: #9c27b0;
+            }
+
+            .meta-tag.collectibles {
+                background-color: #e65100;
+            }
+
+            .meta-tag.models {
+                background-color: #0277bd;
+            }
+
+            .meta-tag.culture {
+                background-color: #9c27b0;
+            }
+
+            .meta-tag.other {
+                background-color: var(--surface);
+                color: var(--text-secondary);
+            }
+
         .product-rating {
             display: flex;
             align-items: center;
             margin-bottom: 1.5rem;
         }
-        
+
         .rating-stars {
             display: flex;
             color: #ff9800;
             margin-right: 0.5rem;
         }
-        
-        .rating-stars svg {
-            width: 18px;
-            height: 18px;
-            margin-right: 1px;
-        }
-        
+
+            .rating-stars svg {
+                width: 18px;
+                height: 18px;
+                margin-right: 1px;
+            }
+
         .rating-count {
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
-        
+
         .product-price-container {
             margin-bottom: 1.5rem;
         }
-        
+
         .product-price {
             font-size: 2rem;
             font-weight: 500;
             color: white;
             margin-bottom: 0.25rem;
         }
-        
+
         .price-note {
             color: var(--text-secondary);
             font-size: 0.85rem;
         }
-        
+
         .product-condition-container {
             margin-bottom: 1.5rem;
             padding: 1rem;
@@ -204,27 +204,27 @@
             border-radius: 8px;
             border: 1px solid var(--border);
         }
-        
+
         .condition-row {
             display: flex;
             align-items: center;
             margin-bottom: 0.75rem;
         }
-        
-        .condition-row:last-child {
-            margin-bottom: 0;
-        }
-        
+
+            .condition-row:last-child {
+                margin-bottom: 0;
+            }
+
         .condition-label {
             width: 120px;
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
-        
+
         .condition-value {
             font-size: 0.9rem;
         }
-        
+
         .condition-badge {
             display: inline-block;
             padding: 0.2rem 0.5rem;
@@ -234,45 +234,45 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
-        .condition-badge.new {
-            background-color: #3a9e4e;
-            color: white;
-        }
-        
-        .condition-badge.used {
-            background-color: #2c7cb0;
-            color: white;
-        }
-        
+
+            .condition-badge.new {
+                background-color: #3a9e4e;
+                color: white;
+            }
+
+            .condition-badge.used {
+                background-color: #2c7cb0;
+                color: white;
+            }
+
         .stock-status {
             font-weight: 500;
         }
-        
+
         .in-stock {
             color: #4CAF50;
         }
-        
+
         .low-stock {
             color: #FFC107;
         }
-        
+
         .out-of-stock {
             color: #F44336;
         }
-        
+
         .product-actions {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
         }
-        
+
         .quantity-input {
             display: flex;
             align-items: center;
             max-width: 140px;
         }
-        
+
         .quantity-btn {
             width: 36px;
             height: 44px;
@@ -286,19 +286,19 @@
             cursor: pointer;
             transition: background-color 0.2s;
         }
-        
-        .quantity-btn:hover {
-            background-color: var(--surface-lighter);
-        }
-        
-        .quantity-btn.minus {
-            border-radius: 4px 0 0 4px;
-        }
-        
-        .quantity-btn.plus {
-            border-radius: 0 4px 4px 0;
-        }
-        
+
+            .quantity-btn:hover {
+                background-color: var(--surface-lighter);
+            }
+
+            .quantity-btn.minus {
+                border-radius: 4px 0 0 4px;
+            }
+
+            .quantity-btn.plus {
+                border-radius: 0 4px 4px 0;
+            }
+
         .quantity-input input {
             width: 60px;
             height: 44px;
@@ -310,11 +310,11 @@
             text-align: center;
             font-size: 0.9rem;
         }
-        
-        .quantity-input input:focus {
-            outline: none;
-        }
-        
+
+            .quantity-input input:focus {
+                outline: none;
+            }
+
         .btn {
             height: 44px;
             padding: 0 1.5rem;
@@ -329,33 +329,33 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .btn-primary {
             background-color: var(--primary);
             color: white;
             border: none;
             flex: 1;
         }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            color: white;
-        }
-        
+
+            .btn-primary:hover {
+                background-color: var(--primary-hover);
+                color: white;
+            }
+
         .btn-secondary {
             background-color: transparent;
             color: var(--text-primary);
             border: 1px solid var(--border);
         }
-        
-        .btn-secondary:hover {
-            background-color: var(--surface);
-        }
-        
+
+            .btn-secondary:hover {
+                background-color: var(--surface);
+            }
+
         .btn svg {
             margin-right: 0.5rem;
         }
-        
+
         .btn-wishlist {
             background-color: transparent;
             border: 1px solid var(--border);
@@ -368,59 +368,59 @@
             color: var(--text-primary);
             transition: all 0.2s ease;
         }
-        
-        .btn-wishlist:hover {
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-        
+
+            .btn-wishlist:hover {
+                color: var(--primary);
+                border-color: var(--primary);
+            }
+
         .trust-badges {
             display: flex;
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-        
+
         .trust-badge {
             display: flex;
             align-items: center;
             color: var(--text-secondary);
             font-size: 0.85rem;
         }
-        
-        .trust-badge svg {
-            color: var(--primary);
-            margin-right: 0.5rem;
-            width: 20px;
-            height: 20px;
-        }
-        
+
+            .trust-badge svg {
+                color: var(--primary);
+                margin-right: 0.5rem;
+                width: 20px;
+                height: 20px;
+            }
+
         .product-description {
             margin-bottom: 2rem;
         }
-        
+
         .description-title {
             font-size: 1.1rem;
             font-weight: 500;
             margin-bottom: 1rem;
             color: white;
         }
-        
+
         .description-content {
             color: var(--text-secondary);
             font-size: 0.95rem;
             line-height: 1.6;
         }
-        
+
         .product-tabs {
             margin-bottom: 3rem;
         }
-        
+
         .tabs-nav {
             display: flex;
             border-bottom: 1px solid var(--border);
             margin-bottom: 1.5rem;
         }
-        
+
         .tab-button {
             padding: 0.75rem 1.5rem;
             background: none;
@@ -431,119 +431,119 @@
             font-weight: 500;
             position: relative;
         }
-        
-        .tab-button:after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--primary);
-            transform: scaleX(0);
-            transition: transform 0.2s ease;
-        }
-        
-        .tab-button.active {
-            color: var(--text-primary);
-        }
-        
-        .tab-button.active:after {
-            transform: scaleX(1);
-        }
-        
+
+            .tab-button:after {
+                content: '';
+                position: absolute;
+                bottom: -1px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background-color: var(--primary);
+                transform: scaleX(0);
+                transition: transform 0.2s ease;
+            }
+
+            .tab-button.active {
+                color: var(--text-primary);
+            }
+
+                .tab-button.active:after {
+                    transform: scaleX(1);
+                }
+
         .tab-content {
             display: none;
         }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
+
+            .tab-content.active {
+                display: block;
+            }
+
         .specs-table {
             width: 100%;
             border-collapse: collapse;
         }
-        
-        .specs-table tr {
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .specs-table tr:last-child {
-            border-bottom: none;
-        }
-        
-        .specs-table th, .specs-table td {
-            padding: 0.75rem;
-            text-align: left;
-        }
-        
-        .specs-table th {
-            color: var(--text-secondary);
-            font-weight: 500;
-            width: 40%;
-        }
-        
+
+            .specs-table tr {
+                border-bottom: 1px solid var(--border);
+            }
+
+                .specs-table tr:last-child {
+                    border-bottom: none;
+                }
+
+            .specs-table th, .specs-table td {
+                padding: 0.75rem;
+                text-align: left;
+            }
+
+            .specs-table th {
+                color: var(--text-secondary);
+                font-weight: 500;
+                width: 40%;
+            }
+
         .related-products {
             margin-bottom: 3rem;
         }
-        
-        .related-products h2 {
-            margin-bottom: 1.5rem;
-        }
-        
-        .related-products .product-grid {
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        }
-        
+
+            .related-products h2 {
+                margin-bottom: 1.5rem;
+            }
+
+            .related-products .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
         /* 顧客レビュー */
         .review-item {
             margin-bottom: 1.5rem;
             padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--border);
         }
-        
-        .review-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        
+
+            .review-item:last-child {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+
         .review-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 0.75rem;
         }
-        
+
         .reviewer-info {
             display: flex;
             flex-direction: column;
         }
-        
+
         .reviewer-name {
             font-weight: 500;
             margin-bottom: 0.25rem;
         }
-        
+
         .review-date {
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-        
+
         .review-text {
             color: var(--text-secondary);
             font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 0.75rem;
         }
-        
+
         .review-photos {
             display: flex;
             gap: 0.5rem;
             margin-top: 1rem;
         }
-        
+
         .review-photo {
             width: 80px;
             height: 80px;
@@ -555,20 +555,20 @@
             align-items: center;
             justify-content: center;
         }
-        
-        .review-photo svg {
-            width: 24px;
-            height: 24px;
-            opacity: 0.6;
-        }
-        
+
+            .review-photo svg {
+                width: 24px;
+                height: 24px;
+                opacity: 0.6;
+            }
+
         /* 商品詳細ページでの画像プレースホルダー */
         .product-image-main {
             background-size: contain !important;
             background-repeat: no-repeat !important;
             background-position: center !important;
         }
-        
+
         .error-message {
             text-align: center;
             padding: 2rem;
@@ -577,66 +577,66 @@
             border: 1px solid var(--border);
             margin: 2rem 0;
         }
-        
-        .error-message h2 {
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-        
-        .error-message p {
-            margin-bottom: 1.5rem;
-            color: var(--text-secondary);
-        }
-        
+
+            .error-message h2 {
+                margin-bottom: 1rem;
+                color: var(--primary);
+            }
+
+            .error-message p {
+                margin-bottom: 1.5rem;
+                color: var(--text-secondary);
+            }
+
         /* レスポンシブ対応 */
         @media (max-width: 992px) {
             .product-detail-container {
                 grid-template-columns: 1fr;
                 gap: 2rem;
             }
-            
+
             .product-image-main {
                 height: 350px;
             }
         }
-        
+
         @media (max-width: 768px) {
             .product-actions {
                 flex-direction: column;
                 gap: 1rem;
             }
-            
+
             .quantity-input {
                 max-width: 100%;
             }
-            
-            .quantity-input input {
-                flex: 1;
-            }
-            
+
+                .quantity-input input {
+                    flex: 1;
+                }
+
             .trust-badges {
                 flex-direction: column;
                 gap: 1rem;
             }
-            
+
             .tabs-nav {
                 overflow-x: auto;
                 white-space: nowrap;
                 padding-bottom: 0.5rem;
             }
         }
-        
+
         @media (max-width: 480px) {
             .product-rating {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5rem;
             }
-            
+
             .product-image-gallery {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .gallery-thumb {
                 height: 100px;
             }
@@ -646,6 +646,74 @@
         .product-image-main svg, .product-image-main > div {
             opacity: 0;
             transition: opacity 0.3s ease;
+        }
+
+        /* Google検索リンクのスタイル */
+        .search-image-link {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(187, 0, 0, 0.8);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: background-color 0.2s;
+            z-index: 2;
+        }
+
+            .search-image-link:hover {
+                background-color: var(--primary);
+                color: white;
+            }
+
+            .search-image-link svg {
+                width: 12px;
+                height: 12px;
+            }
+
+        /* 写真なし割引バッジのスタイル */
+        .no-photo-badge {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            z-index: 2;
+        }
+
+        .discount-badge {
+            color: #ffeb3b;
+            font-weight: 500;
+        }
+
+        /* 割引価格のスタイル */
+        .original-price {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+        }
+
+        .discount-price {
+            color: #ffeb3b;
+        }
+
+        /* 割引説明のスタイル */
+        .discount-explanation {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
         }
     </style>
 </head>
@@ -710,6 +778,20 @@
                             <polyline points="21 15 16 10 5 21"></polyline>
                         </svg>
                         <div>商品画像</div>
+
+                        <!-- Google検索リンク -->
+                        <a href="#" class="search-image-link" id="google-search-link" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Google
+                        </a>
+
+                        <!-- 写真なし割引バッジ -->
+                        <div class="no-photo-badge" id="no-photo-badge" style="display: none;">
+                            <span class="discount-badge">8% off - No Photo Discount</span>
+                        </div>
                     </div>
                     <div class="product-image-gallery">
                         <div class="gallery-thumb active">
@@ -748,11 +830,11 @@
                 <!-- 商品情報エリア -->
                 <div class="product-info">
                     <h1 class="product-title">商品タイトル</h1>
-                    
+
                     <div class="product-meta">
                         <!-- カテゴリータグはJavaScriptによって追加されます -->
                     </div>
-                    
+
                     <div class="product-rating">
                         <div class="rating-stars">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -769,14 +851,22 @@
                             </svg>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
+　　　　　　　　　　　　　　</svg>
                         </div>
                         <div class="rating-count">0 reviews</div>
                     </div>
                     
                     <div class="product-price-container">
-                        <div class="product-price">0.00 CAD</div>
+                        <div class="product-price">
+                            <span id="original-price" class="original-price" style="display: none;">0.00 CAD</span>
+                            <span id="current-price">0.00 CAD</span>
+                            <span id="discount-label" class="discount-price" style="display: none;">(8% off - No Photo Discount)</span>
+                        </div>
                         <div class="price-note">All taxes included in price</div>
+                        <!-- 割引に関する説明文 -->
+                        <div id="discount-explanation" class="discount-explanation" style="display: none;">
+                            This item currently has no product photos. An 8% discount has been applied to the price. Photos will be added when the item ships.
+                        </div>
                     </div>
                     
                     <div class="product-condition-container">
