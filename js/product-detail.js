@@ -44,6 +44,12 @@ function loadProductDetails(productId) {
             if (product) {
                 displayProductDetails(product);
                 setupAddToCartButton(product);
+                
+                // Google検索リンクを設定
+                setupGoogleSearchLink(product.name);
+                
+                // 写真の有無を確認し、必要に応じて割引を適用
+                checkProductImage(product);
             } else {
                 throw new Error('Product not found');
             }
@@ -60,6 +66,169 @@ function loadProductDetails(productId) {
         });
 }
 
+// Google検索リンクを設定
+function setupGoogleSearchLink(productName) {
+    const googleSearchLink = document.getElementById('google-search-link');
+    if (googleSearchLink && productName) {
+        const encodedName = encodeURIComponent(productName);
+        googleSearchLink.href = `https://www.google.com/search?q=${encodedName}&tbm=isch`;
+    }
+}
+
+// 写真の有無を確認し、必要に応じて割引を適用
+function checkProductImage(product) {
+    // 初期状態では画像パスの有無でチェック
+    let hasImage = product.image && product.image !== '';
+    
+    // 画像パスがある場合、実際に画像が読み込めるかテスト
+    if (hasImage) {
+        const productImageMain = document.querySelector('.product-image-main');
+        const noPhotoBadge = document.getElementById('no-photo-badge');
+        const discountExplanation = document.getElementById('discount-explanation');
+        
+        // まず画像が読み込めないと仮定して表示
+        if (noPhotoBadge) noPhotoBadge.style.display = 'block';
+        if (discountExplanation) discountExplanation.style.display = 'block';
+        
+        // SVGアイコンと説明テキストを表示
+        const svgElements = productImageMain.querySelectorAll('svg');
+        const textElement = productImageMain.querySelector('div');
+        
+        svgElements.forEach(el => {
+            el.style.opacity = '1';
+        });
+        
+        if (textElement) {
+            textElement.style.opacity = '1';
+            textElement.textContent = 'No Product Photos Yet';
+        }
+        
+        // 画像を事前にロードして確認
+        const img = new Image();
+        
+        img.onload = function() {
+            // 画像のロードに成功した場合
+            hasImage = true;
+            
+            // 画像の読み込みが完了したら背景画像として設定
+            productImageMain.style.backgroundImage = `url('${product.image}')`;
+            productImageMain.style.backgroundSize = 'contain';
+            productImageMain.style.backgroundRepeat = 'no-repeat';
+            productImageMain.style.backgroundPosition = 'center';
+            
+            // SVGアイコンと説明テキストを非表示
+            svgElements.forEach(el => {
+                el.style.opacity = '0';
+            });
+            
+            if (textElement) {
+                textElement.style.opacity = '0';
+            }
+            
+            // 割引関連の表示を非表示
+            if (noPhotoBadge) noPhotoBadge.style.display = 'none';
+            if (discountExplanation) discountExplanation.style.display = 'none';
+            
+            // 通常の価格表示に戻す
+            applyNormalPrice(product);
+        };
+        
+        img.onerror = function() {
+            // 画像のロードに失敗した場合
+            hasImage = false;
+            
+            // 割引価格を適用
+            applyDiscountPrice(product);
+        };
+        
+        // 画像のロード開始
+        img.src = product.image;
+    } else {
+        // 画像パスがない場合は直接割引を適用
+        const noPhotoBadge = document.getElementById('no-photo-badge');
+        const discountExplanation = document.getElementById('discount-explanation');
+        
+        if (noPhotoBadge) {
+            noPhotoBadge.style.display = 'block';
+        }
+        
+        if (discountExplanation) {
+            discountExplanation.style.display = 'block';
+        }
+        
+        // メイン画像エリアのプレースホルダーを表示
+        const productImageMain = document.querySelector('.product-image-main');
+        if (productImageMain) {
+            const svgElements = productImageMain.querySelectorAll('svg');
+            const textElement = productImageMain.querySelector('div');
+            
+            svgElements.forEach(el => {
+                el.style.opacity = '1';
+            });
+            
+            if (textElement) {
+                textElement.style.opacity = '1';
+                textElement.textContent = 'No Product Photos Yet';
+            }
+        }
+        
+        // 割引価格を適用
+        applyDiscountPrice(product);
+    }
+    
+    // 商品オブジェクトに画像の有無情報を保存（カートで使用）
+    product.hasImage = hasImage;
+}
+
+// 通常価格を表示
+function applyNormalPrice(product) {
+    const originalPriceElement = document.getElementById('original-price');
+    const currentPriceElement = document.getElementById('current-price');
+    const discountLabelElement = document.getElementById('discount-label');
+    
+    if (originalPriceElement) {
+        originalPriceElement.style.display = 'none';
+    }
+    
+    if (currentPriceElement) {
+        currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
+    }
+    
+    if (discountLabelElement) {
+        discountLabelElement.style.display = 'none';
+    }
+}
+
+// 割引価格を表示
+function applyDiscountPrice(product) {
+    const originalPriceElement = document.getElementById('original-price');
+    const currentPriceElement = document.getElementById('current-price');
+    const discountLabelElement = document.getElementById('discount-label');
+    
+    // 元の価格と割引後の価格を表示
+    const originalPrice = product.price;
+    const discountRate = 0.08; // 8%割引
+    const discountedPrice = originalPrice * (1 - discountRate);
+    
+    if (originalPriceElement) {
+        originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
+        originalPriceElement.style.display = 'inline';
+    }
+    
+    if (currentPriceElement) {
+        currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
+    }
+    
+    if (discountLabelElement) {
+        discountLabelElement.style.display = 'inline';
+    }
+    
+    // カートに追加するときの価格を割引価格に設定
+    if (product) {
+        product.discountedPrice = discountedPrice;
+    }
+}
+
 // 商品詳細を表示
 function displayProductDetails(product) {
     // タイトルを更新
@@ -69,6 +238,12 @@ function displayProductDetails(product) {
     const productTitle = document.querySelector('.product-title');
     if (productTitle) {
         productTitle.textContent = product.name;
+    }
+    
+    // パンくずリストの商品名を更新
+    const breadcrumbProductName = document.getElementById('breadcrumb-product-name');
+    if (breadcrumbProductName) {
+        breadcrumbProductName.textContent = product.name;
     }
     
     // 商品画像を更新
@@ -101,10 +276,11 @@ function displayProductDetails(product) {
         img.src = product.image;
     }
     
-    // 商品価格を更新
+    // 商品価格を更新（割引適用の有無は checkProductImage() で処理）
     const productPrice = document.querySelector('.product-price');
     if (productPrice) {
-        productPrice.textContent = `${product.price.toFixed(2)} CAD`;
+        // ここでは価格の初期表示のみ行う（割引は別関数で処理）
+        document.getElementById('current-price').textContent = `${product.price.toFixed(2)} CAD`;
     }
     
     // カテゴリメタタグを更新
@@ -174,7 +350,7 @@ function displayProductDetails(product) {
         }
     }
     
-    // タブの内容を更新（実装によって異なる）
+    // タブの内容を更新
     updateTabsContent(product);
 }
 
@@ -194,10 +370,22 @@ function updateTabsContent(product) {
         }
     }
     
-    // 仕様タブの更新（必要に応じて）
+    // 仕様タブの更新
     const specsTable = document.querySelector('#specifications .specs-table');
-    if (specsTable) {
-        // ここに製品仕様の更新コードを追加（必要に応じて）
+    if (specsTable && product) {
+        // 商品タイトル行を更新
+        const titleRow = specsTable.querySelector('tr:first-child td');
+        if (titleRow) {
+            titleRow.textContent = product.name;
+        }
+        
+        // その他の仕様行を更新（データがある場合）
+        const platformRow = specsTable.querySelector('tr:nth-child(2) td');
+        if (platformRow && product.platform) {
+            platformRow.textContent = product.platform;
+        }
+        
+        // 他の仕様項目も同様に更新可能
     }
 }
 
@@ -210,10 +398,14 @@ function setupAddToCartButton(product) {
             const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
             
             if (window.cartManager) {
+                // 写真がない場合は割引価格を使用
+                const hasImage = product.hasImage; // checkProductImage関数で設定された値を使用
+                const price = hasImage ? product.price : (product.discountedPrice || (product.price * 0.92));
+                
                 window.cartManager.addItem(
                     product.id,
                     product.name,
-                    product.price,
+                    price,
                     product.image,
                     quantity
                 );
@@ -290,158 +482,4 @@ function setupTabs() {
             document.getElementById(tabId).classList.add('active');
         });
     });
-}
-
-// 写真の有無を確認し、必要に応じて割引を適用
-function checkProductImage(product) {
-    // 初期状態では画像パスの有無でチェック
-    let hasImage = product.image && product.image !== '';
-
-    // 画像パスがある場合、実際に画像が読み込めるかテスト
-    if (hasImage) {
-        const productImageMain = document.querySelector('.product-image-main');
-        const noPhotoBadge = document.getElementById('no-photo-badge');
-        const discountExplanation = document.getElementById('discount-explanation');
-
-        // まず画像が読み込めないと仮定して表示
-        if (noPhotoBadge) noPhotoBadge.style.display = 'block';
-        if (discountExplanation) discountExplanation.style.display = 'block';
-
-        // SVGアイコンと説明テキストを表示
-        const svgElements = productImageMain.querySelectorAll('svg');
-        const textElement = productImageMain.querySelector('div');
-
-        svgElements.forEach(el => {
-            el.style.opacity = '1';
-        });
-
-        if (textElement) {
-            textElement.style.opacity = '1';
-            textElement.textContent = 'No Product Photos Yet';
-        }
-
-        // 画像を事前にロードして確認
-        const img = new Image();
-
-        img.onload = function () {
-            // 画像のロードに成功した場合
-            hasImage = true;
-
-            // 画像の読み込みが完了したら背景画像として設定
-            productImageMain.style.backgroundImage = `url('${product.image}')`;
-            productImageMain.style.backgroundSize = 'contain';
-            productImageMain.style.backgroundRepeat = 'no-repeat';
-            productImageMain.style.backgroundPosition = 'center';
-
-            // SVGアイコンと説明テキストを非表示
-            svgElements.forEach(el => {
-                el.style.opacity = '0';
-            });
-
-            if (textElement) {
-                textElement.style.opacity = '0';
-            }
-
-            // 割引関連の表示を非表示
-            if (noPhotoBadge) noPhotoBadge.style.display = 'none';
-            if (discountExplanation) discountExplanation.style.display = 'none';
-
-            // 通常の価格表示に戻す
-            applyNormalPrice(product);
-        };
-
-        img.onerror = function () {
-            // 画像のロードに失敗した場合
-            hasImage = false;
-
-            // 割引価格を適用
-            applyDiscountPrice(product);
-        };
-
-        // 画像のロード開始
-        img.src = product.image;
-    } else {
-        // 画像パスがない場合は直接割引を適用
-        const noPhotoBadge = document.getElementById('no-photo-badge');
-        const discountExplanation = document.getElementById('discount-explanation');
-
-        if (noPhotoBadge) {
-            noPhotoBadge.style.display = 'block';
-        }
-
-        if (discountExplanation) {
-            discountExplanation.style.display = 'block';
-        }
-
-        // メイン画像エリアのプレースホルダーを表示
-        const productImageMain = document.querySelector('.product-image-main');
-        if (productImageMain) {
-            const svgElements = productImageMain.querySelectorAll('svg');
-            const textElement = productImageMain.querySelector('div');
-
-            svgElements.forEach(el => {
-                el.style.opacity = '1';
-            });
-
-            if (textElement) {
-                textElement.style.opacity = '1';
-                textElement.textContent = 'No Product Photos Yet';
-            }
-        }
-
-        // 割引価格を適用
-        applyDiscountPrice(product);
-    }
-
-    // 商品オブジェクトに画像の有無情報を保存（カートで使用）
-    product.hasImage = hasImage;
-}
-
-// 通常価格を表示
-function applyNormalPrice(product) {
-    const originalPriceElement = document.getElementById('original-price');
-    const currentPriceElement = document.getElementById('current-price');
-    const discountLabelElement = document.getElementById('discount-label');
-
-    if (originalPriceElement) {
-        originalPriceElement.style.display = 'none';
-    }
-
-    if (currentPriceElement) {
-        currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
-    }
-
-    if (discountLabelElement) {
-        discountLabelElement.style.display = 'none';
-    }
-}
-
-// 割引価格を表示
-function applyDiscountPrice(product) {
-    const originalPriceElement = document.getElementById('original-price');
-    const currentPriceElement = document.getElementById('current-price');
-    const discountLabelElement = document.getElementById('discount-label');
-
-    // 元の価格と割引後の価格を表示
-    const originalPrice = product.price;
-    const discountRate = 0.08; // 8%割引
-    const discountedPrice = originalPrice * (1 - discountRate);
-
-    if (originalPriceElement) {
-        originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
-        originalPriceElement.style.display = 'inline';
-    }
-
-    if (currentPriceElement) {
-        currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
-    }
-
-    if (discountLabelElement) {
-        discountLabelElement.style.display = 'inline';
-    }
-
-    // カートに追加するときの価格を割引価格に設定
-    if (product) {
-        product.discountedPrice = discountedPrice;
-    }
 }
