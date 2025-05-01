@@ -699,7 +699,8 @@
             text-decoration: line-through;
             color: var(--text-secondary);
             font-size: 1.2rem;
-            margin-right: 0.5rem;
+            margin-right: 0.75rem;
+            opacity: 0.8;
         }
 
         .discount-price {
@@ -714,6 +715,7 @@
             border-radius: 4px;
             font-size: 0.85rem;
             color: var(--text-secondary);
+            border-left: 3px solid rgba(255, 235, 59, 0.5);
         }
 
         /* 画像がない場合のメイン写真部分のスタイル改善 */
@@ -1028,7 +1030,7 @@
                             </svg>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-　　　　　　　　　　　　　　</svg>
+                            </svg>
                         </div>
                         <div class="rating-count">0 reviews</div>
                     </div>
@@ -1193,24 +1195,80 @@
                     </table>
                 </div>
                 
-                <div class="product-price-container">
-                    <div class="product-price">
-                        <span id="original-price" class="original-price" style="display: none;">0.00 CAD</span>
-                        <span id="current-price">0.00 CAD</span>
+                <div id="shipping" class="tab-content">
+                    <h3 class="description-title">Shipping Information</h3>
+                    <div class="description-content">
+                        <p>We ship worldwide from our warehouses in Japan. All items are carefully packaged to ensure they arrive in the condition described.</p>
+                        
+                        <div class="shipping-info-box">
+                            <div class="shipping-info-row">
+                                <div class="shipping-info-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                        <path d="M7 15h0"></path>
+                                        <path d="M2 9h20"></path>
+                                    </svg>
+                                </div>
+                                <div class="shipping-info-content">
+                                    <h4>Free Shipping Worldwide</h4>
+                                    <p>All orders ship for free, no minimum purchase required.</p>
+                                </div>
+                            </div>
+                            <div class="shipping-info-row">
+                                <div class="shipping-info-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="shipping-info-content">
+                                    <h4>Processing Time</h4>
+                                    <p>All orders are processed and shipping notifications sent within 2 business days.</p>
+                                </div>
+                            </div>
+                            <div class="shipping-info-row">
+                                <div class="shipping-info-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="1" y="3" width="15" height="13"></rect>
+                                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                    </svg>
+                                </div>
+                                <div class="shipping-info-content">
+                                    <h4>Delivery Estimates</h4>
+                                    <p>For items in stock in Japan: Delivery within 30 days after shipping notification.</p>
+                                    <p>For items in stock outside Japan: Delivery within 2 months after shipping notification.</p>
+                                </div>
+                            </div>
+                            <div class="shipping-info-row">
+                                <div class="shipping-info-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 17H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <polyline points="12 19 9 16 12 13"></polyline>
+                                        <line x1="9" y1="16" x2="20" y2="16"></line>
+                                    </svg>
+                                </div>
+                                <div class="shipping-info-content">
+                                    <h4>Tracking</h4>
+                                    <p>Tracking information will be provided via email once your order has been shipped.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- 割引バッジ（画像なしの場合に表示） -->
-                    <div id="discount-badge" class="discount-badge" style="display: none;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="19" y1="5" x2="5" y2="19"></line>
-                            <circle cx="6.5" cy="6.5" r="2.5"></circle>
-                            <circle cx="17.5" cy="17.5" r="2.5"></circle>
-                        </svg>
-                        <span>8% discount applied - No product photos yet</span>
-                    </div>
-                    <div class="price-note">All taxes included in price</div>
-                    <!-- 割引に関する説明文 -->
-                    <div id="discount-explanation" class="discount-explanation" style="display: none;">
-                        This item currently has no product photos. An 8% discount has been applied to the price. Photos will be added when the item ships.
+                    
+                    <h3 class="description-title" style="margin-top: 1.5rem;">Return Policy</h3>
+                    <div class="description-content">
+                        <p>We want you to be completely satisfied with your purchase. If for any reason you're not happy with your order, we offer a 30-day return policy from the date of delivery.</p>
+                        
+                        <ul>
+                            <li>Items must be returned in the same condition as they were received</li>
+                            <li>Original packaging must be included</li>
+                            <li>Return shipping costs are the responsibility of the customer unless the item was damaged or defective</li>
+                            <li>Refunds will be processed within 5-7 business days after we receive your return</li>
+                        </ul>
+                        
+                        <p>To initiate a return, please contact our customer service team at support@playportjp.com.</p>
                     </div>
                 </div>
                 
