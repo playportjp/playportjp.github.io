@@ -5,12 +5,15 @@ window.cartManager = {
     items: [],
     
     // カートにアイテムを追加
-    addItem: function(productId, name, price, image, quantity = 1) {
+    addItem: function (productId, name, price, image, quantity = 1) {
         console.log(`Adding to cart: ${name}, ID: ${productId}, Price: ${price}, Quantity: ${quantity}`);
-        
+
         // 既存のアイテムがあるか確認
         const existingItem = this.items.find(item => item.id === productId);
-        
+
+        // 画像の有無を確認（割引適用済みの価格が渡されることを前提）
+        const hasImage = image && image !== '';
+
         if (existingItem) {
             // 既存アイテムの数量を増やす
             existingItem.quantity += quantity;
@@ -22,20 +25,21 @@ window.cartManager = {
                 name: name,
                 price: parseFloat(price), // 確実に数値として扱う
                 image: image,
+                hasImage: hasImage, // 画像の有無を保存
                 quantity: quantity
             });
             console.log(`Added new item: ${name}`);
         }
-        
+
         // カートを保存
         this.saveCart();
-        
+
         // カート数量を更新
         this.updateCartCount();
-        
+
         // カート更新イベントを発火
         document.dispatchEvent(new CustomEvent('cart:updated'));
-        
+
         return true; // 成功を示す
     },
     
