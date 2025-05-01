@@ -715,6 +715,177 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
+
+        /* 画像がない場合のメイン写真部分のスタイル改善 */
+        .no-photo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+
+        .no-photo-text {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 0.75rem;
+            font-weight: 500;
+        }
+
+        .discount-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 0.75rem;
+            border-radius: 8px;
+            animation: pulse 2s infinite;
+        }
+
+            .discount-icon svg {
+                margin-bottom: 0.5rem;
+                filter: drop-shadow(0 2px 4px rgba(255, 235, 59, 0.3));
+            }
+
+            .discount-icon span {
+                color: #ffeb3b;
+                font-weight: 600;
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* 価格表示のレイアウト改善 */
+        .product-price {
+            font-size: 2rem;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-right: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .discount-badge {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 235, 59, 0.1);
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+            border: 1px solid rgba(255, 235, 59, 0.3);
+        }
+
+            .discount-badge svg {
+                margin-right: 0.5rem;
+            }
+
+            .discount-badge span {
+                color: #ffeb3b;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+
+        .discount-explanation {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-left: 3px solid rgba(255, 235, 59, 0.5);
+        }
+
+        /* 配送情報のスタイル改善 */
+        .shipping-info-box {
+            background-color: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin: 1.5rem 0;
+        }
+
+        .shipping-info-row {
+            display: flex;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+            .shipping-info-row:last-child {
+                border-bottom: none;
+            }
+
+        .shipping-info-icon {
+            margin-right: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: flex-start;
+            padding-top: 0.25rem;
+        }
+
+        .shipping-info-content {
+            flex: 1;
+        }
+
+            .shipping-info-content h4 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+                font-weight: 500;
+                color: var(--text-primary);
+            }
+
+            .shipping-info-content p {
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+                margin-bottom: 0.5rem;
+            }
+
+                .shipping-info-content p:last-child {
+                    margin-bottom: 0;
+                }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .discount-icon {
+                top: 10px;
+                right: 10px;
+                padding: 0.5rem;
+            }
+
+                .discount-icon svg {
+                    width: 20px;
+                    height: 20px;
+                }
+
+                .discount-icon span {
+                    font-size: 0.75rem;
+                }
+        }
     </style>
 </head>
 <body>
