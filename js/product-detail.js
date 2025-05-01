@@ -44,6 +44,12 @@ function loadProductDetails(productId) {
             if (product) {
                 displayProductDetails(product);
                 setupAddToCartButton(product);
+                
+                // Google検索リンクを設定
+                setupGoogleSearchLink(product.name);
+                
+                // 写真の有無を確認し、必要に応じて割引を適用
+                checkProductImage(product);
             } else {
                 throw new Error('Product not found');
             }
@@ -60,6 +66,81 @@ function loadProductDetails(productId) {
         });
 }
 
+// 写真の有無を確認し、必要に応じて割引を適用
+function checkProductImage(product) {
+    const hasImage = product.image && product.image !== '';
+    const noPhotoBadge = document.getElementById('no-photo-badge');
+    const discountExplanation = document.getElementById('discount-explanation');
+    const originalPriceElement = document.getElementById('original-price');
+    const currentPriceElement = document.getElementById('current-price');
+    const discountLabelElement = document.getElementById('discount-label');
+    
+    if (!hasImage) {
+        // 写真がない場合、割引バッジを表示
+        if (noPhotoBadge) {
+            noPhotoBadge.style.display = 'block';
+        }
+        
+        // 割引説明を表示
+        if (discountExplanation) {
+            discountExplanation.style.display = 'block';
+        }
+        
+        // 元の価格と割引後の価格を表示
+        const originalPrice = product.price;
+        const discountRate = 0.08; // 8%割引
+        const discountedPrice = originalPrice * (1 - discountRate);
+        
+        if (originalPriceElement) {
+            originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
+            originalPriceElement.style.display = 'inline';
+        }
+        
+        if (currentPriceElement) {
+            currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
+        }
+        
+        if (discountLabelElement) {
+            discountLabelElement.style.display = 'inline';
+        }
+        
+        // カートに追加するときの価格を割引価格に設定
+        if (product) {
+            product.discountedPrice = discountedPrice;
+        }
+        
+        // メイン画像エリアのプレースホルダーを表示
+        const productImageMain = document.querySelector('.product-image-main');
+        if (productImageMain) {
+            const svgElements = productImageMain.querySelectorAll('svg');
+            const textElement = productImageMain.querySelector('div');
+            
+            svgElements.forEach(el => {
+                el.style.opacity = '1';
+            });
+            
+            if (textElement) {
+                textElement.style.opacity = '1';
+                textElement.textContent = 'No Product Photos Yet';
+            }
+        }
+    } else {
+        // 写真がある場合は通常の価格表示
+        if (currentPriceElement) {
+            currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
+        }
+    }
+}
+
+// Google検索リンクを設定
+function setupGoogleSearchLink(productName) {
+    const googleSearchLink = document.getElementById('google-search-link');
+    if (googleSearchLink && productName) {
+        const encodedName = encodeURIComponent(productName);
+        googleSearchLink.href = `https://www.google.com/search?q=${encodedName}&tbm=isch`;
+    }
+}
+
 // 商品詳細を表示
 function displayProductDetails(product) {
     // タイトルを更新
@@ -69,6 +150,12 @@ function displayProductDetails(product) {
     const productTitle = document.querySelector('.product-title');
     if (productTitle) {
         productTitle.textContent = product.name;
+    }
+    
+    // パンくずリストの商品名を更新
+    const breadcrumbProductName = document.getElementById('breadcrumb-product-name');
+    if (breadcrumbProductName) {
+        breadcrumbProductName.textContent = product.name;
     }
     
     // 商品画像を更新
@@ -101,10 +188,11 @@ function displayProductDetails(product) {
         img.src = product.image;
     }
     
-    // 商品価格を更新
+    // 商品価格を更新（割引適用の有無は checkProductImage() で処理）
     const productPrice = document.querySelector('.product-price');
     if (productPrice) {
-        productPrice.textContent = `${product.price.toFixed(2)} CAD`;
+        // ここでは価格の初期表示のみ行う（割引は別関数で処理）
+        document.getElementById('current-price').textContent = `${product.price.toFixed(2)} CAD`;
     }
     
     // カテゴリメタタグを更新
@@ -174,7 +262,7 @@ function displayProductDetails(product) {
         }
     }
     
-    // タブの内容を更新（実装によって異なる）
+    // タブの内容を更新
     updateTabsContent(product);
 }
 
@@ -194,10 +282,22 @@ function updateTabsContent(product) {
         }
     }
     
-    // 仕様タブの更新（必要に応じて）
+    // 仕様タブの更新
     const specsTable = document.querySelector('#specifications .specs-table');
-    if (specsTable) {
-        // ここに製品仕様の更新コードを追加（必要に応じて）
+    if (specsTable && product) {
+        // 商品タイトル行を更新
+        const titleRow = specsTable.querySelector('tr:first-child td');
+        if (titleRow) {
+            titleRow.textContent = product.name;
+        }
+        
+        // その他の仕様行を更新（データがある場合）
+        const platformRow = specsTable.querySelector('tr:nth-child(2) td');
+        if (platformRow && product.platform) {
+            platformRow.textContent = product.platform;
+        }
+        
+        // 他の仕様項目も同様に更新可能
     }
 }
 
@@ -210,10 +310,14 @@ function setupAddToCartButton(product) {
             const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
             
             if (window.cartManager) {
+                // 写真がない場合は割引価格を使用
+                const hasImage = product.image && product.image !== '';
+                const price = hasImage ? product.price : (product.discountedPrice || (product.price * 0.92));
+                
                 window.cartManager.addItem(
                     product.id,
                     product.name,
-                    product.price,
+                    price,
                     product.image,
                     quantity
                 );
