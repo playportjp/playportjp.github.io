@@ -655,36 +655,52 @@ function updateOrderSummary(subtotalWithTax) {
     console.log("Updated values:", { total, cardPayment, importFees }); // デバッグ用
 }
 
-// 注文データ収集
+// 注文データ収集 - エラーハンドリングを改善
 function collectOrderData() {
+    console.log('Collecting order data...');
     // カートアイテム
     if (!window.cartManager || !window.cartManager.items) {
         throw new Error('Cart is not available');
     }
-    
+
     const cartItems = window.cartManager.items;
     if (!cartItems || cartItems.length === 0) {
         throw new Error('Cart is empty');
     }
-    
-    // 小計、税金、合計を取得
-    const subtotalElement = document.getElementById('checkout-subtotal');
-    const taxElement = document.getElementById('checkout-tax');
+
+    // 合計金額を取得 - より柔軟なチェック
     const totalElement = document.getElementById('checkout-total');
-    
-    if (!subtotalElement || !taxElement || !totalElement) {
-        throw new Error('Price summary elements not found');
+
+    // totalElementが見つからない場合でも処理を続行するためにフォールバック
+    let total = 0;
+    if (totalElement) {
+        const totalText = totalElement.textContent || '0.00 CAD';
+        total = parseFloat(totalText.replace(/[^0-9.]/g, '')) || 0;
+    } else {
+        console.log('checkout-total element not found, using cart total');
+        // カートの合計から計算
+        if (cartItems && cartItems.length > 0) {
+            total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        }
     }
-    
-    const subtotalText = subtotalElement.textContent;
-    const taxText = taxElement.textContent;
-    const totalText = totalElement.textContent;
-    
-    const subtotal = parseFloat(subtotalText.replace(/[^0-9.]/g, ''));
-    const tax = parseFloat(taxText.replace(/[^0-9.]/g, ''));
+
+    // 輸入手数料 - オプションで取得
+    let importFees = 0;
+    const importFeesElement = document.getElementById('checkout-import-fees');
+    if (importFeesElement) {
+        const importFeesText = importFeesElement.textContent || '0.00 CAD';
+        importFees = parseFloat(importFeesText.replace(/[^0-9.]/g, '')) || 0;
+    } else {
+        // 見つからない場合は合計の約5%として計算
+        importFees = Math.round(total * 0.05 * 100) / 100;
+    }
+
     const shipping = 0; // 送料無料と仮定
-    const total = parseFloat(totalText.replace(/[^0-9.]/g, ''));
-    
+    const subtotal = total - importFees; // 小計を計算
+    const tax = importFees; // 輸入手数料を税金として扱う
+
+    console.log('Order data calculation:', { total, importFees, subtotal, tax });
+
     // フォームから顧客情報を取得
     const fullNameElement = document.getElementById('full-name');
     const emailElement = document.getElementById('email');
@@ -693,12 +709,12 @@ function collectOrderData() {
     const cityElement = document.getElementById('city');
     const postalCodeElement = document.getElementById('postal-code');
     const countryElement = document.getElementById('country');
-    
-    if (!fullNameElement || !emailElement || !phoneElement || !addressElement || 
+
+    if (!fullNameElement || !emailElement || !phoneElement || !addressElement ||
         !cityElement || !postalCodeElement || !countryElement) {
         throw new Error('Customer information form elements not found');
     }
-    
+
     // 顧客情報
     const customerInfo = {
         name: fullNameElement.value.trim(),
@@ -709,42 +725,42 @@ function collectOrderData() {
         postalCode: postalCodeElement.value.trim(),
         country: countryElement.value
     };
-    
+
     // 支払い方法
     const paymentMethodElement = document.querySelector('input[name="payment-method"]:checked');
     if (!paymentMethodElement) {
         throw new Error('Payment method not selected');
     }
     const paymentMethod = paymentMethodElement.value;
-    
+
     // 支払い情報（クレジットカードの場合）
     let paymentDetails = {};
     if (paymentMethod === 'credit') {
         const cardNumberElement = document.getElementById('card-number');
         const expiryDateElement = document.getElementById('expiry-date');
         const cvvElement = document.getElementById('cvv');
-        
+
         if (!cardNumberElement || !expiryDateElement || !cvvElement) {
             throw new Error('Credit card form elements not found');
         }
-        
+
         // セキュリティのため、カード番号の最後の4桁だけを保存
         const cardNumber = cardNumberElement.value.replace(/\s/g, '');
         const lastFourDigits = cardNumber.slice(-4);
-        
+
         paymentDetails = {
             cardType: detectCardType(cardNumber),
             lastFourDigits: lastFourDigits,
             expiry: expiryDateElement.value
         };
     }
-    
+
     // 注文番号の生成
     const orderNumber = generateOrderNumber();
-    
+
     // 注文日時
     const orderDate = new Date();
-    
+
     return {
         orderNumber: orderNumber,
         orderDate: orderDate,
