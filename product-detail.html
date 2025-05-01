@@ -866,7 +866,15 @@
                         <div class="product-price">
                             <span id="original-price" class="original-price" style="display: none;">0.00 CAD</span>
                             <span id="current-price">0.00 CAD</span>
-                            <span id="discount-label" class="discount-price" style="display: none;">(8% off - No Photo Discount)</span>
+                        </div>
+                        <!-- 割引バッジ（画像なしの場合に表示） -->
+                        <div id="discount-badge" class="discount-badge" style="display: none;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="19" y1="5" x2="5" y2="19"></line>
+                                <circle cx="6.5" cy="6.5" r="2.5"></circle>
+                                <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                            </svg>
+                            <span>8% discount applied - No product photos yet</span>
                         </div>
                         <div class="price-note">All taxes included in price</div>
                         <!-- 割引に関する説明文 -->
@@ -1014,34 +1022,24 @@
                     </table>
                 </div>
                 
-                <div id="shipping" class="tab-content">
-                    <h3 class="description-title">Shipping Information</h3>
-                    <div class="description-content">
-                        <p>We ship worldwide from our warehouse in Vancouver, Canada. All items are carefully packaged to ensure they arrive in the condition described.</p>
-                        
-                        <ul>
-                            <li>Orders are typically processed within 1-2 business days</li>
-                            <li>Standard shipping (5-10 business days): 8.99 CAD</li>
-                            <li>Express shipping (3-5 business days): 14.99 CAD</li>
-                            <li>International shipping (10-20 business days): 19.99 CAD</li>
-                            <li>Free shipping on orders over 100 CAD (Canada and US only)</li>
-                        </ul>
-                        
-                        <p>Tracking information will be provided via email once your order has been shipped.</p>
+                <div class="product-price-container">
+                    <div class="product-price">
+                        <span id="original-price" class="original-price" style="display: none;">0.00 CAD</span>
+                        <span id="current-price">0.00 CAD</span>
                     </div>
-                    
-                    <h3 class="description-title" style="margin-top: 1.5rem;">Return Policy</h3>
-                    <div class="description-content">
-                        <p>We want you to be completely satisfied with your purchase. If for any reason you're not happy with your order, we offer a 30-day return policy from the date of delivery.</p>
-                        
-                        <ul>
-                            <li>Items must be returned in the same condition as they were received</li>
-                            <li>Original packaging must be included</li>
-                            <li>Return shipping costs are the responsibility of the customer unless the item was damaged or defective</li>
-                            <li>Refunds will be processed within 5-7 business days after we receive your return</li>
-                        </ul>
-                        
-                        <p>To initiate a return, please contact our customer service team at support@playportjp.com.</p>
+                    <!-- 割引バッジ（画像なしの場合に表示） -->
+                    <div id="discount-badge" class="discount-badge" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="5" x2="5" y2="19"></line>
+                            <circle cx="6.5" cy="6.5" r="2.5"></circle>
+                            <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                        </svg>
+                        <span>8% discount applied - No product photos yet</span>
+                    </div>
+                    <div class="price-note">All taxes included in price</div>
+                    <!-- 割引に関する説明文 -->
+                    <div id="discount-explanation" class="discount-explanation" style="display: none;">
+                        This item currently has no product photos. An 8% discount has been applied to the price. Photos will be added when the item ships.
                     </div>
                 </div>
                 
