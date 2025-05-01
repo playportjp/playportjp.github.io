@@ -172,7 +172,8 @@ function createCartItemElement(item) {
     const subcategoryName = item.subcategory || 'Other';
     
     // 商品画像がない場合のプレースホルダー
-    const imageContent = item.image
+    const hasImage = item.image && item.image !== '';
+    const imageContent = hasImage
         ? ''
         : `
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -189,14 +190,26 @@ function createCartItemElement(item) {
     // 商品属性の仮設定
     const attributes = 'Region: Japan (NTSC-J) | Language: Japanese';
     
+    // 写真なし割引の表示
+    const noPhotoDiscountBadge = !hasImage 
+        ? '<span class="no-photo-badge" style="display: inline-block; margin-left: 8px; font-size: 0.75rem; background-color: rgba(0, 0, 0, 0.7); color: #ffeb3b; padding: 0.2rem 0.4rem; border-radius: 3px;">8% off - No Photo</span>' 
+        : '';
+    
     // 商品要素のHTML
     const cartItemElement = document.createElement('div');
     cartItemElement.className = 'cart-item';
     cartItemElement.setAttribute('data-product-id', item.id);
     
     cartItemElement.innerHTML = `
-        <div class="item-image" ${item.image ? `style="background-image: url('${item.image}'); background-size: cover;"` : ''}>
+        <div class="item-image" ${hasImage ? `style="background-image: url('${item.image}'); background-size: cover;"` : ''}>
             ${imageContent}
+            ${!hasImage ? `<a href="https://www.google.com/search?q=${encodeURIComponent(item.name)}&tbm=isch" class="search-image-link" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                Google
+            </a>` : ''}
         </div>
         <div class="item-details">
             <h3 class="item-title">
@@ -212,12 +225,13 @@ function createCartItemElement(item) {
                 <span class="meta-tag ${categoryClass}">${categoryName}</span>
                 <span class="meta-tag other">${subcategoryName}</span>
                 <span class="condition-badge ${conditionClass}">${conditionText}</span>
+                ${!hasImage ? '<span class="meta-tag" style="background-color: #ff9800;">No Photo</span>' : ''}
             </div>
             <div class="item-attributes">
                 ${attributes}
             </div>
             <div class="item-price-qty">
-                <div class="item-price">${item.price.toFixed(2)} CAD</div>
+                <div class="item-price">${item.price.toFixed(2)} CAD ${noPhotoDiscountBadge}</div>
                 <div class="quantity-control">
                     <button class="quantity-btn minus">-</button>
                     <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="10">
@@ -229,7 +243,6 @@ function createCartItemElement(item) {
     
     return cartItemElement;
 }
-
 // カート内の商品要素にイベントリスナーを設定
 function setupCartItemEvents() {
     // 数量減少ボタン
