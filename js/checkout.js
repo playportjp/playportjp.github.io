@@ -45,7 +45,7 @@ function handleCheckoutSubmit(event) {
         // 処理中の状態を表示
         showProcessingState();
         
-        // 注文データの収集
+        // 注文データの収集 - collectOrderData関数を直接呼び出し
         const orderData = collectOrderData();
         console.log('Order data collected:', orderData);
         
