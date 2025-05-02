@@ -247,45 +247,6 @@ function checkProductImage(product) {
     }, 500);
 }
 
-// 通常価格を表示
-function applyNormalPrice(product) {
-    const originalPriceElement = document.getElementById('original-price');
-    const currentPriceElement = document.getElementById('current-price');
-
-    if (originalPriceElement) {
-        originalPriceElement.style.display = 'none';
-    }
-
-    if (currentPriceElement) {
-        currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
-    }
-}
-
-// Open Photo Bonus価格を適用（割引価格）
-function applyDiscountPrice(product) {
-    const originalPriceElement = document.getElementById('original-price');
-    const currentPriceElement = document.getElementById('current-price');
-
-    // 元の価格と割引後の価格を表示
-    const originalPrice = product.price;
-    const discountRate = 0.08; // 8%割引
-    const discountedPrice = originalPrice * (1 - discountRate);
-
-    if (originalPriceElement) {
-        originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
-        originalPriceElement.style.display = 'inline';
-    }
-
-    if (currentPriceElement) {
-        currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
-    }
-
-    // カートに追加するときの価格を割引価格に設定
-    if (product) {
-        product.discountedPrice = discountedPrice;
-    }
-}
-
 // プレースホルダー要素を強制的に表示する補助関数
 function forceDisplayNoPhotoContainer(container) {
     if (!container) return;
@@ -310,114 +271,42 @@ function forceDisplayNoPhotoContainer(container) {
     }
 }
 
-// DOMの読み込み完了時に実行
-document.addEventListener('DOMContentLoaded', function () {
-    // ページ読み込み完了から少し遅らせて実行（最後の手段）
-    setTimeout(() => {
-        const noPhotoContainer = document.querySelector('.no-photo-container');
-        if (noPhotoContainer) {
-            console.log('Final force display attempt');
-            forceDisplayNoPhotoContainer(noPhotoContainer);
-
-            // アニメーションも確実に動作させる
-            const premiumIcon = document.querySelector('.premium-icon');
-            const bonusPopup = document.querySelector('.bonus-popup');
-
-            if (premiumIcon) {
-                // アニメーションをリセットして再開
-                premiumIcon.style.animation = 'none';
-                setTimeout(() => {
-                    premiumIcon.style.animation = 'float-twice 4s ease-in-out forwards';
-                }, 10);
-            }
-
-            if (bonusPopup) {
-                // アニメーションをリセットして再開
-                bonusPopup.style.animation = 'none';
-                setTimeout(() => {
-                    bonusPopup.style.animation = 'show-bonus 4s ease-in-out forwards';
-                    bonusPopup.style.animationDelay = '4s';
-                }, 10);
-            }
-        }
-    }, 1000);
-});
-
-// 通常価格を表示
-function applyNormalPrice(product) {
-    const originalPriceElement = document.getElementById('original-price');
-    const currentPriceElement = document.getElementById('current-price');
-
-    if (originalPriceElement) {
-        originalPriceElement.style.display = 'none';
-    }
-
-    if (currentPriceElement) {
-        currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
-    }
-}
-
-// Open Photo Bonus価格を適用（割引価格）
-function applyDiscountPrice(product) {
-    const originalPriceElement = document.getElementById('original-price');
-    const currentPriceElement = document.getElementById('current-price');
-
-    // 元の価格と割引後の価格を表示
-    const originalPrice = product.price;
-    const discountRate = 0.08; // 8%割引
-    const discountedPrice = originalPrice * (1 - discountRate);
-
-    if (originalPriceElement) {
-        originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
-        originalPriceElement.style.display = 'inline';
-    }
-
-    if (currentPriceElement) {
-        currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
-    }
-
-    // カートに追加するときの価格を割引価格に設定
-    if (product) {
-        product.discountedPrice = discountedPrice;
-    }
-}
-
-// 商品詳細を表示
+// 商品詳細を表示 - 修正後の関数
 function displayProductDetails(product) {
     // タイトルを更新
     document.title = `${product.name} - PlayPortJP`;
-
+    
     // 商品名を更新
     const productTitle = document.querySelector('.product-title');
     if (productTitle) {
         productTitle.textContent = product.name;
     }
-
+    
     // パンくずリストの商品名を更新
     const breadcrumbProductName = document.getElementById('breadcrumb-product-name');
     if (breadcrumbProductName) {
         breadcrumbProductName.textContent = product.name;
     }
-
+    
     // 商品画像を更新
     const productImageMain = document.querySelector('.product-image-main');
     if (productImageMain && product.image) {
         // 画像を事前にロードして、読み込み完了後に表示する
         const img = new Image();
-        img.onload = function () {
+        img.onload = function() {
             // 画像の読み込みが完了したら背景画像として設定
             productImageMain.style.backgroundImage = `url('${product.image}')`;
             productImageMain.style.backgroundSize = 'contain';
             productImageMain.style.backgroundRepeat = 'no-repeat';
             productImageMain.style.backgroundPosition = 'center';
-
+            
             // プレースホルダー要素を非表示
             const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
             if (noPhotoContainer) {
                 noPhotoContainer.style.display = 'none';
             }
         };
-        img.onerror = function () {
+        img.onerror = function() {
             // 画像のロードに失敗した場合はプレースホルダーを表示
             const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
             if (noPhotoContainer) {
@@ -427,25 +316,25 @@ function displayProductDetails(product) {
         // 画像のロード開始
         img.src = product.image;
     }
-
+    
     // 商品価格を更新（割引適用の有無は checkProductImage() で処理）
     const productPrice = document.querySelector('.product-price');
     if (productPrice) {
         // ここでは価格の初期表示のみ行う（割引は別関数で処理）
         document.getElementById('current-price').textContent = `${product.price.toFixed(2)} CAD`;
     }
-
+    
     // カテゴリメタタグを更新
     const productMeta = document.querySelector('.product-meta');
     if (productMeta && product.category) {
         productMeta.innerHTML = '';
-
+        
         // カテゴリータグを追加
         const categoryTag = document.createElement('span');
         categoryTag.className = `meta-tag ${product.category.toLowerCase()}`;
         categoryTag.textContent = product.category;
         productMeta.appendChild(categoryTag);
-
+        
         // サブカテゴリータグを追加
         if (product.subcategory) {
             const subcategoryTag = document.createElement('span');
@@ -454,7 +343,7 @@ function displayProductDetails(product) {
             productMeta.appendChild(subcategoryTag);
         }
     }
-
+    
     // コンディションバッジを更新
     const conditionValue = document.querySelector('.condition-row .condition-value');
     if (conditionValue) {
@@ -504,6 +393,113 @@ function displayProductDetails(product) {
 
     // タブの内容を更新
     updateTabsContent(product);
+    
+    // ボーナスコンボアニメーションを設定
+    setupBonusAnimation();
+}
+
+// ボーナスコンボのアニメーションを設定
+function setupBonusAnimation() {
+    const premiumIcon = document.querySelector('.premium-icon');
+    const bonusCombo = document.querySelector('.bonus-combo');
+    
+    // 赤箱アイコンのアニメーション完了後（3秒後）にボーナスコンボを表示
+    if (premiumIcon && bonusCombo) {
+        // アニメーションがすでに適用されている場合は削除
+        premiumIcon.style.animation = 'none';
+        bonusCombo.style.animation = 'none';
+        
+        // 少し遅らせてアニメーションを再適用
+        setTimeout(() => {
+            // 赤箱のアニメーション
+            premiumIcon.style.animation = 'float-twice 3s ease-in-out forwards';
+            
+            // 3秒後にボーナスコンボを表示
+            setTimeout(() => {
+                // にじみ出るアニメーション
+                bonusCombo.style.animation = 'show-bonus-combo 2s ease-in-out forwards';
+                bonusCombo.style.opacity = '1';
+                bonusCombo.style.display = 'flex';
+            }, 3000);
+        }, 10);
+    }
+}
+
+// DOMの読み込み完了時に実行
+document.addEventListener('DOMContentLoaded', function () {
+    // ページ読み込み完了から少し遅らせて実行（最後の手段）
+    setTimeout(() => {
+        const noPhotoContainer = document.querySelector('.no-photo-container');
+        if (noPhotoContainer) {
+            console.log('Final force display attempt');
+            forceDisplayNoPhotoContainer(noPhotoContainer);
+
+            // アニメーションも確実に動作させる
+            const premiumIcon = document.querySelector('.premium-icon');
+            const bonusPopup = document.querySelector('.bonus-popup');
+
+            if (premiumIcon) {
+                // アニメーションをリセットして再開
+                premiumIcon.style.animation = 'none';
+                setTimeout(() => {
+                    premiumIcon.style.animation = 'float-twice 4s ease-in-out forwards';
+                }, 10);
+            }
+
+            if (bonusPopup) {
+                // アニメーションをリセットして再開
+                bonusPopup.style.animation = 'none';
+                setTimeout(() => {
+                    bonusPopup.style.animation = 'show-bonus 4s ease-in-out forwards';
+                    bonusPopup.style.animationDelay = '4s';
+                }, 10);
+            }
+        }
+        
+        // ボーナスアニメーションを設定
+        setupBonusAnimation();
+    }, 1000);
+});
+
+// 通常価格を表示
+function applyNormalPrice(product) {
+    const originalPriceElement = document.getElementById('original-price');
+    const currentPriceElement = document.getElementById('current-price');
+    
+    if (originalPriceElement) {
+        originalPriceElement.style.display = 'none';
+    }
+    
+    if (currentPriceElement) {
+        currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
+        currentPriceElement.style.color = 'var(--text-primary)'; // 通常の色に戻す
+    }
+}
+
+// Open Photo Bonus価格を適用（割引価格）
+function applyDiscountPrice(product) {
+    const originalPriceElement = document.getElementById('original-price');
+    const currentPriceElement = document.getElementById('current-price');
+    
+    // 元の価格と割引後の価格を表示
+    const originalPrice = product.price;
+    const discountRate = 0.08; // 8%割引
+    const discountedPrice = originalPrice * (1 - discountRate);
+    
+    if (originalPriceElement) {
+        originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
+        originalPriceElement.style.display = 'inline';
+    }
+    
+    if (currentPriceElement) {
+        currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
+        currentPriceElement.style.color = '#ffeb3b'; // 割引価格は黄色で強調
+    }
+    
+    // カートに追加するときの価格を割引価格に設定
+    if (product) {
+        product.discountedPrice = discountedPrice;
+    }
 }
 
 // タブコンテンツを更新
