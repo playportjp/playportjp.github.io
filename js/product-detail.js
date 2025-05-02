@@ -88,37 +88,28 @@ function checkProductImage(product) {
     const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
     const discountExplanation = document.getElementById('discount-explanation');
     const discountBadge = document.getElementById('discount-badge');
+    const premiumIcon = document.querySelector('.premium-icon');
+    const bonusCombo = document.querySelector('.bonus-combo');
 
     // デバッグ用
     console.log('Product image check:', {
         hasImage,
         productId: product.id,
         productImage: product.image,
-        noPhotoContainer: noPhotoContainer ? true : false
+        noPhotoContainer: noPhotoContainer ? true : false,
+        premiumIcon: premiumIcon ? true : false,
+        bonusCombo: bonusCombo ? true : false
     });
 
-    // プレースホルダーを強制的に表示状態に
-    if (noPhotoContainer) {
-        noPhotoContainer.style.display = 'flex';
-        noPhotoContainer.style.opacity = '1';
-        noPhotoContainer.style.visibility = 'visible';
-
-        // 子要素も確実に表示
-        const allElements = noPhotoContainer.querySelectorAll('*');
-        allElements.forEach(element => {
-            element.style.opacity = '1';
-            element.style.visibility = 'visible';
-        });
-
-        // Google検索ボタンも確実に表示
-        const googleButton = document.getElementById('google-search-link');
-        if (googleButton) {
-            googleButton.style.opacity = '1';
-            googleButton.style.visibility = 'visible';
-            googleButton.style.zIndex = '5';
-        }
-
-        console.log('No photo container forced display');
+    // 初期状態ではアニメーション要素を非表示に
+    if (premiumIcon) {
+        premiumIcon.style.display = 'none';
+        premiumIcon.style.opacity = '0';
+    }
+    
+    if (bonusCombo) {
+        bonusCombo.style.display = 'none';
+        bonusCombo.style.opacity = '0';
     }
 
     // 画像パスがある場合、実際に画像が読み込めるかテスト
@@ -144,8 +135,20 @@ function checkProductImage(product) {
             }
 
             // 割引関連の表示を非表示
-            if (discountBadge) discountBadge.style.display = 'none';
-            if (discountExplanation) discountExplanation.style.display = 'none';
+            if (discountBadge) {
+                discountBadge.style.display = 'none';
+            }
+            if (discountExplanation) {
+                discountExplanation.style.display = 'none';
+            }
+            
+            // ボーナスアニメーション要素を非表示
+            if (premiumIcon) {
+                premiumIcon.style.display = 'none';
+            }
+            if (bonusCombo) {
+                bonusCombo.style.display = 'none';
+            }
 
             // 通常の価格表示に戻す
             applyNormalPrice(product);
@@ -157,12 +160,23 @@ function checkProductImage(product) {
         img.onerror = function () {
             // 画像のロードに失敗した場合
             hasImage = false;
-            console.log('Product image failed to load');
+            console.log('Product image failed to load - applying Open Photo Bonus');
 
-            // プレースホルダー要素を表示
+            // プレースホルダー要素を表示 - noPhotoContainerだけを表示する
             if (noPhotoContainer) {
+                noPhotoContainer.style.display = 'flex';
+                noPhotoContainer.style.opacity = '1';
+                noPhotoContainer.style.visibility = 'visible';
+                
+                // Google検索ボタンを表示
+                const googleButton = document.getElementById('google-search-link');
+                if (googleButton) {
+                    googleButton.style.display = 'inline-block';
+                    googleButton.style.opacity = '1';
+                    googleButton.style.visibility = 'visible';
+                }
+                
                 console.log('Showing no-photo-container after image load failure');
-                forceDisplayNoPhotoContainer(noPhotoContainer);
             }
 
             // Open Photo Bonusバッジと説明を表示
@@ -181,7 +195,6 @@ function checkProductImage(product) {
 
             if (discountExplanation) {
                 discountExplanation.style.display = 'block';
-                // テキストも「Open Photo Bonus」のコンセプトに合わせて更新
                 discountExplanation.innerHTML = 'This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.';
                 console.log('Updated explanation text');
             }
@@ -191,6 +204,11 @@ function checkProductImage(product) {
 
             // 画像セレクターを無効化
             disableImageSelector();
+            
+            // しばらく遅らせてからボーナスアニメーションを設定
+            setTimeout(() => {
+                setupBonusAnimation();
+            }, 1000);
         };
 
         // 画像のロード開始
@@ -199,11 +217,23 @@ function checkProductImage(product) {
     } else {
         // 画像パスがない場合は直接ボーナスを適用
         console.log('No image path provided, applying Open Photo Bonus directly');
+        hasImage = false;
 
         // プレースホルダー要素を表示
         if (noPhotoContainer) {
+            noPhotoContainer.style.display = 'flex';
+            noPhotoContainer.style.opacity = '1';
+            noPhotoContainer.style.visibility = 'visible';
+            
+            // Google検索ボタンを表示
+            const googleButton = document.getElementById('google-search-link');
+            if (googleButton) {
+                googleButton.style.display = 'inline-block';
+                googleButton.style.opacity = '1';
+                googleButton.style.visibility = 'visible';
+            }
+            
             console.log('Showing no-photo-container for product with no image path');
-            forceDisplayNoPhotoContainer(noPhotoContainer);
         }
 
         // Open Photo Bonusバッジと説明を表示
@@ -222,7 +252,6 @@ function checkProductImage(product) {
 
         if (discountExplanation) {
             discountExplanation.style.display = 'block';
-            // テキストも「Open Photo Bonus」のコンセプトに合わせて更新
             discountExplanation.innerHTML = 'This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.';
             console.log('Updated explanation text');
         }
@@ -232,44 +261,21 @@ function checkProductImage(product) {
 
         // 画像セレクターを無効化
         disableImageSelector();
+        
+        // しばらく遅らせてからボーナスアニメーションを設定
+        setTimeout(() => {
+            setupBonusAnimation();
+        }, 1000);
     }
 
     // 商品オブジェクトに画像の有無情報を保存（カートで使用）
     product.hasImage = hasImage;
     console.log('Final hasImage value:', hasImage);
-
-    // 遅延実行で強制的に表示を確認（最後の手段）
-    setTimeout(() => {
-        if (!hasImage && noPhotoContainer) {
-            console.log('Delayed force display execution');
-            forceDisplayNoPhotoContainer(noPhotoContainer);
-        }
-    }, 500);
 }
 
-// プレースホルダー要素を強制的に表示する補助関数
-function forceDisplayNoPhotoContainer(container) {
-    if (!container) return;
+// プレースホルダー要素を強制的に表示する補助関数は使用しない
+// 代わりに、checkProductImage内で直接要素の表示を制御する
 
-    container.style.display = 'flex';
-    container.style.opacity = '1';
-    container.style.visibility = 'visible';
-
-    // すべての子要素も確実に表示
-    const allElements = container.querySelectorAll('*');
-    allElements.forEach(element => {
-        element.style.opacity = '1';
-        element.style.visibility = 'visible';
-    });
-
-    // Google検索ボタンも確実に表示
-    const googleButton = document.getElementById('google-search-link');
-    if (googleButton) {
-        googleButton.style.opacity = '1';
-        googleButton.style.visibility = 'visible';
-        googleButton.style.zIndex = '5';
-    }
-}
 
 // 商品詳細を表示 - 修正後の関数
 function displayProductDetails(product) {
@@ -400,65 +406,67 @@ function displayProductDetails(product) {
 
 // ボーナスコンボのアニメーションを設定
 function setupBonusAnimation() {
+    console.log('Setting up bonus animation');
     const premiumIcon = document.querySelector('.premium-icon');
     const bonusCombo = document.querySelector('.bonus-combo');
     
+    console.log('Animation elements:', {
+        premiumIcon: premiumIcon ? true : false,
+        bonusCombo: bonusCombo ? true : false
+    });
+    
+    // 最初は両方とも非表示に
+    if (premiumIcon) {
+        premiumIcon.style.display = 'none';
+        premiumIcon.style.animation = 'none';
+        premiumIcon.style.opacity = '0';
+    }
+    
+    if (bonusCombo) {
+        bonusCombo.style.display = 'none';
+        bonusCombo.style.animation = 'none';
+        bonusCombo.style.opacity = '0';
+    }
+    
     // 赤箱アイコンのアニメーション完了後（3秒後）にボーナスコンボを表示
     if (premiumIcon && bonusCombo) {
-        // アニメーションがすでに適用されている場合は削除
-        premiumIcon.style.animation = 'none';
-        bonusCombo.style.animation = 'none';
-        
-        // 少し遅らせてアニメーションを再適用
+        // 少し遅らせてから表示開始
         setTimeout(() => {
+            // まず赤箱を表示
+            premiumIcon.style.display = 'block';
+            premiumIcon.style.opacity = '1';
+            
+            // DOMの再計算を強制（アニメーションリセット用）
+            void premiumIcon.offsetWidth;
+            
             // 赤箱のアニメーション
             premiumIcon.style.animation = 'float-twice 3s ease-in-out forwards';
+            console.log('Started premium icon animation');
             
             // 3秒後にボーナスコンボを表示
             setTimeout(() => {
+                // ボーナスコンボを表示
+                bonusCombo.style.display = 'flex';
+                bonusCombo.style.opacity = '0';
+                
+                // DOMの再計算を強制
+                void bonusCombo.offsetWidth;
+                
                 // にじみ出るアニメーション
                 bonusCombo.style.animation = 'show-bonus-combo 2s ease-in-out forwards';
-                bonusCombo.style.opacity = '1';
-                bonusCombo.style.display = 'flex';
+                console.log('Started bonus combo animation');
             }, 3000);
-        }, 10);
+        }, 500);
     }
 }
 
-// DOMの読み込み完了時に実行
+// DOMの読み込み完了時に実行（2回目のリスナー）
 document.addEventListener('DOMContentLoaded', function () {
-    // ページ読み込み完了から少し遅らせて実行（最後の手段）
-    setTimeout(() => {
-        const noPhotoContainer = document.querySelector('.no-photo-container');
-        if (noPhotoContainer) {
-            console.log('Final force display attempt');
-            forceDisplayNoPhotoContainer(noPhotoContainer);
-
-            // アニメーションも確実に動作させる
-            const premiumIcon = document.querySelector('.premium-icon');
-            const bonusPopup = document.querySelector('.bonus-popup');
-
-            if (premiumIcon) {
-                // アニメーションをリセットして再開
-                premiumIcon.style.animation = 'none';
-                setTimeout(() => {
-                    premiumIcon.style.animation = 'float-twice 4s ease-in-out forwards';
-                }, 10);
-            }
-
-            if (bonusPopup) {
-                // アニメーションをリセットして再開
-                bonusPopup.style.animation = 'none';
-                setTimeout(() => {
-                    bonusPopup.style.animation = 'show-bonus 4s ease-in-out forwards';
-                    bonusPopup.style.animationDelay = '4s';
-                }, 10);
-            }
-        }
-        
-        // ボーナスアニメーションを設定
-        setupBonusAnimation();
-    }, 1000);
+    console.log('DOM loaded - second event listener');
+    
+    // この二重のDOMContentLoadedリスナーは別のイベントハンドラが
+    // 上部で定義されており、それと競合する可能性があるため避けます
+    // ボーナスアニメーションの設定は checkProductImage 内で行われます
 });
 
 // 通常価格を表示
@@ -474,31 +482,51 @@ function applyNormalPrice(product) {
         currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
         currentPriceElement.style.color = 'var(--text-primary)'; // 通常の色に戻す
     }
+    
+    console.log('Applied normal price:', product.price.toFixed(2));
 }
 
 // Open Photo Bonus価格を適用（割引価格）
 function applyDiscountPrice(product) {
+    console.log('Applying discount price...');
     const originalPriceElement = document.getElementById('original-price');
     const currentPriceElement = document.getElementById('current-price');
+    
+    if (!originalPriceElement || !currentPriceElement) {
+        console.error('Price elements not found:', {
+            originalPrice: originalPriceElement ? true : false,
+            currentPrice: currentPriceElement ? true : false
+        });
+        return;
+    }
     
     // 元の価格と割引後の価格を表示
     const originalPrice = product.price;
     const discountRate = 0.08; // 8%割引
     const discountedPrice = originalPrice * (1 - discountRate);
     
-    if (originalPriceElement) {
-        originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
-        originalPriceElement.style.display = 'inline';
-    }
+    console.log('Price calculations:', {
+        originalPrice,
+        discountRate,
+        discountedPrice
+    });
     
-    if (currentPriceElement) {
-        currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
-        currentPriceElement.style.color = '#ffeb3b'; // 割引価格は黄色で強調
-    }
+    // まず元の価格を表示
+    originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
+    originalPriceElement.style.display = 'inline';
+    originalPriceElement.style.textDecoration = 'line-through';
+    originalPriceElement.style.color = '#999';
+    originalPriceElement.style.marginRight = '10px';
+    
+    // 割引価格を表示
+    currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
+    currentPriceElement.style.color = '#ffeb3b'; // 割引価格は黄色で強調
+    currentPriceElement.style.fontWeight = 'bold';
     
     // カートに追加するときの価格を割引価格に設定
     if (product) {
         product.discountedPrice = discountedPrice;
+        console.log('Set discounted price on product:', discountedPrice);
     }
 }
 
