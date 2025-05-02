@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // エラーメッセージを表示または別のページにリダイレクト
         document.querySelector('.product-detail-container').innerHTML = `
             <div class="error-message">
-                <h2>商品が見つかりませんでした</h2>
-                <p>URLが正しいかご確認ください。</p>
-                <a href="index.html" class="btn btn-primary">トップページに戻る</a>
+                <h2>Product not found</h2>
+                <p>Please check the URL and try again.</p>
+                <a href="index.html" class="btn btn-primary">Back to Homepage</a>
             </div>
         `;
     }
@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // タブの切り替え機能
     setupTabs();
+    
+    // 画像セレクターの機能
+    setupImageSelector();
 });
 
 // 商品詳細データを取得して表示
@@ -58,9 +61,9 @@ function loadProductDetails(productId) {
             console.error('Error loading product details:', error);
             document.querySelector('.product-detail-container').innerHTML = `
                 <div class="error-message">
-                    <h2>商品データの読み込みに失敗しました</h2>
+                    <h2>Failed to load product data</h2>
                     <p>${error.message}</p>
-                    <a href="index.html" class="btn btn-primary">トップページに戻る</a>
+                    <a href="index.html" class="btn btn-primary">Back to Homepage</a>
                 </div>
             `;
         });
@@ -75,7 +78,7 @@ function setupGoogleSearchLink(productName) {
     }
 }
 
-// 写真の有無を確認し、必要に応じて割引を適用
+// 写真の有無を確認し、必要に応じてOpen Photo Bonusを適用
 function checkProductImage(product) {
     // 初期状態では画像パスの有無でチェック
     let hasImage = product.image && product.image !== '';
@@ -111,6 +114,9 @@ function checkProductImage(product) {
             
             // 通常の価格表示に戻す
             applyNormalPrice(product);
+            
+            // 画像セレクターを有効化
+            enableImageSelector();
         };
         
         img.onerror = function() {
@@ -123,18 +129,25 @@ function checkProductImage(product) {
                 noPhotoContainer.style.display = 'flex';
             }
             
-            // 割引バッジと説明を表示
+            // Open Photo Bonusバッジと説明を表示
             if (discountBadge) discountBadge.style.display = 'flex';
-            if (discountExplanation) discountExplanation.style.display = 'block';
+            if (discountExplanation) {
+                discountExplanation.style.display = 'block';
+                // テキストも「Open Photo Bonus」のコンセプトに合わせて更新
+                discountExplanation.innerHTML = 'This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.';
+            }
             
-            // 割引価格を適用
+            // ボーナス価格を適用
             applyDiscountPrice(product);
+            
+            // 画像セレクターを無効化
+            disableImageSelector();
         };
         
         // 画像のロード開始
         img.src = product.image;
     } else {
-        // 画像パスがない場合は直接割引を適用
+        // 画像パスがない場合は直接ボーナスを適用
         const productImageMain = document.querySelector('.product-image-main');
         const discountExplanation = document.getElementById('discount-explanation');
         const discountBadge = document.getElementById('discount-badge');
@@ -145,12 +158,19 @@ function checkProductImage(product) {
             noPhotoContainer.style.display = 'flex';
         }
         
-        // 割引バッジと説明を表示
+        // Open Photo Bonusバッジと説明を表示
         if (discountBadge) discountBadge.style.display = 'flex';
-        if (discountExplanation) discountExplanation.style.display = 'block';
+        if (discountExplanation) {
+            discountExplanation.style.display = 'block';
+            // テキストも「Open Photo Bonus」のコンセプトに合わせて更新
+            discountExplanation.innerHTML = 'This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.';
+        }
         
-        // 割引価格を適用
+        // ボーナス価格を適用
         applyDiscountPrice(product);
+        
+        // 画像セレクターを無効化
+        disableImageSelector();
     }
     
     // 商品オブジェクトに画像の有無情報を保存（カートで使用）
@@ -171,7 +191,7 @@ function applyNormalPrice(product) {
     }
 }
 
-// 割引価格を表示
+// Open Photo Bonus価格を適用（割引価格）
 function applyDiscountPrice(product) {
     const originalPriceElement = document.getElementById('original-price');
     const currentPriceElement = document.getElementById('current-price');
@@ -188,55 +208,6 @@ function applyDiscountPrice(product) {
     
     if (currentPriceElement) {
         currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
-    }
-    
-    // カートに追加するときの価格を割引価格に設定
-    if (product) {
-        product.discountedPrice = discountedPrice;
-    }
-}
-
-// 通常価格を表示
-function applyNormalPrice(product) {
-    const originalPriceElement = document.getElementById('original-price');
-    const currentPriceElement = document.getElementById('current-price');
-    const discountLabelElement = document.getElementById('discount-label');
-    
-    if (originalPriceElement) {
-        originalPriceElement.style.display = 'none';
-    }
-    
-    if (currentPriceElement) {
-        currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
-    }
-    
-    if (discountLabelElement) {
-        discountLabelElement.style.display = 'none';
-    }
-}
-
-// 割引価格を表示
-function applyDiscountPrice(product) {
-    const originalPriceElement = document.getElementById('original-price');
-    const currentPriceElement = document.getElementById('current-price');
-    const discountLabelElement = document.getElementById('discount-label');
-    
-    // 元の価格と割引後の価格を表示
-    const originalPrice = product.price;
-    const discountRate = 0.08; // 8%割引
-    const discountedPrice = originalPrice * (1 - discountRate);
-    
-    if (originalPriceElement) {
-        originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
-        originalPriceElement.style.display = 'inline';
-    }
-    
-    if (currentPriceElement) {
-        currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
-    }
-    
-    if (discountLabelElement) {
-        discountLabelElement.style.display = 'inline';
     }
     
     // カートに追加するときの価格を割引価格に設定
@@ -274,19 +245,18 @@ function displayProductDetails(product) {
             productImageMain.style.backgroundRepeat = 'no-repeat';
             productImageMain.style.backgroundPosition = 'center';
             
-            // SVGアイコンと説明テキストを非表示
-            const svgElements = productImageMain.querySelectorAll('svg, div');
-            svgElements.forEach(el => el.style.display = 'none');
+            // プレースホルダー要素を非表示
+            const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
+            if (noPhotoContainer) {
+                noPhotoContainer.style.display = 'none';
+            }
         };
         img.onerror = function() {
-            // 画像のロードに失敗した場合はエラーメッセージを表示
-            const svgElements = productImageMain.querySelectorAll('svg');
-            const textElement = productImageMain.querySelector('div');
-            if (textElement) {
-                textElement.textContent = '画像を読み込めませんでした';
-                textElement.style.opacity = '1';
+            // 画像のロードに失敗した場合はプレースホルダーを表示
+            const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
+            if (noPhotoContainer) {
+                noPhotoContainer.style.display = 'flex';
             }
-            svgElements.forEach(el => el.style.opacity = '1');
         };
         // 画像のロード開始
         img.src = product.image;
@@ -414,7 +384,7 @@ function setupAddToCartButton(product) {
             const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
             
             if (window.cartManager) {
-                // 写真がない場合は割引価格を使用
+                // 写真がない場合はOpen Photo Bonus価格を使用
                 const hasImage = product.hasImage; // checkProductImage関数で設定された値を使用
                 const price = hasImage ? product.price : (product.discountedPrice || (product.price * 0.92));
                 
@@ -498,4 +468,73 @@ function setupTabs() {
             document.getElementById(tabId).classList.add('active');
         });
     });
+}
+
+// 画像セレクターの機能を設定
+function setupImageSelector() {
+    const imageOptions = document.querySelectorAll('.image-option');
+    const productImageMain = document.querySelector('.product-image-main');
+    
+    imageOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // すでに無効化されている場合は何もしない
+            if (this.disabled) return;
+            
+            // アクティブなオプションをリセット
+            imageOptions.forEach(opt => opt.classList.remove('active'));
+            
+            // クリックされたオプションをアクティブに
+            this.classList.add('active');
+            
+            // データ属性から表示するビューを取得
+            const view = this.getAttribute('data-view');
+            
+            // 実際の画像が読み込まれている場合、異なるビューを表示
+            if (productImageMain.style.backgroundImage) {
+                // ここで実際に複数の画像があれば、異なる画像URLを設定
+                // 現状では同じ画像を表示
+                console.log(`Changing view to: ${view}`);
+                
+                // 表示アニメーションを追加
+                productImageMain.style.opacity = '0';
+                setTimeout(() => {
+                    // 実際の実装では、view に応じて異なる画像URLを設定
+                    // productImageMain.style.backgroundImage = `url('path/to/${view}_image.jpg')`;
+                    productImageMain.style.opacity = '1';
+                }, 200);
+            }
+        });
+    });
+}
+
+// 画像セレクターを有効化
+function enableImageSelector() {
+    const imageSelector = document.querySelector('.product-image-selector');
+    const imageOptions = document.querySelectorAll('.image-option');
+    
+    if (imageSelector) {
+        imageSelector.classList.remove('disabled');
+    }
+    
+    if (imageOptions) {
+        imageOptions.forEach(option => {
+            option.disabled = false;
+        });
+    }
+}
+
+// 画像セレクターを無効化
+function disableImageSelector() {
+    const imageSelector = document.querySelector('.product-image-selector');
+    const imageOptions = document.querySelectorAll('.image-option');
+    
+    if (imageSelector) {
+        imageSelector.classList.add('disabled');
+    }
+    
+    if (imageOptions) {
+        imageOptions.forEach(option => {
+            option.disabled = true;
+        });
+    }
 }
