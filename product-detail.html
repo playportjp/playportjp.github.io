@@ -650,7 +650,7 @@
 
         /* 画像がない場合のメイン写真部分のスタイル改善 */
         .no-photo-container {
-            display: flex;
+            display: flex !important; /* 強制的に表示 */
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -661,6 +661,8 @@
             box-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.05), inset 0 -4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 4px;
             overflow: hidden;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
             .no-photo-container::before {
@@ -682,6 +684,8 @@
             align-items: center;
             margin-bottom: 1rem;
             z-index: 2;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
         .premium-icon {
@@ -689,263 +693,129 @@
             height: 120px;
             color: var(--primary);
             filter: drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4));
-            opacity: 0.9;
-            animation: float 3s ease-in-out infinite;
+            opacity: 0.9 !important;
+            visibility: visible !important;
+            transition: transform 0.3s ease;
         }
 
-        .shine-effect {
+        /* ホバー時のアニメーションのみ適用 */
+        .premium-icon-wrapper:hover .premium-icon {
+            transform: translateY(-8px);
+        }
+
+        /* 箱から出てくるボーナスアイコン */
+        .bonus-popup {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, transparent 70%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            top: -40px;
             opacity: 0;
-            animation: shine 5s ease-in-out infinite;
-            pointer-events: none;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            visibility: hidden;
         }
 
-        @keyframes shine {
-            0%, 100% {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.5);
-            }
-
-            50% {
-                opacity: 0.3;
-                transform: translate(-50%, -50%) scale(1);
-            }
+        .premium-icon-wrapper:hover .bonus-popup {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
         }
 
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
+        .bonus-popup svg {
+            margin-bottom: 0.25rem;
+            filter: drop-shadow(0 2px 4px rgba(255, 235, 59, 0.4));
+        }
 
-            50% {
-                transform: translateY(-8px);
-            }
+        .bonus-popup span {
+            color: #ffeb3b;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .no-photo-text {
             font-size: 1.2rem;
-            color: #ffeb3b;
+            color: var(--primary);
             margin-top: 1rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
             z-index: 2;
-            background: -webkit-linear-gradient(#ffeb3b, #ffa000);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: pulse-text 3s ease-in-out infinite;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
-        @keyframes pulse-text {
-            0%, 100% {
-                opacity: 0.8;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-        /* ボーナスアイコンのスタイル */
-        .bonus-icon {
+        /* シンプル化したボーナスアイコン */
+        .mini-bonus-icon {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 10px;
+            right: 10px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 0.75rem;
-            border-radius: 8px;
-            animation: pulse 2s infinite;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 0.4rem;
+            border-radius: 4px;
             z-index: 3;
             border: 1px solid rgba(255, 235, 59, 0.3);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
-            .bonus-icon svg {
-                margin-bottom: 0.5rem;
-                filter: drop-shadow(0 2px 4px rgba(255, 235, 59, 0.4));
+            .mini-bonus-icon svg {
+                margin-right: 0.35rem;
+                filter: drop-shadow(0 1px 2px rgba(255, 235, 59, 0.3));
+                opacity: 1 !important;
+                visibility: visible !important;
             }
 
-            .bonus-icon span {
+            .mini-bonus-icon span {
                 color: #ffeb3b;
                 font-weight: 700;
-                font-size: 0.85rem;
+                font-size: 0.7rem;
                 letter-spacing: 0.5px;
-                text-align: center;
+                opacity: 1 !important;
+                visibility: visible !important;
             }
 
-        .quality-badge {
+        /* Google検索リンクのスタイルを修正 */
+        .search-image-link {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
+            top: 8px;
+            left: 8px; /* 右から左に変更 */
+            background-color: rgba(187, 0, 0, 0.8);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-decoration: none;
             display: flex;
             align-items: center;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 0.5rem 0.75rem;
-            border-radius: 4px;
-            z-index: 3;
-            border: 1px solid rgba(76, 175, 80, 0.3);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            gap: 0.25rem;
+            transition: background-color 0.2s;
+            z-index: 5; /* より前面に表示 */
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
-            .quality-badge svg {
-                margin-right: 0.5rem;
-                filter: drop-shadow(0 1px 2px rgba(76, 175, 80, 0.4));
+            .search-image-link:hover {
+                background-color: var(--primary);
+                color: white;
             }
 
-            .quality-badge span {
-                color: #4caf50;
-                font-size: 0.85rem;
-                font-weight: 500;
+            .search-image-link svg {
+                width: 12px;
+                height: 12px;
+                opacity: 1 !important;
+                visibility: visible !important;
             }
-
-        /* シンプル化した画像セレクター部分 */
-        .product-image-selector {
-            padding: 1rem;
-            border-top: 1px solid var(--border);
-            background-color: var(--surface);
-        }
-
-        .image-selector-title {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 500;
-        }
-
-        .image-selector-options {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .image-option {
-            flex: 1;
-            padding: 0.75rem;
-            background-color: var(--surface-lighter);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-        }
-
-            .image-option:hover {
-                background-color: rgba(187, 0, 0, 0.1);
-                border-color: rgba(187, 0, 0, 0.2);
-                color: var(--text-primary);
-            }
-
-            .image-option.active {
-                background-color: rgba(187, 0, 0, 0.15);
-                border-color: var(--primary);
-                color: var(--primary);
-                font-weight: 600;
-                box-shadow: 0 2px 8px rgba(187, 0, 0, 0.15);
-            }
-
-        /* ディスカウントバッジをボーナスバッジにスタイル変更 */
-        .discount-badge {
-            display: flex;
-            align-items: center;
-            background-color: rgba(255, 235, 59, 0.1);
-            padding: 0.5rem 0.75rem;
-            border-radius: 4px;
-            margin-bottom: 0.75rem;
-            border: 1px solid rgba(255, 235, 59, 0.3);
-        }
-
-            .discount-badge svg {
-                margin-right: 0.5rem;
-                filter: drop-shadow(0 1px 2px rgba(255, 235, 59, 0.3));
-            }
-
-            .discount-badge span {
-                color: #ffeb3b;
-                font-size: 0.85rem;
-                font-weight: 500;
-            }
-
-        /* 割引説明のスタイル */
-        .discount-explanation {
-            margin-top: 0.75rem;
-            padding: 0.75rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            border-left: 3px solid rgba(255, 235, 59, 0.5);
-        }
-
-        /* パルスアニメーション */
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* 画像セレクターの無効化スタイル */
-        .product-image-selector.disabled {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .image-option:disabled {
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
 
         /* レスポンシブ対応 */
         @media (max-width: 768px) {
-            .image-selector-options {
-                flex-wrap: wrap;
-            }
-
-            .image-option {
-                min-width: 80px;
-            }
-
-            .bonus-icon {
-                top: 10px;
-                right: 10px;
-                padding: 0.5rem;
-            }
-
-                .bonus-icon svg {
-                    width: 20px;
-                    height: 20px;
-                }
-
-                .bonus-icon span {
-                    font-size: 0.75rem;
-                }
-
-            .quality-badge {
-                bottom: 10px;
-                left: 10px;
-            }
-
             .premium-icon {
                 width: 80px;
                 height: 80px;
@@ -954,18 +824,25 @@
             .no-photo-text {
                 font-size: 1rem;
             }
+
+            .mini-bonus-icon {
+                top: 8px;
+                right: 8px;
+                padding: 0.3rem;
+            }
+
+                .mini-bonus-icon span {
+                    font-size: 0.65rem;
+                }
         }
-        /* プレースホルダー要素のデフォルトスタイルを修正 */
-        .product-image-main .no-photo-container {
-            display: flex !important; /* !importantで上書き */
+
+        /* 既存のCSSで表示を妨げている可能性のあるルールを上書き */
+        .product-image-main svg,
+        .product-image-main > div,
+        .product-image-main * {
             opacity: 1 !important;
             visibility: visible !important;
         }
-
-            .product-image-main .no-photo-container * {
-                opacity: 1 !important;
-                visibility: visible !important;
-            }
     </style>
 </head>
 <body>
@@ -1030,27 +907,26 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="premium-icon">
                                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                                 </svg>
-                                <div class="shine-effect"></div>
+                                <!-- ホバー時に箱から出てくるボーナスアイコン -->
+                                <div class="bonus-popup">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path>
+                                        <path d="M12 15V3"></path>
+                                        <path d="M8 7l4-4 4 4"></path>
+                                    </svg>
+                                    <span>8% BONUS</span>
+                                </div>
                             </div>
                             <div class="no-photo-text">Open Photo Bonus</div>
 
-                            <!-- お得感を表すボーナスアイコン -->
-                            <div class="bonus-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <!-- シンプル化したボーナスアイコン（右上） -->
+                            <div class="mini-bonus-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path>
                                     <path d="M12 15V3"></path>
                                     <path d="M8 7l4-4 4 4"></path>
                                 </svg>
-                                <span>8% EARLY PURCHASE BONUS</span>
-                            </div>
-
-                            <!-- 信頼性を示すバッジ -->
-                            <div class="quality-badge">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                    <path d="M9.5 12l2 2 5-5"></path>
-                                </svg>
-                                <span>Guaranteed Authentic</span>
+                                <span>8%</span>
                             </div>
                         </div>
 
