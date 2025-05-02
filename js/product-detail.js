@@ -78,7 +78,7 @@ function setupGoogleSearchLink(productName) {
     }
 }
 
-// 写真の有無を確認し、必要に応じてOpen Photo Bonusを適用
+/// 写真の有無を確認し、必要に応じてOpen Photo Bonusを適用
 function checkProductImage(product) {
     // 初期状態では画像パスの有無でチェック
     let hasImage = product.image && product.image !== '';
@@ -97,18 +97,28 @@ function checkProductImage(product) {
         noPhotoContainer: noPhotoContainer ? true : false
     });
 
-    // プレースホルダーを初期状態で表示
+    // プレースホルダーを強制的に表示状態に
     if (noPhotoContainer) {
         noPhotoContainer.style.display = 'flex';
         noPhotoContainer.style.opacity = '1';
+        noPhotoContainer.style.visibility = 'visible';
 
         // 子要素も確実に表示
-        Array.from(noPhotoContainer.children).forEach(child => {
-            child.style.opacity = '1';
-            child.style.visibility = 'visible';
+        const allElements = noPhotoContainer.querySelectorAll('*');
+        allElements.forEach(element => {
+            element.style.opacity = '1';
+            element.style.visibility = 'visible';
         });
 
-        console.log('No photo container displayed initially');
+        // Google検索ボタンも確実に表示
+        const googleButton = document.getElementById('google-search-link');
+        if (googleButton) {
+            googleButton.style.opacity = '1';
+            googleButton.style.visibility = 'visible';
+            googleButton.style.zIndex = '5';
+        }
+
+        console.log('No photo container forced display');
     }
 
     // 画像パスがある場合、実際に画像が読み込めるかテスト
@@ -151,14 +161,8 @@ function checkProductImage(product) {
 
             // プレースホルダー要素を表示
             if (noPhotoContainer) {
-                noPhotoContainer.style.display = 'flex';
                 console.log('Showing no-photo-container after image load failure');
-
-                // 子要素も確実に表示
-                Array.from(noPhotoContainer.children).forEach(child => {
-                    child.style.opacity = '1';
-                    child.style.visibility = 'visible';
-                });
+                forceDisplayNoPhotoContainer(noPhotoContainer);
             }
 
             // Open Photo Bonusバッジと説明を表示
@@ -190,14 +194,8 @@ function checkProductImage(product) {
 
         // プレースホルダー要素を表示
         if (noPhotoContainer) {
-            noPhotoContainer.style.display = 'flex';
             console.log('Showing no-photo-container for product with no image path');
-
-            // 子要素も確実に表示
-            Array.from(noPhotoContainer.children).forEach(child => {
-                child.style.opacity = '1';
-                child.style.visibility = 'visible';
-            });
+            forceDisplayNoPhotoContainer(noPhotoContainer);
         }
 
         // Open Photo Bonusバッジと説明を表示
@@ -224,8 +222,50 @@ function checkProductImage(product) {
     product.hasImage = hasImage;
     console.log('Final hasImage value:', hasImage);
 
-    return hasImage; // 画像の有無を返す
+    // 遅延実行で強制的に表示を確認（最後の手段）
+    setTimeout(() => {
+        if (!hasImage && noPhotoContainer) {
+            console.log('Delayed force display execution');
+            forceDisplayNoPhotoContainer(noPhotoContainer);
+        }
+    }, 500);
 }
+
+// プレースホルダー要素を強制的に表示する補助関数
+function forceDisplayNoPhotoContainer(container) {
+    if (!container) return;
+
+    container.style.display = 'flex';
+    container.style.opacity = '1';
+    container.style.visibility = 'visible';
+
+    // すべての子要素も確実に表示
+    const allElements = container.querySelectorAll('*');
+    allElements.forEach(element => {
+        element.style.opacity = '1';
+        element.style.visibility = 'visible';
+    });
+
+    // Google検索ボタンも確実に表示
+    const googleButton = document.getElementById('google-search-link');
+    if (googleButton) {
+        googleButton.style.opacity = '1';
+        googleButton.style.visibility = 'visible';
+        googleButton.style.zIndex = '5';
+    }
+}
+
+// DOMの読み込み完了時に実行
+document.addEventListener('DOMContentLoaded', function () {
+    // ページ読み込み完了から少し遅らせて実行（最後の手段）
+    setTimeout(() => {
+        const noPhotoContainer = document.querySelector('.no-photo-container');
+        if (noPhotoContainer) {
+            console.log('Final force display attempt');
+            forceDisplayNoPhotoContainer(noPhotoContainer);
+        }
+    }, 1000);
+});
 
 // 通常価格を表示
 function applyNormalPrice(product) {
