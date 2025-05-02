@@ -1,8 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // URLからproduct IDを取得
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
-    
+
     if (productId) {
         // 商品データを取得して表示
         loadProductDetails(productId);
@@ -17,13 +17,13 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
     }
-    
+
     // 数量ボタンの機能
     setupQuantityButtons();
-    
+
     // タブの切り替え機能
     setupTabs();
-    
+
     // 画像セレクターの機能
     setupImageSelector();
 });
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 商品詳細データを取得して表示
 function loadProductDetails(productId) {
     console.log('Loading product details for ID:', productId);
-    
+
     // データ取得
     fetch('data/products.json')
         .then(response => {
@@ -43,14 +43,14 @@ function loadProductDetails(productId) {
         .then(products => {
             // 指定されたIDの商品を検索
             const product = products.find(p => p.id === productId);
-            
+
             if (product) {
                 displayProductDetails(product);
                 setupAddToCartButton(product);
-                
+
                 // Google検索リンクを設定
                 setupGoogleSearchLink(product.name);
-                
+
                 // 写真の有無を確認し、必要に応じて割引を適用
                 checkProductImage(product);
             } else {
@@ -82,110 +82,160 @@ function setupGoogleSearchLink(productName) {
 function checkProductImage(product) {
     // 初期状態では画像パスの有無でチェック
     let hasImage = product.image && product.image !== '';
-    
+
+    // 要素を事前に取得
+    const productImageMain = document.querySelector('.product-image-main');
+    const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
+    const discountExplanation = document.getElementById('discount-explanation');
+    const discountBadge = document.getElementById('discount-badge');
+
+    // デバッグ用
+    console.log('Product image check:', {
+        hasImage,
+        productId: product.id,
+        productImage: product.image,
+        noPhotoContainer: noPhotoContainer ? true : false
+    });
+
+    // プレースホルダーを初期状態で表示
+    if (noPhotoContainer) {
+        noPhotoContainer.style.display = 'flex';
+        noPhotoContainer.style.opacity = '1';
+
+        // 子要素も確実に表示
+        Array.from(noPhotoContainer.children).forEach(child => {
+            child.style.opacity = '1';
+            child.style.visibility = 'visible';
+        });
+
+        console.log('No photo container displayed initially');
+    }
+
     // 画像パスがある場合、実際に画像が読み込めるかテスト
     if (hasImage) {
-        const productImageMain = document.querySelector('.product-image-main');
-        const discountExplanation = document.getElementById('discount-explanation');
-        const discountBadge = document.getElementById('discount-badge');
-        
         // 画像を事前にロードして確認
         const img = new Image();
-        
-        img.onload = function() {
+
+        img.onload = function () {
             // 画像のロードに成功した場合
             hasImage = true;
-            
+            console.log('Product image loaded successfully');
+
             // 画像の読み込みが完了したら背景画像として設定
             productImageMain.style.backgroundImage = `url('${product.image}')`;
             productImageMain.style.backgroundSize = 'contain';
             productImageMain.style.backgroundRepeat = 'no-repeat';
             productImageMain.style.backgroundPosition = 'center';
-            
+
             // プレースホルダー要素を非表示
-            const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
             if (noPhotoContainer) {
                 noPhotoContainer.style.display = 'none';
+                console.log('Hiding no-photo-container after successful image load');
             }
-            
+
             // 割引関連の表示を非表示
             if (discountBadge) discountBadge.style.display = 'none';
             if (discountExplanation) discountExplanation.style.display = 'none';
-            
+
             // 通常の価格表示に戻す
             applyNormalPrice(product);
-            
+
             // 画像セレクターを有効化
             enableImageSelector();
         };
-        
-        img.onerror = function() {
+
+        img.onerror = function () {
             // 画像のロードに失敗した場合
             hasImage = false;
-            
+            console.log('Product image failed to load');
+
             // プレースホルダー要素を表示
-            const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
             if (noPhotoContainer) {
                 noPhotoContainer.style.display = 'flex';
+                console.log('Showing no-photo-container after image load failure');
+
+                // 子要素も確実に表示
+                Array.from(noPhotoContainer.children).forEach(child => {
+                    child.style.opacity = '1';
+                    child.style.visibility = 'visible';
+                });
             }
-            
+
             // Open Photo Bonusバッジと説明を表示
-            if (discountBadge) discountBadge.style.display = 'flex';
+            if (discountBadge) {
+                discountBadge.style.display = 'flex';
+                console.log('Showing discount badge');
+            }
+
             if (discountExplanation) {
                 discountExplanation.style.display = 'block';
                 // テキストも「Open Photo Bonus」のコンセプトに合わせて更新
                 discountExplanation.innerHTML = 'This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.';
+                console.log('Updated explanation text');
             }
-            
+
             // ボーナス価格を適用
             applyDiscountPrice(product);
-            
+
             // 画像セレクターを無効化
             disableImageSelector();
         };
-        
+
         // 画像のロード開始
+        console.log('Starting to load image:', product.image);
         img.src = product.image;
     } else {
         // 画像パスがない場合は直接ボーナスを適用
-        const productImageMain = document.querySelector('.product-image-main');
-        const discountExplanation = document.getElementById('discount-explanation');
-        const discountBadge = document.getElementById('discount-badge');
-        
+        console.log('No image path provided, applying Open Photo Bonus directly');
+
         // プレースホルダー要素を表示
-        const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
         if (noPhotoContainer) {
             noPhotoContainer.style.display = 'flex';
+            console.log('Showing no-photo-container for product with no image path');
+
+            // 子要素も確実に表示
+            Array.from(noPhotoContainer.children).forEach(child => {
+                child.style.opacity = '1';
+                child.style.visibility = 'visible';
+            });
         }
-        
+
         // Open Photo Bonusバッジと説明を表示
-        if (discountBadge) discountBadge.style.display = 'flex';
+        if (discountBadge) {
+            discountBadge.style.display = 'flex';
+            console.log('Showing discount badge');
+        }
+
         if (discountExplanation) {
             discountExplanation.style.display = 'block';
             // テキストも「Open Photo Bonus」のコンセプトに合わせて更新
             discountExplanation.innerHTML = 'This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.';
+            console.log('Updated explanation text');
         }
-        
+
         // ボーナス価格を適用
         applyDiscountPrice(product);
-        
+
         // 画像セレクターを無効化
         disableImageSelector();
     }
-    
+
     // 商品オブジェクトに画像の有無情報を保存（カートで使用）
     product.hasImage = hasImage;
+    console.log('Final hasImage value:', hasImage);
+
+    return hasImage; // 画像の有無を返す
 }
 
 // 通常価格を表示
 function applyNormalPrice(product) {
     const originalPriceElement = document.getElementById('original-price');
     const currentPriceElement = document.getElementById('current-price');
-    
+
     if (originalPriceElement) {
         originalPriceElement.style.display = 'none';
     }
-    
+
     if (currentPriceElement) {
         currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
     }
@@ -195,21 +245,21 @@ function applyNormalPrice(product) {
 function applyDiscountPrice(product) {
     const originalPriceElement = document.getElementById('original-price');
     const currentPriceElement = document.getElementById('current-price');
-    
+
     // 元の価格と割引後の価格を表示
     const originalPrice = product.price;
     const discountRate = 0.08; // 8%割引
     const discountedPrice = originalPrice * (1 - discountRate);
-    
+
     if (originalPriceElement) {
         originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
         originalPriceElement.style.display = 'inline';
     }
-    
+
     if (currentPriceElement) {
         currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
     }
-    
+
     // カートに追加するときの価格を割引価格に設定
     if (product) {
         product.discountedPrice = discountedPrice;
@@ -220,38 +270,38 @@ function applyDiscountPrice(product) {
 function displayProductDetails(product) {
     // タイトルを更新
     document.title = `${product.name} - PlayPortJP`;
-    
+
     // 商品名を更新
     const productTitle = document.querySelector('.product-title');
     if (productTitle) {
         productTitle.textContent = product.name;
     }
-    
+
     // パンくずリストの商品名を更新
     const breadcrumbProductName = document.getElementById('breadcrumb-product-name');
     if (breadcrumbProductName) {
         breadcrumbProductName.textContent = product.name;
     }
-    
+
     // 商品画像を更新
     const productImageMain = document.querySelector('.product-image-main');
     if (productImageMain && product.image) {
         // 画像を事前にロードして、読み込み完了後に表示する
         const img = new Image();
-        img.onload = function() {
+        img.onload = function () {
             // 画像の読み込みが完了したら背景画像として設定
             productImageMain.style.backgroundImage = `url('${product.image}')`;
             productImageMain.style.backgroundSize = 'contain';
             productImageMain.style.backgroundRepeat = 'no-repeat';
             productImageMain.style.backgroundPosition = 'center';
-            
+
             // プレースホルダー要素を非表示
             const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
             if (noPhotoContainer) {
                 noPhotoContainer.style.display = 'none';
             }
         };
-        img.onerror = function() {
+        img.onerror = function () {
             // 画像のロードに失敗した場合はプレースホルダーを表示
             const noPhotoContainer = productImageMain.querySelector('.no-photo-container');
             if (noPhotoContainer) {
@@ -261,25 +311,25 @@ function displayProductDetails(product) {
         // 画像のロード開始
         img.src = product.image;
     }
-    
+
     // 商品価格を更新（割引適用の有無は checkProductImage() で処理）
     const productPrice = document.querySelector('.product-price');
     if (productPrice) {
         // ここでは価格の初期表示のみ行う（割引は別関数で処理）
         document.getElementById('current-price').textContent = `${product.price.toFixed(2)} CAD`;
     }
-    
+
     // カテゴリメタタグを更新
     const productMeta = document.querySelector('.product-meta');
     if (productMeta && product.category) {
         productMeta.innerHTML = '';
-        
+
         // カテゴリータグを追加
         const categoryTag = document.createElement('span');
         categoryTag.className = `meta-tag ${product.category.toLowerCase()}`;
         categoryTag.textContent = product.category;
         productMeta.appendChild(categoryTag);
-        
+
         // サブカテゴリータグを追加
         if (product.subcategory) {
             const subcategoryTag = document.createElement('span');
@@ -288,7 +338,7 @@ function displayProductDetails(product) {
             productMeta.appendChild(subcategoryTag);
         }
     }
-    
+
     // コンディションバッジを更新
     const conditionValue = document.querySelector('.condition-row .condition-value');
     if (conditionValue) {
@@ -303,7 +353,7 @@ function displayProductDetails(product) {
             }
         }
     }
-    
+
     // 在庫状況を更新
     const stockStatus = document.querySelector('.stock-status');
     if (stockStatus && product.stock !== undefined) {
@@ -318,12 +368,12 @@ function displayProductDetails(product) {
             stockStatus.className = 'stock-status out-of-stock';
         }
     }
-    
+
     // 商品説明を更新
     const descriptionContent = document.querySelector('.description-content');
     if (descriptionContent && product.description) {
         descriptionContent.innerHTML = `<p>${product.description}</p>`;
-        
+
         // 機能リストがある場合は追加
         if (product.features && product.features.length > 0) {
             const featuresList = document.createElement('ul');
@@ -335,7 +385,7 @@ function displayProductDetails(product) {
             descriptionContent.appendChild(featuresList);
         }
     }
-    
+
     // タブの内容を更新
     updateTabsContent(product);
 }
@@ -355,7 +405,7 @@ function updateTabsContent(product) {
             });
         }
     }
-    
+
     // 仕様タブの更新
     const specsTable = document.querySelector('#specifications .specs-table');
     if (specsTable && product) {
@@ -364,13 +414,13 @@ function updateTabsContent(product) {
         if (titleRow) {
             titleRow.textContent = product.name;
         }
-        
+
         // その他の仕様行を更新（データがある場合）
         const platformRow = specsTable.querySelector('tr:nth-child(2) td');
         if (platformRow && product.platform) {
             platformRow.textContent = product.platform;
         }
-        
+
         // 他の仕様項目も同様に更新可能
     }
 }
@@ -379,15 +429,15 @@ function updateTabsContent(product) {
 function setupAddToCartButton(product) {
     const addToCartBtn = document.querySelector('.product-actions .btn-primary');
     if (addToCartBtn) {
-        addToCartBtn.addEventListener('click', function() {
+        addToCartBtn.addEventListener('click', function () {
             const quantityInput = document.querySelector('.quantity-input input');
             const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
-            
+
             if (window.cartManager) {
                 // 写真がない場合はOpen Photo Bonus価格を使用
                 const hasImage = product.hasImage; // checkProductImage関数で設定された値を使用
                 const price = hasImage ? product.price : (product.discountedPrice || (product.price * 0.92));
-                
+
                 window.cartManager.addItem(
                     product.id,
                     product.name,
@@ -395,7 +445,7 @@ function setupAddToCartButton(product) {
                     product.image,
                     quantity
                 );
-                
+
                 // クリック時のフィードバック
                 this.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -423,24 +473,24 @@ function setupQuantityButtons() {
     const minusBtn = document.querySelector('.quantity-btn.minus');
     const plusBtn = document.querySelector('.quantity-btn.plus');
     const quantityInput = document.querySelector('.quantity-input input');
-    
+
     if (minusBtn && plusBtn && quantityInput) {
-        minusBtn.addEventListener('click', function() {
+        minusBtn.addEventListener('click', function () {
             let value = parseInt(quantityInput.value);
             if (value > 1) {
                 quantityInput.value = value - 1;
             }
         });
-        
-        plusBtn.addEventListener('click', function() {
+
+        plusBtn.addEventListener('click', function () {
             let value = parseInt(quantityInput.value);
             if (value < 10) {
                 quantityInput.value = value + 1;
             }
         });
-        
+
         // 入力値が変更された場合にバリデーション
-        quantityInput.addEventListener('change', function() {
+        quantityInput.addEventListener('change', function () {
             let value = parseInt(this.value);
             if (isNaN(value) || value < 1) {
                 this.value = 1;
@@ -455,13 +505,13 @@ function setupQuantityButtons() {
 function setupTabs() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
-    
+
     tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             // アクティブなタブをリセット
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
-            
+
             // クリックされたタブをアクティブに
             button.classList.add('active');
             const tabId = button.getAttribute('data-tab');
@@ -474,27 +524,27 @@ function setupTabs() {
 function setupImageSelector() {
     const imageOptions = document.querySelectorAll('.image-option');
     const productImageMain = document.querySelector('.product-image-main');
-    
+
     imageOptions.forEach(option => {
-        option.addEventListener('click', function() {
+        option.addEventListener('click', function () {
             // すでに無効化されている場合は何もしない
             if (this.disabled) return;
-            
+
             // アクティブなオプションをリセット
             imageOptions.forEach(opt => opt.classList.remove('active'));
-            
+
             // クリックされたオプションをアクティブに
             this.classList.add('active');
-            
+
             // データ属性から表示するビューを取得
             const view = this.getAttribute('data-view');
-            
+
             // 実際の画像が読み込まれている場合、異なるビューを表示
             if (productImageMain.style.backgroundImage) {
                 // ここで実際に複数の画像があれば、異なる画像URLを設定
                 // 現状では同じ画像を表示
                 console.log(`Changing view to: ${view}`);
-                
+
                 // 表示アニメーションを追加
                 productImageMain.style.opacity = '0';
                 setTimeout(() => {
@@ -511,11 +561,11 @@ function setupImageSelector() {
 function enableImageSelector() {
     const imageSelector = document.querySelector('.product-image-selector');
     const imageOptions = document.querySelectorAll('.image-option');
-    
+
     if (imageSelector) {
         imageSelector.classList.remove('disabled');
     }
-    
+
     if (imageOptions) {
         imageOptions.forEach(option => {
             option.disabled = false;
@@ -527,11 +577,11 @@ function enableImageSelector() {
 function disableImageSelector() {
     const imageSelector = document.querySelector('.product-image-selector');
     const imageOptions = document.querySelectorAll('.image-option');
-    
+
     if (imageSelector) {
         imageSelector.classList.add('disabled');
     }
-    
+
     if (imageOptions) {
         imageOptions.forEach(option => {
             option.disabled = true;
