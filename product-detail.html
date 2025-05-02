@@ -955,6 +955,17 @@
                 font-size: 1rem;
             }
         }
+        /* プレースホルダー要素のデフォルトスタイルを修正 */
+        .product-image-main .no-photo-container {
+            display: flex !important; /* !importantで上書き */
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+            .product-image-main .no-photo-container * {
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
     </style>
 </head>
 <body>
