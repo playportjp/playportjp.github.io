@@ -78,7 +78,7 @@ function setupGoogleSearchLink(productName) {
     }
 }
 
-/// 写真の有無を確認し、必要に応じてOpen Photo Bonusを適用
+// 写真の有無を確認し、必要に応じてOpen Photo Bonusを適用
 function checkProductImage(product) {
     // 初期状態では画像パスの有無でチェック
     let hasImage = product.image && product.image !== '';
@@ -168,6 +168,14 @@ function checkProductImage(product) {
             // Open Photo Bonusバッジと説明を表示
             if (discountBadge) {
                 discountBadge.style.display = 'flex';
+                discountBadge.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path>
+                        <path d="M12 15V3"></path>
+                        <path d="M8 7l4-4 4 4"></path>
+                    </svg>
+                    <span>8% discount applied - Open Photo Bonus</span>
+                `;
                 console.log('Showing discount badge');
             }
 
@@ -201,6 +209,14 @@ function checkProductImage(product) {
         // Open Photo Bonusバッジと説明を表示
         if (discountBadge) {
             discountBadge.style.display = 'flex';
+            discountBadge.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path>
+                    <path d="M12 15V3"></path>
+                    <path d="M8 7l4-4 4 4"></path>
+                </svg>
+                <span>8% discount applied - Open Photo Bonus</span>
+            `;
             console.log('Showing discount badge');
         }
 
@@ -229,6 +245,45 @@ function checkProductImage(product) {
             forceDisplayNoPhotoContainer(noPhotoContainer);
         }
     }, 500);
+}
+
+// 通常価格を表示
+function applyNormalPrice(product) {
+    const originalPriceElement = document.getElementById('original-price');
+    const currentPriceElement = document.getElementById('current-price');
+
+    if (originalPriceElement) {
+        originalPriceElement.style.display = 'none';
+    }
+
+    if (currentPriceElement) {
+        currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
+    }
+}
+
+// Open Photo Bonus価格を適用（割引価格）
+function applyDiscountPrice(product) {
+    const originalPriceElement = document.getElementById('original-price');
+    const currentPriceElement = document.getElementById('current-price');
+
+    // 元の価格と割引後の価格を表示
+    const originalPrice = product.price;
+    const discountRate = 0.08; // 8%割引
+    const discountedPrice = originalPrice * (1 - discountRate);
+
+    if (originalPriceElement) {
+        originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
+        originalPriceElement.style.display = 'inline';
+    }
+
+    if (currentPriceElement) {
+        currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
+    }
+
+    // カートに追加するときの価格を割引価格に設定
+    if (product) {
+        product.discountedPrice = discountedPrice;
+    }
 }
 
 // プレースホルダー要素を強制的に表示する補助関数
@@ -263,6 +318,27 @@ document.addEventListener('DOMContentLoaded', function () {
         if (noPhotoContainer) {
             console.log('Final force display attempt');
             forceDisplayNoPhotoContainer(noPhotoContainer);
+
+            // アニメーションも確実に動作させる
+            const premiumIcon = document.querySelector('.premium-icon');
+            const bonusPopup = document.querySelector('.bonus-popup');
+
+            if (premiumIcon) {
+                // アニメーションをリセットして再開
+                premiumIcon.style.animation = 'none';
+                setTimeout(() => {
+                    premiumIcon.style.animation = 'float-twice 4s ease-in-out forwards';
+                }, 10);
+            }
+
+            if (bonusPopup) {
+                // アニメーションをリセットして再開
+                bonusPopup.style.animation = 'none';
+                setTimeout(() => {
+                    bonusPopup.style.animation = 'show-bonus 4s ease-in-out forwards';
+                    bonusPopup.style.animationDelay = '4s';
+                }, 10);
+            }
         }
     }, 1000);
 });
