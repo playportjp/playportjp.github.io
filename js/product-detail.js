@@ -461,14 +461,11 @@ function applyDiscountPrice(product) {
     // まず元の価格を表示
     originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
     originalPriceElement.style.display = 'inline';
-    originalPriceElement.style.textDecoration = 'line-through';
-    originalPriceElement.style.color = '#999';
-    originalPriceElement.style.marginRight = '10px';
+    originalPriceElement.className = 'original-price';
     
     // 割引価格を表示
     currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
-    currentPriceElement.style.color = '#ffeb3b'; // 割引価格は黄色で強調
-    currentPriceElement.style.fontWeight = 'bold';
+    currentPriceElement.classList.add('discounted');
     
     // カートに追加するときの価格を割引価格に設定
     if (product) {
