@@ -171,6 +171,7 @@ function checkProductImage(product) {
                     premiumIcon.style.display = 'block';
                     premiumIcon.style.opacity = '1';
                     premiumIcon.style.animation = 'none';
+                    premiumIcon.style.filter = 'drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4))';
                 }
                 
                 console.log('Showing no-photo-container after image load failure');
@@ -240,6 +241,7 @@ function checkProductImage(product) {
                 premiumIcon.style.display = 'block';
                 premiumIcon.style.opacity = '1';
                 premiumIcon.style.animation = 'none';
+                premiumIcon.style.filter = 'drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4))';
             }
             
             console.log('Showing no-photo-container for product with no image path');
@@ -412,9 +414,6 @@ function displayProductDetails(product) {
 
     // タブの内容を更新
     updateTabsContent(product);
-    
-    // ボーナスコンボアニメーションを設定
-    setupBonusAnimation();
 }
 
 // ボーナスコンボのアニメーションを設定する関数は使用しない
