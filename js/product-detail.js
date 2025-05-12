@@ -201,7 +201,7 @@ function checkProductImage(product) {
 
             if (discountExplanation) {
                 discountExplanation.style.display = 'block';
-                discountExplanation.innerHTML = '<p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
+                discountExplanation.innerHTML = '<p>All taxes included in price</p><p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
                 console.log('Updated explanation text');
             }
 
@@ -262,7 +262,7 @@ function checkProductImage(product) {
 
         if (discountExplanation) {
             discountExplanation.style.display = 'block';
-            discountExplanation.innerHTML = '<p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
+            discountExplanation.innerHTML = '<p>All taxes included in price</p><p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
             console.log('Updated explanation text');
         }
 
@@ -400,6 +400,15 @@ function displayProductDetails(product) {
 
     // タブの内容を更新
     updateTabsContent(product);
+    
+    // デバッグ: 余分なSVGがないか確認
+    const allSvgs = document.querySelectorAll('svg');
+    console.log('Total SVGs on page:', allSvgs.length);
+    allSvgs.forEach((svg, index) => {
+        if (svg.clientHeight > 100) {
+            console.log(`Large SVG found at index ${index}:`, svg);
+        }
+    });
 }
 
 // DOMの読み込み完了時に実行（2回目のリスナー）
