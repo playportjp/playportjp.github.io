@@ -488,26 +488,13 @@
             height: 100%;
             width: 100%;
             position: relative;
-            background: linear-gradient(135deg, var(--surface-lighter) 0%, var(--surface) 100%);
-            box-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.05), inset 0 -4px 8px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
             border-radius: 4px;
             overflow: hidden;
-            opacity: 1;
-            visibility: visible;
         }
 
-        /* 半透明レイヤーを削除
-        .no-photo-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(187, 0, 0, 0.05) 0%, transparent 70%);
-            z-index: 1;
-        }
-        */
+        /* 半透明レイヤーを完全に削除 */
 
         /* プレミアムアイコンのスタイル */
         .premium-icon-wrapper {
@@ -598,24 +585,76 @@
 
         /* 割引説明文のスタイル - 洗練されたデザイン */
         .discount-explanation {
-            border-left: 3px solid #ffeb3b;
-            padding: 10px 15px;
-            margin-top: 10px;
-            background-color: transparent;
-            border-radius: 0;
+            position: relative;
+            padding-left: 20px;
+            margin-top: 15px;
+        }
+
+        .discount-explanation::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: #ffeb3b;
+            border-radius: 2px;
         }
 
         .discount-explanation p {
             margin: 0;
-            font-size: 14px;
-            line-height: 1.5;
-            color: #888;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-secondary);
         }
 
         .discount-explanation p:first-child {
-            font-weight: 500;
-            color: #666;
-            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        /* 割引バッジのスタイル改善 */
+        .discount-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, rgba(255, 235, 59, 0.1) 0%, rgba(255, 235, 59, 0.05) 100%);
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 235, 59, 0.2);
+        }
+
+        .discount-badge svg {
+            width: 18px;
+            height: 18px;
+            filter: drop-shadow(0 1px 3px rgba(255, 235, 59, 0.4));
+        }
+
+        .discount-badge span {
+            color: #ffeb3b;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* 価格表示の改善 */
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.6rem;
+            font-weight: 400;
+        }
+
+        #current-price {
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+
+        #current-price.discounted {
+            color: #ffeb3b;
         }
 
         /* 画像セレクターのスタイル */
