@@ -3,708 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Detail - PlayPortJP</title>
-    <meta name="description" content="Premium Japanese games, books, music, and collectibles delivered worldwide.">
+    <title>Order History - PlayPortJP</title>
+    <meta name="description" content="View your order history at PlayPortJP - Premium Japanese games, books, music, and collectibles.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
     <style>
-        /* 商品詳細ページ用スタイル */
-        .breadcrumb {
-            margin: 1.5rem 0;
+        .order-history-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .order-history-header {
+            margin-bottom: 2rem;
+        }
+        
+        .order-history-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .order-history-header p {
             color: var(--text-secondary);
-            font-size: 0.85rem;
         }
-
-            .breadcrumb a {
-                color: var(--text-secondary);
-                transition: color 0.2s;
-            }
-
-                .breadcrumb a:hover {
-                    color: var(--primary);
-                }
-
-        .breadcrumb-separator {
-            margin: 0 0.5rem;
+        
+        .order-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
         }
-
-        .product-detail-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
+        
+        .order-filter label {
+            font-weight: 500;
         }
-
-        .product-media {
+        
+        .order-filter select, .order-filter input {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background-color: var(--surface);
+        }
+        
+        .order-list {
             background-color: var(--surface);
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid var(--border);
         }
-
-        .product-image-main {
-            height: 400px;
-            background-color: var(--surface-lighter);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        
+        .order-item {
+            padding: 1.5rem;
             border-bottom: 1px solid var(--border);
-            position: relative;
-            background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
-            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.2s;
+            cursor: pointer;
         }
-
-            .product-image-main svg {
-                width: 120px;
-                height: 120px;
-                margin-bottom: 1rem;
-                filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
-            }
-
-            .product-image-main div {
-                font-size: 1rem;
-                color: var(--text-secondary);
-                margin-top: 0.75rem;
-                font-weight: 500;
-            }
-
-        .product-info {
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-item:hover {
+            background-color: var(--surface-hover);
+        }
+        
+        .order-header {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
         }
-
-        .product-title {
-            font-size: 1.8rem;
+        
+        .order-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .order-number {
             font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: white;
-            line-height: 1.3;
         }
-
-        .product-meta {
+        
+        .order-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .status-delivered {
+            background-color: rgba(76, 175, 80, 0.15);
+            color: #2e7d32;
+        }
+        
+        .status-processing {
+            background-color: rgba(255, 152, 0, 0.15);
+            color: #e65100;
+        }
+        
+        .status-shipped {
+            background-color: rgba(33, 150, 243, 0.15);
+            color: #0277bd;
+        }
+        
+        .status-canceled {
+            background-color: rgba(244, 67, 54, 0.15);
+            color: #c62828;
+        }
+        
+        .order-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .order-total {
+            font-weight: 500;
+        }
+        
+        .order-items-preview {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 1rem;
             flex-wrap: wrap;
         }
-
-        .meta-tag {
-            font-size: 0.75rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            color: white;
-            font-weight: 500;
-        }
-
-            .meta-tag.games {
-                background-color: #5755d9;
-            }
-
-            .meta-tag.books {
-                background-color: #2e7d32;
-            }
-
-            .meta-tag.music {
-                background-color: #9c27b0;
-            }
-
-            .meta-tag.collectibles {
-                background-color: #e65100;
-            }
-
-            .meta-tag.models {
-                background-color: #0277bd;
-            }
-
-            .meta-tag.culture {
-                background-color: #9c27b0;
-            }
-
-            .meta-tag.other {
-                background-color: var(--surface);
-                color: var(--text-secondary);
-            }
-
-        .product-rating {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .rating-stars {
-            display: flex;
-            color: #ff9800;
-            margin-right: 0.5rem;
-        }
-
-            .rating-stars svg {
-                width: 18px;
-                height: 18px;
-                margin-right: 1px;
-            }
-
-        .rating-count {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .product-price-container {
-            margin-bottom: 1.5rem;
-        }
-
-        .product-price {
-            font-size: 2rem;
-            font-weight: 500;
-            color: white;
-            margin-bottom: 0.25rem;
-        }
-
-        .price-note {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        .product-condition-container {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background-color: var(--surface);
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .condition-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-
-            .condition-row:last-child {
-                margin-bottom: 0;
-            }
-
-        .condition-label {
-            width: 120px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .condition-value {
-            font-size: 0.9rem;
-        }
-
-        .condition-badge {
-            display: inline-block;
-            padding: 0.2rem 0.5rem;
-            border-radius: 3px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-            .condition-badge.new {
-                background-color: #3a9e4e;
-                color: white;
-            }
-
-            .condition-badge.used {
-                background-color: #2c7cb0;
-                color: white;
-            }
-
-        .stock-status {
-            font-weight: 500;
-        }
-
-        .in-stock {
-            color: #4CAF50;
-        }
-
-        .low-stock {
-            color: #FFC107;
-        }
-
-        .out-of-stock {
-            color: #F44336;
-        }
-
-        .product-actions {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .quantity-input {
-            display: flex;
-            align-items: center;
-            max-width: 140px;
-        }
-
-        .quantity-btn {
-            width: 36px;
-            height: 44px;
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-            .quantity-btn:hover {
-                background-color: var(--surface-lighter);
-            }
-
-            .quantity-btn.minus {
-                border-radius: 4px 0 0 4px;
-            }
-
-            .quantity-btn.plus {
-                border-radius: 0 4px 4px 0;
-            }
-
-        .quantity-input input {
-            width: 60px;
-            height: 44px;
-            border: 1px solid var(--border);
-            border-left: none;
-            border-right: none;
+        
+        .preview-item {
+            width: 48px;
+            height: 48px;
             background-color: var(--surface-lighter);
-            color: var(--text-primary);
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-            .quantity-input input:focus {
-                outline: none;
-            }
-
-        .btn {
-            height: 44px;
-            padding: 0 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-decoration: none;
-            text-align: center;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            flex: 1;
-        }
-
-            .btn-primary:hover {
-                background-color: var(--primary-hover);
-                color: white;
-            }
-
-        .btn-secondary {
-            background-color: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-
-            .btn-secondary:hover {
-                background-color: var(--surface);
-            }
-
-        .btn svg {
-            margin-right: 0.5rem;
-        }
-
-        .btn-wishlist {
-            background-color: transparent;
-            border: 1px solid var(--border);
-            width: 44px;
-            height: 44px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-primary);
-            transition: all 0.2s ease;
-        }
-
-            .btn-wishlist:hover {
-                color: var(--primary);
-                border-color: var(--primary);
-            }
-
-        .trust-badges {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .trust-badge {
-            display: flex;
-            align-items: center;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-            .trust-badge svg {
-                color: var(--primary);
-                margin-right: 0.5rem;
-                width: 20px;
-                height: 20px;
-            }
-
-        .product-description {
-            margin-bottom: 2rem;
-        }
-
-        .description-title {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-            color: white;
-        }
-
-        .description-content {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .product-tabs {
-            margin-bottom: 3rem;
-        }
-
-        .tabs-nav {
-            display: flex;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 1.5rem;
-        }
-
-        .tab-button {
-            padding: 0.75rem 1.5rem;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 500;
-            position: relative;
-        }
-
-            .tab-button:after {
-                content: '';
-                position: absolute;
-                bottom: -1px;
-                left: 0;
-                width: 100%;
-                height: 2px;
-                background-color: var(--primary);
-                transform: scaleX(0);
-                transition: transform 0.2s ease;
-            }
-
-            .tab-button.active {
-                color: var(--text-primary);
-            }
-
-                .tab-button.active:after {
-                    transform: scaleX(1);
-                }
-
-        .tab-content {
-            display: none;
-        }
-
-            .tab-content.active {
-                display: block;
-            }
-
-        .specs-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-            .specs-table tr {
-                border-bottom: 1px solid var(--border);
-            }
-
-                .specs-table tr:last-child {
-                    border-bottom: none;
-                }
-
-            .specs-table th, .specs-table td {
-                padding: 0.75rem;
-                text-align: left;
-            }
-
-            .specs-table th {
-                color: var(--text-secondary);
-                font-weight: 500;
-                width: 40%;
-            }
-
-        .related-products {
-            margin-bottom: 3rem;
-        }
-
-            .related-products h2 {
-                margin-bottom: 1.5rem;
-            }
-
-            .related-products .product-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-
-        /* 画像がない場合のメイン写真部分のスタイル改善 */
-        .no-photo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            width: 100%;
-            position: relative;
-            background: linear-gradient(135deg, var(--surface-lighter) 0%, var(--surface) 100%);
-            box-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.05), inset 0 -4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 4px;
             overflow: hidden;
-            opacity: 1;
-            visibility: visible;
+            border: 1px solid var(--border);
         }
-
-            .no-photo-container::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: radial-gradient(circle at center, rgba(187, 0, 0, 0.05) 0%, transparent 70%);
-                z-index: 1;
-            }
-
-        /* プレミアムアイコンのスタイル */
-        .premium-icon-wrapper {
-            position: relative;
+        
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .order-actions {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            z-index: 2;
-            opacity: 1;
-            visibility: visible;
         }
-
-        .premium-icon {
-            width: 120px;
-            height: 120px;
+        
+        .order-actions a {
+            font-size: 0.9rem;
             color: var(--primary);
-            filter: drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4));
-            opacity: 0.9;
-            visibility: visible;
-            animation: none;
-        }
-
-        /* ボーナスポップアップを完全に非表示 */
-        .bonus-popup {
-            display: none !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-        }
-
-        .bonus-text,
-        .bonus-icon {
-            display: none !important;
-        }
-
-        /* Google検索リンクのスタイル */
-        .search-image-link {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background-color: rgba(187, 0, 0, 0.8);
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 0.25rem;
-            transition: background-color 0.2s;
-            z-index: 5;
-            opacity: 1;
-            visibility: visible;
         }
-
-            .search-image-link:hover {
-                background-color: var(--primary);
-                color: white;
-            }
-
-            .search-image-link svg {
-                width: 12px;
-                height: 12px;
-                opacity: 1;
-                visibility: visible;
-            }
-
-        /* 割引バッジのスタイル */
-        .discount-badge {
+        
+        .order-actions a:hover {
+            text-decoration: underline;
+        }
+        
+        .order-actions svg {
+            width: 16px;
+            height: 16px;
+            margin-left: 4px;
+        }
+        
+        .item-count {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .order-details {
+            display: none;
+            background-color: var(--surface-lighter);
+            padding: 1.5rem;
+            margin-top: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .order-details.active {
+            display: block;
+        }
+        
+        .details-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .details-section h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .detail-row {
             display: flex;
-            align-items: center;
-            background-color: rgba(255, 235, 59, 0.1);
-            padding: 0.5rem 0.75rem;
-            border-radius: 4px;
-            margin-bottom: 0.75rem;
-            border: 1px solid rgba(255, 235, 59, 0.3);
+            margin-bottom: 0.5rem;
         }
-
-            .discount-badge svg {
-                margin-right: 0.5rem;
-                filter: drop-shadow(0 1px 2px rgba(255, 235, 59, 0.3));
-            }
-
-            .discount-badge span {
-                color: #ffeb3b;
-                font-size: 0.85rem;
-                font-weight: 500;
-            }
-
-        /* 割引説明文のスタイル */
-        .discount-explanation {
-            background-color: rgba(255, 235, 59, 0.1);
-            border: 1px solid rgba(255, 235, 59, 0.3);
-            border-radius: 4px;
-            padding: 10px 15px;
-            margin-top: 10px;
+        
+        .detail-label {
+            font-weight: 500;
+            width: 40%;
         }
-
-        .discount-explanation p {
-            margin: 0;
-            font-size: 14px;
-            line-height: 1.5;
-            color: #888;
+        
+        .detail-value {
+            width: 60%;
         }
-
-        /* 画像セレクターのスタイル */
-        .product-image-selector {
-            padding: 1rem;
+        
+        .details-items {
+            margin-top: 1rem;
+        }
+        
+        .details-item {
+            display: flex;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .details-item:last-child {
+            border-bottom: none;
+        }
+        
+        .details-item-image {
+            width: 60px;
+            height: 60px;
             background-color: var(--surface);
+            margin-right: 1rem;
+            flex-shrink: 0;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .details-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .details-item-info {
+            flex-grow: 1;
+        }
+        
+        .details-item-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .details-item-price {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .details-item-quantity {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-left: 0.5rem;
+        }
+        
+        .details-totals {
+            margin-top: 1rem;
+            padding-top: 1rem;
             border-top: 1px solid var(--border);
         }
-
-        .image-selector-title {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .image-selector-options {
+        
+        .total-row {
             display: flex;
-            gap: 0.5rem;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
         }
-
-        .image-option {
-            flex: 1;
-            padding: 0.5rem;
-            background-color: var(--surface-lighter);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+        
+        .total-row.final {
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .details-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .empty-orders {
             text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
         }
-
-        .image-option:hover {
-            border-color: var(--primary);
-            color: var(--text-primary);
-        }
-
-        .image-option.active {
-            border-color: var(--primary);
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .image-option:disabled {
+        
+        .empty-orders svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
             opacity: 0.5;
-            cursor: not-allowed;
         }
-
-        .product-image-selector.disabled .image-option {
-            opacity: 0.5;
-            cursor: not-allowed;
+        
+        .empty-orders h2 {
+            margin-bottom: 0.5rem;
         }
-
-        /* レスポンシブ対応 */
-        @media (max-width: 992px) {
-            .product-detail-container {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .product-image-main {
-                height: 350px;
-            }
+        
+        .empty-orders p {
+            margin-bottom: 1.5rem;
         }
-
+        
         @media (max-width: 768px) {
-            .product-actions {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .quantity-input {
-                max-width: 100%;
-            }
-
-                .quantity-input input {
-                    flex: 1;
-                }
-
-            .trust-badges {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .tabs-nav {
-                overflow-x: auto;
-                white-space: nowrap;
-                padding-bottom: 0.5rem;
-            }
-
-            .premium-icon {
-                width: 80px;
-                height: 80px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .product-rating {
+            .order-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 0.5rem;
+            }
+            
+            .order-date {
+                margin-top: 0.5rem;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+            }
+            
+            .detail-label, .detail-value {
+                width: 100%;
+            }
+            
+            .detail-value {
+                margin-bottom: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- ヘッダー -->
+    <!-- Header -->
     <header>
         <div class="container header-container">
             <div class="logo">
@@ -725,7 +358,6 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="order-history.html">Order History</a></li>
                     <li><a href="account.html" id="account-link">Account</a></li>
                     <li class="cart-icon">
                         <a href="cart.html" id="cart-link">
@@ -744,279 +376,327 @@
 
     <main>
         <div class="container">
-            <!-- パンくずリスト -->
-            <div class="breadcrumb">
-                <a href="index.html">Home</a>
-                <span class="breadcrumb-separator">›</span>
-                <a href="category.html?cat=games">Games</a>
-                <span class="breadcrumb-separator">›</span>
-                <span id="breadcrumb-product-name">Product Detail</span>
-            </div>
-
-            <!-- 商品詳細エリア -->
-            <div class="product-detail-container">
-                <!-- 商品画像エリア -->
-                <div class="product-media">
-                    <div class="product-image-main">
-                        <!-- 画像プレースホルダーとボーナス情報 -->
-                        <div class="no-photo-container">
-                            <!-- 高級感・お宝感を表すアイコン -->
-                            <div class="premium-icon-wrapper">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="premium-icon">
-                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            <div class="order-history-container">
+                <div class="order-history-header">
+                    <h1>Order History</h1>
+                    <p>View and manage your orders</p>
+                </div>
+                
+                <div class="order-filter">
+                    <div>
+                        <label for="filter-status">Status:</label>
+                        <select id="filter-status">
+                            <option value="all">All Orders</option>
+                            <option value="processing">Processing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="canceled">Canceled</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filter-date">Date Range:</label>
+                        <select id="filter-date">
+                            <option value="all">All Time</option>
+                            <option value="30days">Last 30 Days</option>
+                            <option value="6months">Last 6 Months</option>
+                            <option value="year">Last Year</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="search-order">Search:</label>
+                        <input type="text" id="search-order" placeholder="Order #, product name...">
+                    </div>
+                </div>
+                
+                <div class="order-list" id="order-list">
+                    <!-- ここに注文リストが表示されます -->
+                    <!-- サンプルデータここから -->
+                    <div class="order-item" data-order-id="PP-2025021601">
+                        <div class="order-header">
+                            <div class="order-number">Order #PP-2025021601</div>
+                            <div class="order-date">February 16, 2025</div>
+                        </div>
+                        <div class="order-summary">
+                            <div class="order-status status-delivered">Delivered</div>
+                            <div class="order-total">157.48 CAD</div>
+                            <div class="item-count">3 Items</div>
+                        </div>
+                        <div class="order-items-preview">
+                            <div class="preview-item">
+                                <img src="images/products/ff7-remake.jpg" alt="Final Fantasy VII Remake">
+                            </div>
+                            <div class="preview-item">
+                                <!-- この画像がない場合のプレースホルダー表示 -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                            <div class="preview-item">
+                                <!-- この画像がない場合のプレースホルダー表示 -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
                                 </svg>
                             </div>
                         </div>
-
-                        <!-- Google検索リンク (右上に配置) -->
-                        <a href="#" class="search-image-link" id="google-search-link" target="_blank">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            Google
-                        </a>
-                    </div>
-
-                    <!-- シンプル化したギャラリー部分 -->
-                    <div class="product-image-selector">
-                        <div class="image-selector-title">Select View</div>
-                        <div class="image-selector-options">
-                            <button class="image-option active" data-view="front">
-                                <span>Front</span>
-                            </button>
-                            <button class="image-option" data-view="back">
-                                <span>Back</span>
-                            </button>
-                            <button class="image-option" data-view="side">
-                                <span>Side</span>
-                            </button>
+                        <div class="order-actions">
+                            <a href="#" class="view-details-btn">View Details
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </a>
+                            <a href="#" class="track-order-btn">Track Package</a>
                         </div>
-                    </div>
-                </div>
-
-                <!-- 商品情報エリア -->
-                <div class="product-info">
-                    <h1 class="product-title">商品タイトル</h1>
-
-                    <div class="product-meta">
-                        <!-- カテゴリータグはJavaScriptによって追加されます -->
-                    </div>
-
-                    <div class="product-rating">
-                        <div class="rating-stars">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
-                        </div>
-                        <div class="rating-count">0 reviews</div>
-                    </div>
-
-                    <div class="product-price-container">
-                        <div class="product-price">
-                            <span id="original-price" class="original-price" style="display: none;">0.00 CAD</span>
-                            <span id="current-price">0.00 CAD</span>
-                        </div>
-                        <!-- 割引バッジ（画像なしの場合に表示） -->
-                        <div id="discount-badge" class="discount-badge" style="display: none;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path>
-                                <path d="M12 15V3"></path>
-                                <path d="M8 7l4-4 4 4"></path>
-                            </svg>
-                            <span>8% discount applied - Open Photo Bonus</span>
-                        </div>
-                        <div class="price-note">All taxes included in price</div>
-                        <!-- 割引に関する説明文 -->
-                        <div id="discount-explanation" class="discount-explanation" style="display: none;">
-                            <!-- JavaScriptで動的に内容が追加されます -->
-                        </div>
-                    </div>
-
-                    <div class="product-condition-container">
-                        <div class="condition-row">
-                            <div class="condition-label">Condition</div>
-                            <div class="condition-value">
-                                <span class="condition-badge new">NEW</span>
+                        <div class="order-details" id="details-PP-2025021601">
+                            <div class="details-section">
+                                <h3>Order Information</h3>
+                                <div class="detail-row">
+                                    <div class="detail-label">Order Number:</div>
+                                    <div class="detail-value">PP-2025021601</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Date:</div>
+                                    <div class="detail-value">February 16, 2025</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Status:</div>
+                                    <div class="detail-value">
+                                        <span class="order-status status-delivered">Delivered</span>
+                                    </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Payment Method:</div>
+                                    <div class="detail-value">Visa Card ending in 1234</div>
+                                </div>
+                            </div>
+                            <div class="details-section">
+                                <h3>Shipping Information</h3>
+                                <div class="detail-row">
+                                    <div class="detail-label">Name:</div>
+                                    <div class="detail-value">John Doe</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Address:</div>
+                                    <div class="detail-value">123 Main St</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">City:</div>
+                                    <div class="detail-value">Toronto, ON A1B 2C3</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Country:</div>
+                                    <div class="detail-value">Canada</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Tracking Number:</div>
+                                    <div class="detail-value">1Z999AA10123456784</div>
+                                </div>
+                            </div>
+                            <div class="details-section">
+                                <h3>Order Details</h3>
+                                <div class="details-items">
+                                    <div class="details-item">
+                                        <div class="details-item-image">
+                                            <img src="images/products/ff7-remake.jpg" alt="Final Fantasy VII Remake">
+                                        </div>
+                                        <div class="details-item-info">
+                                            <div class="details-item-name">Final Fantasy VII Remake</div>
+                                            <div class="details-item-price">
+                                                79.99 CAD
+                                                <span class="details-item-quantity">x1</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="details-item">
+                                        <div class="details-item-image">
+                                            <!-- プレースホルダー -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                                <polyline points="21 15 16 10 5 21"></polyline>
+                                            </svg>
+                                        </div>
+                                        <div class="details-item-info">
+                                            <div class="details-item-name">Demon Slayer: Kimetsu no Yaiba Vol. 1</div>
+                                            <div class="details-item-price">
+                                                12.99 CAD
+                                                <span class="details-item-quantity">x2</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="details-item">
+                                        <div class="details-item-image">
+                                            <!-- プレースホルダー -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                                <polyline points="21 15 16 10 5 21"></polyline>
+                                            </svg>
+                                        </div>
+                                        <div class="details-item-info">
+                                            <div class="details-item-name">Studio Ghibli Music Collection</div>
+                                            <div class="details-item-price">
+                                                34.99 CAD
+                                                <span class="details-item-quantity">x1</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="details-totals">
+                                    <div class="total-row">
+                                        <div>Subtotal:</div>
+                                        <div>140.96 CAD</div>
+                                    </div>
+                                    <div class="total-row">
+                                        <div>Shipping:</div>
+                                        <div>Free</div>
+                                    </div>
+                                    <div class="total-row">
+                                        <div>Tax:</div>
+                                        <div>16.52 CAD</div>
+                                    </div>
+                                    <div class="total-row final">
+                                        <div>Total:</div>
+                                        <div>157.48 CAD</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="details-actions">
+                                <a href="#" class="btn btn-secondary">Request Return</a>
+                                <a href="#" class="btn">Write a Review</a>
+                                <a href="#" class="btn btn-secondary">Buy Again</a>
                             </div>
                         </div>
-                        <div class="condition-row">
-                            <div class="condition-label">Availability</div>
-                            <div class="condition-value">
-                                <span class="stock-status in-stock">In Stock</span>
+                    </div>
+                    
+                    <div class="order-item" data-order-id="PP-2025020501">
+                        <div class="order-header">
+                            <div class="order-number">Order #PP-2025020501</div>
+                            <div class="order-date">February 5, 2025</div>
+                        </div>
+                        <div class="order-summary">
+                            <div class="order-status status-shipped">Shipped</div>
+                            <div class="order-total">89.99 CAD</div>
+                            <div class="item-count">1 Item</div>
+                        </div>
+                        <div class="order-items-preview">
+                            <div class="preview-item">
+                                <!-- プレースホルダー -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
                             </div>
                         </div>
-                        <div class="condition-row">
-                            <div class="condition-label">Region</div>
-                            <div class="condition-value">Japan (NTSC-J)</div>
+                        <div class="order-actions">
+                            <a href="#" class="view-details-btn">View Details
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </a>
+                            <a href="#" class="track-order-btn">Track Package</a>
                         </div>
-                        <div class="condition-row">
-                            <div class="condition-label">Language</div>
-                            <div class="condition-value">Japanese</div>
-                        </div>
-                    </div>
-
-                    <div class="product-actions">
-                        <div class="quantity-input">
-                            <button class="quantity-btn minus">-</button>
-                            <input type="number" value="1" min="1" max="10">
-                            <button class="quantity-btn plus">+</button>
-                        </div>
-                        <button class="btn btn-primary" id="add-to-cart-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                            </svg>
-                            Add to Cart
-                        </button>
-                        <button class="btn-wishlist">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 0L2 5.67a5.5 5.5 0 0 0 0 7.78l10 10 10-10a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="trust-badges">
-                        <div class="trust-badge">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                            Authenticity Verified
-                        </div>
-                        <div class="trust-badge">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                            </svg>
-                            Carefully Inspected
-                        </div>
-                        <div class="trust-badge">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21.5 2v6h-6"></path>
-                                <path d="M2.5 22v-6h6"></path>
-                                <path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"></path>
-                            </svg>
-                            30-Day Returns
+                        <div class="order-details" id="details-PP-2025020501">
+                            <!-- 詳細情報（コンテンツは省略） -->
                         </div>
                     </div>
-
-                    <div class="product-description">
-                        <h3 class="description-title">Product Description</h3>
-                        <div class="description-content">
-                            <!-- 商品の説明がJavaScriptによって挿入されます -->
+                    
+                    <div class="order-item" data-order-id="PP-2025011201">
+                        <div class="order-header">
+                            <div class="order-number">Order #PP-2025011201</div>
+                            <div class="order-date">January 12, 2025</div>
+                        </div>
+                        <div class="order-summary">
+                            <div class="order-status status-delivered">Delivered</div>
+                            <div class="order-total">129.99 CAD</div>
+                            <div class="item-count">2 Items</div>
+                        </div>
+                        <div class="order-items-preview">
+                            <div class="preview-item">
+                                <!-- プレースホルダー -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                            <div class="preview-item">
+                                <!-- プレースホルダー -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="order-actions">
+                            <a href="#" class="view-details-btn">View Details
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </a>
+                            <a href="#">Write a Review</a>
+                        </div>
+                        <div class="order-details" id="details-PP-2025011201">
+                            <!-- 詳細情報（コンテンツは省略） -->
                         </div>
                     </div>
+                    
+                    <div class="order-item" data-order-id="PP-2024120501">
+                        <div class="order-header">
+                            <div class="order-number">Order #PP-2024120501</div>
+                            <div class="order-date">December 5, 2024</div>
+                        </div>
+                        <div class="order-summary">
+                            <div class="order-status status-canceled">Canceled</div>
+                            <div class="order-total">64.99 CAD</div>
+                            <div class="item-count">1 Item</div>
+                        </div>
+                        <div class="order-items-preview">
+                            <div class="preview-item">
+                                <!-- プレースホルダー -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="order-actions">
+                            <a href="#" class="view-details-btn">View Details
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </a>
+                            <a href="#">Buy Again</a>
+                        </div>
+                        <div class="order-details" id="details-PP-2024120501">
+                            <!-- 詳細情報（コンテンツは省略） -->
+                        </div>
+                    </div>
+                    <!-- サンプルデータここまで -->
                 </div>
-            </div>
-
-            <!-- タブコンテンツ -->
-            <div class="product-tabs">
-                <div class="tabs-nav">
-                    <button class="tab-button active" data-tab="details">Details</button>
-                    <button class="tab-button" data-tab="specifications">Specifications</button>
-                    <button class="tab-button" data-tab="shipping">Shipping & Returns</button>
-                    <button class="tab-button" data-tab="reviews">Customer Reviews</button>
-                </div>
-
-                <div id="details" class="tab-content active">
-                    <h3 class="description-title">Product Features</h3>
-                    <ul class="description-content">
-                        <!-- 商品の特徴がJavaScriptによって挿入されます -->
-                    </ul>
-                </div>
-
-                <div id="specifications" class="tab-content">
-                    <table class="specs-table">
-                        <tr>
-                            <th>Title</th>
-                            <td>Product Title</td>
-                        </tr>
-                        <tr>
-                            <th>Platform</th>
-                            <td>Platform</td>
-                        </tr>
-                        <tr>
-                            <th>Region</th>
-                            <td>Japan (NTSC-J)</td>
-                        </tr>
-                        <tr>
-                            <th>Language</th>
-                            <td>Japanese</td>
-                        </tr>
-                        <tr>
-                            <th>Developer</th>
-                            <td>Developer</td>
-                        </tr>
-                        <tr>
-                            <th>Publisher</th>
-                            <td>Publisher</td>
-                        </tr>
-                        <tr>
-                            <th>Release Date</th>
-                            <td>Release Date</td>
-                        </tr>
-                        <tr>
-                            <th>Genre</th>
-                            <td>Genre</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div id="shipping" class="tab-content">
-                    <h3 class="description-title">Shipping Information</h3>
-                    <div class="description-content">
-                        <p>We ship worldwide from our warehouses in Japan. All items are carefully packaged to ensure they arrive in the condition described.</p>
-                    </div>
-
-                    <h3 class="description-title" style="margin-top: 1.5rem;">Return Policy</h3>
-                    <div class="description-content">
-                        <p>We want you to be completely satisfied with your purchase. If for any reason you're not happy with your order, we offer a 30-day return policy from the date of delivery.</p>
-
-                        <ul>
-                            <li>Items must be returned in the same condition as they were received</li>
-                            <li>Original packaging must be included</li>
-                            <li>Return shipping costs are the responsibility of the customer unless the item was damaged or defective</li>
-                            <li>Refunds will be processed within 5-7 business days after we receive your return</li>
-                        </ul>
-
-                        <p>To initiate a return, please contact our customer service team at support@playportjp.com.</p>
-                    </div>
-                </div>
-
-                <div id="reviews" class="tab-content">
-                    <!-- レビューはJavaScriptによって動的に挿入されるか、
-                         または利用可能なレビューがない場合のメッセージが表示されます -->
-                    <div class="no-reviews">
-                        <p>No reviews yet for this product. Be the first to leave a review!</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 関連商品 -->
-            <div class="related-products">
-                <h2>You Might Also Like</h2>
-                <div class="product-grid">
-                    <!-- 関連商品はJavaScriptによって動的に挿入されます -->
+                
+                <!-- 注文がない場合の表示 -->
+                <div id="empty-orders" class="empty-orders" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    <h2>No Orders Found</h2>
+                    <p>You haven't placed any orders yet.</p>
+                    <a href="index.html" class="btn">Start Shopping</a>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- フッター -->
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -1052,9 +732,9 @@
             </div>
         </div>
     </footer>
-
-    <!-- JavaScriptファイルの読み込み -->
+    
+    <!-- JavaScript file loading -->
     <script src="js/common.js"></script>
-    <script src="js/product-detail.js"></script>
+    <script src="js/order-history.js"></script>
 </body>
 </html>
