@@ -89,6 +89,7 @@ function checkProductImage(product) {
     const discountExplanation = document.getElementById('discount-explanation');
     const discountBadge = document.getElementById('discount-badge');
     const premiumIcon = document.querySelector('.premium-icon');
+    const bonusPopup = document.querySelector('.bonus-popup');
     const bonusCombo = document.querySelector('.bonus-combo');
 
     // デバッグ用
@@ -99,9 +100,16 @@ function checkProductImage(product) {
         noPhotoContainer: noPhotoContainer ? true : false
     });
 
-    // ボーナスアニメーション要素を非表示
+    // ボーナスポップアップを確実に非表示
+    if (bonusPopup) {
+        bonusPopup.style.display = 'none';
+        bonusPopup.remove(); // 要素を完全に削除
+    }
+    
+    // ボーナスコンボも非表示
     if (bonusCombo) {
         bonusCombo.style.display = 'none';
+        bonusCombo.remove(); // 要素を完全に削除
     }
 
     // 画像パスがある場合、実際に画像が読み込めるかテスト
@@ -193,17 +201,8 @@ function checkProductImage(product) {
 
             if (discountExplanation) {
                 discountExplanation.style.display = 'block';
-                discountExplanation.innerHTML = '<p class="price-note">All taxes included in price</p><p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
-                discountExplanation.style.fontSize = '14px';
-                discountExplanation.style.lineHeight = '1.5';
-                discountExplanation.style.color = '#888';
-                const priceNote = discountExplanation.querySelector('.price-note');
-                if (priceNote) {
-                    priceNote.style.fontWeight = 'bold';
-                    priceNote.style.marginBottom = '5px';
-                    priceNote.style.color = '#666';
-                }
-                console.log('Updated explanation text with refined styling');
+                discountExplanation.innerHTML = '<p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
+                console.log('Updated explanation text');
             }
 
             // ボーナス価格を適用
@@ -263,17 +262,8 @@ function checkProductImage(product) {
 
         if (discountExplanation) {
             discountExplanation.style.display = 'block';
-            discountExplanation.innerHTML = '<p class="price-note">All taxes included in price</p><p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
-            discountExplanation.style.fontSize = '14px';
-            discountExplanation.style.lineHeight = '1.5';
-            discountExplanation.style.color = '#888';
-            const priceNote = discountExplanation.querySelector('.price-note');
-            if (priceNote) {
-                priceNote.style.fontWeight = 'bold';
-                priceNote.style.marginBottom = '5px';
-                priceNote.style.color = '#666';
-            }
-            console.log('Updated explanation text with refined styling');
+            discountExplanation.innerHTML = '<p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
+            console.log('Updated explanation text');
         }
 
         // ボーナス価格を適用
@@ -288,11 +278,7 @@ function checkProductImage(product) {
     console.log('Final hasImage value:', hasImage);
 }
 
-// プレースホルダー要素を強制的に表示する補助関数は使用しない
-// 代わりに、checkProductImage内で直接要素の表示を制御する
-
-
-// 商品詳細を表示 - 修正後の関数
+// 商品詳細を表示
 function displayProductDetails(product) {
     // タイトルを更新
     document.title = `${product.name} - PlayPortJP`;
@@ -416,16 +402,9 @@ function displayProductDetails(product) {
     updateTabsContent(product);
 }
 
-// ボーナスコンボのアニメーションを設定する関数は使用しない
-// アニメーションを取りやめるため
-
 // DOMの読み込み完了時に実行（2回目のリスナー）
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM loaded - second event listener');
-    
-    // この二重のDOMContentLoadedリスナーは別のイベントハンドラが
-    // 上部で定義されており、それと競合する可能性があるため避けます
-    // ボーナスアニメーションの設定は checkProductImage 内で行われます
 });
 
 // 通常価格を表示
