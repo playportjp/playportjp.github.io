@@ -728,7 +728,21 @@
             letter-spacing: 0.3px;
         }
 
-        /* 価格表示の改善 */
+        /* 価格コンテナの改善 */
+        .product-price-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
         .original-price {
             text-decoration: line-through;
             color: #999;
@@ -743,6 +757,64 @@
 
         #current-price.discounted {
             color: #ffeb3b;
+        }
+
+        .price-note {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* 割引バッジのスタイル改善 */
+        .discount-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, rgba(255, 235, 59, 0.2) 0%, rgba(255, 235, 59, 0.1) 100%);
+            border-radius: 6px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 235, 59, 0.3);
+        }
+
+        .discount-badge svg {
+            width: 18px;
+            height: 18px;
+            filter: drop-shadow(0 1px 3px rgba(255, 235, 59, 0.4));
+        }
+
+        .discount-badge span {
+            color: #ffeb3b;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* 割引説明文のスタイル - よりシンプルに */
+        .discount-explanation {
+            position: relative;
+            padding-left: 20px;
+            margin-top: 12px;
+            margin-bottom: 20px;
+        }
+
+        .discount-explanation::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: #ffeb3b;
+            border-radius: 2px;
+            opacity: 0.8;
+        }
+
+        .discount-explanation p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-secondary);
         }
 
         /* 画像セレクターのスタイル */
