@@ -75,6 +75,8 @@ function setupGoogleSearchLink(productName) {
     if (googleSearchLink && productName) {
         const encodedName = encodeURIComponent(productName);
         googleSearchLink.href = `https://www.google.com/search?q=${encodedName}&tbm=isch`;
+        // onclickハンドラーを削除（通常のリンクとして動作させる）
+        googleSearchLink.onclick = null;
     }
 }
 
@@ -407,14 +409,12 @@ function displayProductDetails(product) {
     // タブの内容を更新
     updateTabsContent(product);
     
-    // デバッグ: 余分なSVGがないか確認
-    const allSvgs = document.querySelectorAll('svg');
-    console.log('Total SVGs on page:', allSvgs.length);
-    allSvgs.forEach((svg, index) => {
-        if (svg.clientHeight > 100) {
-            console.log(`Large SVG found at index ${index}:`, svg);
-        }
-    });
+    // プレミアムアイコンのサイズを確実に設定
+    const premiumIcon = document.querySelector('.premium-icon');
+    if (premiumIcon) {
+        premiumIcon.style.width = '100px';
+        premiumIcon.style.height = '100px';
+    }
 }
 
 // DOMの読み込み完了時に実行（2回目のリスナー）
