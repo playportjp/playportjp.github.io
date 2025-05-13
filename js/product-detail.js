@@ -212,7 +212,8 @@ function checkProductImage(product) {
 
             if (discountExplanation) {
                 discountExplanation.style.display = 'block';
-                discountExplanation.innerHTML = '<p>All taxes included in price</p><p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
+                // 税金情報の重複を削除し、説明文のみを表示
+                discountExplanation.innerHTML = '<p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
                 console.log('Updated explanation text');
             }
 
@@ -273,7 +274,8 @@ function checkProductImage(product) {
 
         if (discountExplanation) {
             discountExplanation.style.display = 'block';
-            discountExplanation.innerHTML = '<p>All taxes included in price</p><p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
+            // 税金情報の重複を削除
+            discountExplanation.innerHTML = '<p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
             console.log('Updated explanation text');
         }
 
