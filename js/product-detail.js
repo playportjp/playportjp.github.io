@@ -77,6 +77,11 @@ function setupGoogleSearchLink(productName) {
         googleSearchLink.href = `https://www.google.com/search?q=${encodedName}&tbm=isch`;
         // onclickハンドラーを削除（通常のリンクとして動作させる）
         googleSearchLink.onclick = null;
+        
+        // 隠しクラスを削除して表示
+        setTimeout(() => {
+            googleSearchLink.classList.remove('hidden');
+        }, 50);
     }
 }
 
@@ -170,10 +175,14 @@ function checkProductImage(product) {
                 // Google検索ボタンを表示
                 const googleButton = document.getElementById('google-search-link');
                 if (googleButton) {
-                    googleButton.style.display = 'inline-block';
+                    googleButton.style.display = 'flex';
                     googleButton.style.opacity = '1';
                     googleButton.style.visibility = 'visible';
                     googleButton.style.zIndex = '5';
+                    // 写真がない場合のレイアウト修正
+                    googleButton.style.position = 'absolute';
+                    googleButton.style.top = '8px';
+                    googleButton.style.right = '8px';
                 }
                 
                 // プレミアムアイコンを表示（アニメーションなし）
