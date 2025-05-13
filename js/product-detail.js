@@ -295,6 +295,12 @@ function displayProductDetails(product) {
         breadcrumbProductName.textContent = product.name;
     }
     
+    // 評価部分を表示
+    const productRating = document.querySelector('.product-rating');
+    if (productRating) {
+        productRating.style.visibility = 'visible';
+    }
+    
     // 商品画像を更新
     const productImageMain = document.querySelector('.product-image-main');
     if (productImageMain && product.image) {
