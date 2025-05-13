@@ -571,42 +571,30 @@
             vertical-align: middle;
         }
         
-        /* リセットスタイル - Googleボタンの問題を解決 */
-        .product-image-main {
-            font-size: 16px; /* 基準フォントサイズを設定 */
-        }
-        
-        .product-image-main .search-image-link {
-            /* すべてのプロパティを明示的に定義 */
-            all: initial;
-            font-family: Inter, sans-serif;
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background-color: rgba(187, 0, 0, 0.8);
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            text-decoration: none;
-            display: inline-flex;
+        /* プレミアムアイコンのスタイル */
+        .premium-icon-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 0.25rem;
-            transition: background-color 0.2s;
-            z-index: 10;
-            line-height: 1;
-            white-space: nowrap;
-            cursor: pointer;
-            user-select: none;
+            z-index: 2;
         }
         
-        .product-image-main .search-image-link span {
-            all: initial;
-            font-family: Inter, sans-serif;
-            color: white;
-            font-size: 0.7rem;
-            line-height: 1;
-            display: inline;
+        .premium-icon {
+            width: 100px !important;
+            height: 100px !important;
+            color: #bb0000;
+            filter: drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4));
+            opacity: 0.9;
+            animation: none;
+        }
+
+        /* 不要な疑似要素や影を削除 */
+        .no-photo-container::before,
+        .no-photo-container::after,
+        .premium-icon-wrapper::before,
+        .premium-icon-wrapper::after {
+            display: none !important;
         }
         
         /* メイン画像部に適切な枠線を追加 */
@@ -928,11 +916,11 @@
                         </div>
 
                         <!-- Google検索リンク (右上に配置) -->
-                        <a href="#" class="search-image-link" id="google-search-link" target="_blank" onclick="return false;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;">
+                        <a href="#" class="search-image-link" id="google-search-link" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg><span style="display: inline-block; vertical-align: middle;">Google</span>
+                            </svg>Google
                         </a>
                     </div>
 
