@@ -529,37 +529,59 @@
             display: none !important;
         }
 
-        /* Google検索リンクのスタイル */
+        /* Google検索リンクのスタイル - 修正版 */
         .search-image-link {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            background-color: rgba(187, 0, 0, 0.8);
+            top: 12px;
+            right: 12px;
+            background-color: rgba(187, 0, 0, 0.9);
             color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
             text-decoration: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 0.25rem;
-            transition: background-color 0.2s;
-            z-index: 5;
-            opacity: 1;
-            visibility: visible;
+            gap: 6px;
+            transition: all 0.2s;
+            z-index: 10;
+            border: none;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-            .search-image-link:hover {
-                background-color: var(--primary);
-                color: white;
-            }
+        .search-image-link:hover {
+            background-color: #bb0000;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
 
-            .search-image-link svg {
-                width: 12px;
-                height: 12px;
-                opacity: 1;
-                visibility: visible;
-            }
+        .search-image-link svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+        
+        /* メイン画像部から余計な線を削除 */
+        .product-image-main {
+            height: 400px;
+            background-color: var(--surface-lighter);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        /* 余計な線やボーダーを削除 */
+        .product-image-main::after,
+        .product-image-main::before {
+            display: none !important;
+        }
 
         /* 割引バッジのスタイル */
         .discount-badge {
@@ -856,13 +878,13 @@
 
                 <!-- 商品情報エリア -->
                 <div class="product-info">
-                    <h1 class="product-title">商品タイトル</h1>
+                    <h1 class="product-title">Loading...</h1>
 
                     <div class="product-meta">
                         <!-- カテゴリータグはJavaScriptによって追加されます -->
                     </div>
 
-                    <div class="product-rating">
+                    <div class="product-rating" style="visibility: hidden;">
                         <div class="rating-stars">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -885,8 +907,8 @@
 
                     <div class="product-price-container">
                         <div class="product-price">
-                            <span id="original-price" class="original-price" style="display: none;">0.00 CAD</span>
-                            <span id="current-price">0.00 CAD</span>
+                            <span id="original-price" class="original-price" style="display: none;"></span>
+                            <span id="current-price">Loading...</span>
                         </div>
                         <!-- 割引バッジ（画像なしの場合に表示） -->
                         <div id="discount-badge" class="discount-badge" style="display: none;">
