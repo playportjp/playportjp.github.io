@@ -423,8 +423,8 @@ function displayProductDetails(product) {
     // プレミアムアイコンのサイズを確実に設定
     const premiumIcon = document.querySelector('.premium-icon');
     if (premiumIcon) {
-        premiumIcon.style.width = '100px';
-        premiumIcon.style.height = '100px';
+        premiumIcon.style.width = '140px';
+        premiumIcon.style.height = '140px';
     }
 }
 
