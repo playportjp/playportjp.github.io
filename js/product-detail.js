@@ -253,9 +253,9 @@ function applyOpenPhotoBonus(product) {
         bonusArrowContainer.className = 'bonus-indicator-arrow';
         bonusArrowContainer.style.cssText = `
             position: absolute;
-            top: 50%;
+            top: 65px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             z-index: 3;
             width: 28px;
             height: 28px;
@@ -340,7 +340,7 @@ function applyOpenPhotoBonus(product) {
         lightBeam.style.cssText = `
             position: absolute;
             top: -32px;
-            left: 20px;  /* 右に移動（-10px から 20px へ） */
+            left: -10px;
             width: 100%;
             height: 100%;
             pointer-events: none;
