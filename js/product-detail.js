@@ -139,19 +139,45 @@ function checkProductImage(product) {
 
 // Open Photo Bonusを適用する関数
 function applyOpenPhotoBonus(product) {
+    console.log('Applying Open Photo Bonus');
+    
     const productImageMain = document.querySelector('.product-image-main');
     const noPhotoContainer = productImageMain?.querySelector('.no-photo-container');
     const discountExplanation = document.getElementById('discount-explanation');
     const discountBadge = document.getElementById('discount-badge');
-    const premiumIcon = document.querySelector('.premium-icon');
+    const premiumIcon = document.querySelector('.no-photo-container .premium-icon');
     const bonusArrow = document.querySelector('.bonus-indicator-arrow');
     const googleButton = document.getElementById('google-search-link');
+
+    console.log('Elements found:', {
+        noPhotoContainer: !!noPhotoContainer,
+        premiumIcon: !!premiumIcon,
+        bonusArrow: !!bonusArrow
+    });
 
     // プレースホルダー要素を表示
     if (noPhotoContainer) {
         noPhotoContainer.style.display = 'flex';
         noPhotoContainer.style.opacity = '1';
         noPhotoContainer.style.visibility = 'visible';
+        
+        // アイコンとインジケーターが内部にあることを確認
+        const innerPremiumIcon = noPhotoContainer.querySelector('.premium-icon');
+        const innerBonusArrow = noPhotoContainer.querySelector('.bonus-indicator-arrow');
+        
+        if (innerPremiumIcon) {
+            innerPremiumIcon.style.display = 'block';
+            innerPremiumIcon.style.opacity = '1';
+            innerPremiumIcon.style.visibility = 'visible';
+            console.log('Premium icon made visible');
+        }
+        
+        if (innerBonusArrow) {
+            innerBonusArrow.style.display = 'block';
+            innerBonusArrow.style.opacity = '1';
+            innerBonusArrow.style.visibility = 'visible';
+            console.log('Bonus arrow made visible');
+        }
     }
 
     // Google検索ボタンを表示
@@ -165,7 +191,7 @@ function applyOpenPhotoBonus(product) {
         googleButton.style.right = '8px';
     }
     
-    // プレミアムアイコンを表示
+    // プレミアムアイコンを表示（別の方法で取得）
     if (premiumIcon) {
         premiumIcon.style.display = 'block';
         premiumIcon.style.opacity = '1';
@@ -173,13 +199,16 @@ function applyOpenPhotoBonus(product) {
         premiumIcon.style.filter = 'drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4))';
         premiumIcon.style.width = '120px';
         premiumIcon.style.height = '120px';
+        premiumIcon.style.visibility = 'visible';
     }
     
-    // ボーナスインジケーター矢印を表示
+    // ボーナスインジケーター矢印を表示（別の方法で取得）
     if (bonusArrow) {
         bonusArrow.style.display = 'block';
         bonusArrow.style.width = '28px';
         bonusArrow.style.height = '28px';
+        bonusArrow.style.opacity = '1';
+        bonusArrow.style.visibility = 'visible';
     }
 
     // Open Photo Bonusバッジを表示
@@ -243,7 +272,10 @@ function displayProductDetails(product) {
     // 商品価格を更新（初期表示）
     const currentPrice = document.getElementById('current-price');
     if (currentPrice) {
+        console.log('Setting initial price:', product.price);
         currentPrice.textContent = `${product.price.toFixed(2)} CAD`;
+    } else {
+        console.error('Current price element not found');
     }
     
     // カテゴリメタタグを更新
@@ -338,11 +370,19 @@ function applyNormalPrice(product) {
 // Open Photo Bonus価格を適用（割引価格）
 function applyDiscountPrice(product) {
     console.log('Applying discount price...');
-    const originalPriceElement = document.getElementById('original-price');
-    const currentPriceElement = document.getElementById('current-price');
     
-    if (!originalPriceElement || !currentPriceElement) {
-        console.error('Price elements not found');
+    // 価格要素を再度取得（異なる方法で）
+    const priceContainer = document.querySelector('.product-price');
+    const originalPriceElement = priceContainer?.querySelector('#original-price') || document.getElementById('original-price');
+    const currentPriceElement = priceContainer?.querySelector('#current-price') || document.getElementById('current-price');
+    
+    console.log('Price elements:', {
+        originalFound: !!originalPriceElement,
+        currentFound: !!currentPriceElement
+    });
+    
+    if (!currentPriceElement) {
+        console.error('Current price element not found');
         return;
     }
     
@@ -357,17 +397,21 @@ function applyDiscountPrice(product) {
         discountedPrice
     });
     
-    // 元の価格を表示
-    originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
-    originalPriceElement.style.display = 'inline';
-    originalPriceElement.className = 'original-price';
+    // 元の価格要素がある場合のみ表示
+    if (originalPriceElement) {
+        originalPriceElement.textContent = `${originalPrice.toFixed(2)} CAD`;
+        originalPriceElement.style.display = 'inline';
+        originalPriceElement.className = 'original-price';
+    }
     
     // 割引価格を表示
     currentPriceElement.textContent = `${discountedPrice.toFixed(2)} CAD`;
     currentPriceElement.classList.add('discounted');
+    currentPriceElement.style.color = '#ffeb3b'; // 黄色に変更
     
     // カートに追加するときの価格を保存
     product.discountedPrice = discountedPrice;
+    console.log('Discount price applied successfully');
 }
 
 // タブコンテンツを更新
