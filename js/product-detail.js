@@ -164,20 +164,31 @@ function applyOpenPhotoBonus(product) {
     if (productImageMain) {
         // 既存の内容をクリアしてから、Open Photo Bonusコンテンツを挿入
         productImageMain.innerHTML = `
-            <div class="no-photo-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="bonus-indicator-arrow">
+            <div class="no-photo-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; position: relative;">
+                <!-- Open Photo Bonusインジケーター矢印 -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="bonus-indicator-arrow" style="position: absolute; top: 65px; left: 50%; transform: translateX(-50%); filter: drop-shadow(0 0 8px rgba(255, 235, 59, 0.8)) drop-shadow(0 0 15px rgba(255, 235, 59, 0.5));">
                     <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path>
                     <path d="M12 15V3"></path>
                     <path d="M8 7l4-4 4 4"></path>
                 </svg>
-                <div class="premium-icon-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="premium-icon" style="width: 120px; height: 120px;">
+                
+                <!-- プレミアムアイコン -->
+                <div class="premium-icon-wrapper" style="display: flex; justify-content: center; align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="premium-icon" style="width: 120px; height: 120px; filter: drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4));">
                         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                     </svg>
+                    <!-- 中心を貫く黄色い光線 -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="center-light-beam" style="position: absolute; top: -32px; left: -10px; width: 100%; height: 100%; pointer-events: none;">
+                        <line x1="12" y1="4" x2="12" y2="12" stroke="#ffeb3b" stroke-width="0.5" style="filter: drop-shadow(0 0 4px rgba(255, 235, 59, 0.8));" />
+                    </svg>
                 </div>
-                <div style="font-size: 1rem; color: var(--text-secondary); margin-top: 1rem;">No Photo Available</div>
+                
+                <!-- No Photo Available テキスト -->
+                <div style="font-size: 1rem; color: var(--text-secondary); margin-top: 0.75rem; font-weight: 500;">No Photo Available</div>
             </div>
-            <a href="#" class="search-image-link" id="google-search-link" target="_blank" style="position: absolute; top: 8px; right: 8px; background-color: rgba(187, 0, 0, 0.8); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem;">
+            
+            <!-- Google検索リンク -->
+            <a href="#" class="search-image-link" id="google-search-link" target="_blank" style="position: absolute; top: 8px; right: 8px; background-color: rgba(187, 0, 0, 0.8); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem; transition: background-color 0.2s;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -186,14 +197,20 @@ function applyOpenPhotoBonus(product) {
             </a>
         `;
         
+        // 背景スタイルを適用
+        productImageMain.style.background = 'linear-gradient(145deg, var(--surface-lighter), var(--surface))';
+        productImageMain.style.boxShadow = 'inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2)';
+        
         // Google検索リンクを設定
-        setupGoogleSearchLink(product.name);
+        setTimeout(() => {
+            setupGoogleSearchLink(product.name);
+        }, 10);
     }
     
     // 割引バッジと説明を価格エリアに追加
     addDiscountBadgeAndExplanation();
 
-    // 画像セレクターを無効化
+    // 画像セレクターを無効化（スタイルも適用）
     disableImageSelector();
 }
 
@@ -207,14 +224,24 @@ function addDiscountBadgeAndExplanation() {
             const discountBadge = document.createElement('div');
             discountBadge.id = 'discount-badge';
             discountBadge.className = 'discount-badge';
-            discountBadge.style.display = 'flex';
+            discountBadge.style.cssText = `
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 12px;
+                background: linear-gradient(135deg, rgba(255, 235, 59, 0.2) 0%, rgba(255, 235, 59, 0.1) 100%);
+                border-radius: 6px;
+                margin-bottom: 16px;
+                margin-top: 12px;
+                border: 1px solid rgba(255, 235, 59, 0.3);
+            `;
             discountBadge.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 1px 3px rgba(255, 235, 59, 0.4));">
                     <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path>
                     <path d="M12 15V3"></path>
                     <path d="M8 7l4-4 4 4"></path>
                 </svg>
-                <span>8% discount applied - Open Photo Bonus</span>
+                <span style="color: #ffeb3b; font-size: 14px; font-weight: 600; letter-spacing: 0.3px;">8% discount applied - Open Photo Bonus</span>
             `;
             
             // 価格の後に挿入
@@ -229,11 +256,24 @@ function addDiscountBadgeAndExplanation() {
             const discountExplanation = document.createElement('div');
             discountExplanation.id = 'discount-explanation';
             discountExplanation.className = 'discount-explanation';
-            discountExplanation.style.display = 'block';
-            discountExplanation.innerHTML = '<p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
+            discountExplanation.style.cssText = `
+                position: relative;
+                padding-left: 20px;
+                margin-top: 12px;
+                margin-bottom: 20px;
+            `;
+            discountExplanation.innerHTML = `
+                <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background-color: #ffeb3b; border-radius: 2px; opacity: 0.8;"></div>
+                <p style="margin: 0; font-size: 13px; line-height: 1.6; color: var(--text-secondary);">This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>
+            `;
             
-            // 価格コンテナの最後に追加
-            priceContainer.appendChild(discountExplanation);
+            // 価格ノートの後に追加
+            const priceNote = priceContainer.querySelector('.price-note');
+            if (priceNote) {
+                priceNote.insertAdjacentElement('afterend', discountExplanation);
+            } else {
+                priceContainer.appendChild(discountExplanation);
+            }
         }
     }
 }
@@ -602,11 +642,16 @@ function disableImageSelector() {
 
     if (imageSelector) {
         imageSelector.classList.add('disabled');
+        // ボタンの無効化スタイルを適用
+        imageSelector.style.opacity = '0.5';
+        imageSelector.style.pointerEvents = 'none';
     }
 
     if (imageOptions) {
         imageOptions.forEach(option => {
             option.disabled = true;
+            option.style.cursor = 'not-allowed';
+            option.style.opacity = '0.5';
         });
     }
 }
