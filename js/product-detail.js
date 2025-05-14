@@ -246,78 +246,159 @@ function applyOpenPhotoBonus(product) {
             z-index: 1;
             width: 100%;
             height: 100%;
+            background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
         `;
         
-        // プレミアムアイコン（赤いダイヤモンド）
-        const premiumIcon = document.createElement('div');
-        premiumIcon.className = 'premium-icon';
-        premiumIcon.style.cssText = `
-            width: 120px;
-            height: 120px;
-            background-color: transparent;
-            border: 3px solid #bb0000;
-            transform: rotate(45deg);
-            position: relative;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 8px rgba(187, 0, 0, 0.3);
-        `;
-        
-        // プレミアムアイコンの中に内側のダイヤモンド
-        const innerDiamond = document.createElement('div');
-        innerDiamond.style.cssText = `
-            position: absolute;
-            top: 15%;
-            left: 15%;
-            width: 70%;
-            height: 70%;
-            border: 2px solid #bb0000;
-            background-color: rgba(187, 0, 0, 0.1);
-        `;
-        premiumIcon.appendChild(innerDiamond);
-        
-        noPhotoContainer.appendChild(premiumIcon);
-        
-        productImageMain.appendChild(noPhotoContainer);
-        
-        // ボーナスインジケーター矢印（右下）
-        const bonusArrow = document.createElement('div');
+        // Open Photo Bonusインジケーター（上向き黄色い矢印）
+        const bonusArrow = document.createElement('svg');
+        bonusArrow.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        bonusArrow.setAttribute('width', '28');
+        bonusArrow.setAttribute('height', '28');
+        bonusArrow.setAttribute('viewBox', '0 0 24 24');
+        bonusArrow.setAttribute('fill', 'none');
+        bonusArrow.setAttribute('stroke', '#ffeb3b');
+        bonusArrow.setAttribute('stroke-width', '2.5');
+        bonusArrow.setAttribute('stroke-linecap', 'round');
+        bonusArrow.setAttribute('stroke-linejoin', 'round');
         bonusArrow.className = 'bonus-indicator-arrow';
         bonusArrow.style.cssText = `
             position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background-color: #ffeb3b;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 3px 6px rgba(255, 235, 59, 0.5);
-            z-index: 10;
+            top: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            filter: drop-shadow(0 0 8px rgba(255, 235, 59, 0.8)) 
+                    drop-shadow(0 0 15px rgba(255, 235, 59, 0.5))
+                    drop-shadow(0 0 25px rgba(255, 235, 59, 0.3));
+            animation: glowPulse 2s ease-in-out infinite;
         `;
         
-        // 矢印SVG
-        const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        arrowSvg.setAttribute('width', '30');
-        arrowSvg.setAttribute('height', '30');
-        arrowSvg.setAttribute('viewBox', '0 0 24 24');
-        arrowSvg.setAttribute('fill', 'none');
-        arrowSvg.setAttribute('stroke', '#333');
-        arrowSvg.setAttribute('stroke-width', '3');
-        arrowSvg.setAttribute('stroke-linecap', 'round');
-        arrowSvg.setAttribute('stroke-linejoin', 'round');
+        // 矢印のパス（上向き）
+        const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path1.setAttribute('d', 'M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6');
+        const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path2.setAttribute('d', 'M12 15V3');
+        const path3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path3.setAttribute('d', 'M8 7l4-4 4 4');
         
-        const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        arrowPath.setAttribute('d', 'M19 12l-7 7-7-7');
-        arrowSvg.appendChild(arrowPath);
+        bonusArrow.appendChild(path1);
+        bonusArrow.appendChild(path2);
+        bonusArrow.appendChild(path3);
+        noPhotoContainer.appendChild(bonusArrow);
         
-        const arrowPath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        arrowPath2.setAttribute('d', 'M12 5v14');
-        arrowSvg.appendChild(arrowPath2);
+        // 高級感・お宝感を表すアイコン（3層ダイヤモンド）
+        const premiumWrapper = document.createElement('div');
+        premiumWrapper.className = 'premium-icon-wrapper';
+        premiumWrapper.style.cssText = `
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        `;
         
-        bonusArrow.appendChild(arrowSvg);
-        productImageMain.appendChild(bonusArrow);
+        // プレミアムアイコン（SVG）
+        const premiumIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        premiumIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        premiumIcon.setAttribute('viewBox', '0 0 24 24');
+        premiumIcon.setAttribute('fill', 'none');
+        premiumIcon.setAttribute('stroke', '#bb0000');
+        premiumIcon.setAttribute('stroke-width', '1.5');
+        premiumIcon.setAttribute('stroke-linecap', 'round');
+        premiumIcon.setAttribute('stroke-linejoin', 'round');
+        premiumIcon.className = 'premium-icon';
+        premiumIcon.style.cssText = `
+            width: 100px !important;
+            height: 100px !important;
+            color: #bb0000;
+            filter: drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4));
+            opacity: 0.9;
+        `;
+        
+        // 3層のダイヤモンドパス
+        const diamondPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        diamondPath.setAttribute('d', 'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5');
+        premiumIcon.appendChild(diamondPath);
+        
+        premiumWrapper.appendChild(premiumIcon);
+        
+        // 中心を貫く黄色い光線
+        const lightBeam = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        lightBeam.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        lightBeam.setAttribute('viewBox', '0 0 24 24');
+        lightBeam.className = 'center-light-beam';
+        lightBeam.style.cssText = `
+            position: absolute;
+            top: -32px;
+            left: -10px;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 4;
+            background: transparent;
+            overflow: visible;
+        `;
+        
+        const lightLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        lightLine.setAttribute('x1', '12');
+        lightLine.setAttribute('y1', '4');
+        lightLine.setAttribute('x2', '12');
+        lightLine.setAttribute('y2', '12');
+        lightLine.setAttribute('stroke', '#ffeb3b');
+        lightLine.setAttribute('stroke-width', '0.5');
+        lightLine.style.cssText = `
+            filter: drop-shadow(0 0 4px rgba(255, 235, 59, 0.8)) 
+                    drop-shadow(0 0 8px rgba(255, 235, 59, 0.5));
+            stroke-linecap: round;
+            animation: lightPulse 2s ease-in-out infinite;
+        `;
+        
+        lightBeam.appendChild(lightLine);
+        premiumWrapper.appendChild(lightBeam);
+        
+        noPhotoContainer.appendChild(premiumWrapper);
+        productImageMain.appendChild(noPhotoContainer);
+        
+        // CSSアニメーションを追加（まだ存在しない場合）
+        if (!document.getElementById('open-photo-bonus-styles')) {
+            const style = document.createElement('style');
+            style.id = 'open-photo-bonus-styles';
+            style.innerHTML = `
+                @keyframes glowPulse {
+                    0%, 100% {
+                        opacity: 0.9;
+                        transform: translateX(-50%) translateY(0);
+                        filter: drop-shadow(0 0 8px rgba(255, 235, 59, 0.8)) 
+                                drop-shadow(0 0 15px rgba(255, 235, 59, 0.5))
+                                drop-shadow(0 0 25px rgba(255, 235, 59, 0.3));
+                    }
+                    50% {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(-3px);
+                        filter: drop-shadow(0 0 12px rgba(255, 235, 59, 1)) 
+                                drop-shadow(0 0 20px rgba(255, 235, 59, 0.7))
+                                drop-shadow(0 0 30px rgba(255, 235, 59, 0.5));
+                    }
+                }
+                
+                @keyframes lightPulse {
+                    0%, 100% {
+                        opacity: 0.7;
+                        filter: drop-shadow(0 0 4px rgba(255, 235, 59, 0.8)) 
+                                drop-shadow(0 0 8px rgba(255, 235, 59, 0.5));
+                    }
+                    50% {
+                        opacity: 0.9;
+                        filter: drop-shadow(0 0 6px rgba(255, 235, 59, 1)) 
+                                drop-shadow(0 0 10px rgba(255, 235, 59, 0.7));
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
         
         // Google検索リンクを作成
         const googleLink = document.createElement('a');
