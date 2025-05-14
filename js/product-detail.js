@@ -1,845 +1,1040 @@
-// デバッグ用：DOM要素の存在確認
-function checkDOMElements() {
-    console.log('=== DOM Elements Check ===');
-    console.log('Product title:', document.querySelector('.product-title'));
-    console.log('Current price by ID:', document.getElementById('current-price'));
-    console.log('Current price by query:', document.querySelector('#current-price'));
-    console.log('Product price container:', document.querySelector('.product-price'));
-    console.log('No photo container:', document.querySelector('.no-photo-container'));
-    console.log('Premium icon:', document.querySelector('.premium-icon'));
-    console.log('Bonus arrow:', document.querySelector('.bonus-indicator-arrow'));
-    console.log('Google link:', document.getElementById('google-search-link'));
-    console.log('Discount badge:', document.getElementById('discount-badge'));
-    console.log('Discount explanation:', document.getElementById('discount-explanation'));
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail - PlayPortJP</title>
+    <meta name="description" content="Premium Japanese games, books, music, and collectibles delivered worldwide.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    // 構造を詳しく確認
-    const priceDiv = document.querySelector('.product-price');
-    if (priceDiv) {
-        console.log('Price div innerHTML:', priceDiv.innerHTML);
-        console.log('Price div textContent:', priceDiv.textContent);
-    }
-    
-    console.log('=== End DOM Check ===');
-}
-
-// 商品詳細データを取得して表示
-function loadProductDetails(productId) {
-    console.log('Loading product details for ID:', productId);
-    
-    // DOM要素の存在確認
-    checkDOMElements();
-
-    // データ取得
-    fetch('data/products.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to load products');
-            }
-            return response.json();
-        })
-        .then(products => {
-            // 指定されたIDの商品を検索
-            const product = products.find(p => p.id === productId);
-
-            if (product) {
-                // 最初に商品詳細を表示
-                displayProductDetails(product);
-                
-                // その後、他の機能を設定
-                setupAddToCartButton(product);
-                setupGoogleSearchLink(product.name);
-                
-                // 最後に画像チェックを実行（価格の更新も含む）
-                setTimeout(() => {
-                    checkProductImage(product);
-                }, 100);
-            } else {
-                throw new Error('Product not found');
-            }
-        })
-        .catch(error => {
-            console.error('Error loading product details:', error);
-            const container = document.querySelector('.product-detail-container');
-            if (container) {
-                container.innerHTML = `
-                    <div class="error-message">
-                        <h2>Failed to load product data</h2>
-                        <p>${error.message}</p>
-                        <a href="index.html" class="btn btn-primary">Back to Homepage</a>
-                    </div>
-                `;
-            }
-        });
-}
-
-// Google検索リンクを設定
-function setupGoogleSearchLink(productName) {
-    const googleSearchLink = document.getElementById('google-search-link');
-    console.log('Setting up Google link for:', productName);
-    console.log('Google link element:', googleSearchLink);
-    
-    if (googleSearchLink && productName) {
-        const encodedName = encodeURIComponent(productName);
-        googleSearchLink.href = `https://www.google.com/search?q=${encodedName}&tbm=isch`;
-        googleSearchLink.onclick = null;
+    <style>
+        /* 商品詳細ページ用スタイル */
+        .breadcrumb {
+            margin: 1.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
         
-        // 隠しクラスを削除して表示
-        setTimeout(() => {
-            googleSearchLink.classList.remove('hidden');
-            googleSearchLink.style.display = 'inline-flex';
-            googleSearchLink.style.visibility = 'visible';
-            console.log('Google link should be visible now');
-        }, 50);
-    }
-}
-
-// 写真の有無を確認し、必要に応じてOpen Photo Bonusを適用
-function checkProductImage(product) {
-    console.log('Checking product image for:', product.id);
-    
-    // 初期状態では画像パスの有無でチェック
-    let hasImage = product.image && product.image !== '';
-
-    // 要素を取得
-    const productImageMain = document.querySelector('.product-image-main');
-    
-    // 画像パスがある場合、実際に画像が読み込めるかテスト
-    if (hasImage) {
-        const img = new Image();
-
-        img.onload = function () {
-            // 画像のロードに成功した場合
-            hasImage = true;
-            console.log('Product image loaded successfully');
-
-            // 背景画像として設定
-            if (productImageMain) {
-                productImageMain.style.backgroundImage = `url('${product.image}')`;
-                productImageMain.style.backgroundSize = 'contain';
-                productImageMain.style.backgroundRepeat = 'no-repeat';
-                productImageMain.style.backgroundPosition = 'center';
-            }
-
-            // Open Photo Bonus関連の要素を非表示（存在する場合）
-            hideOpenPhotoBonusElements();
-
-            // 通常の価格表示
-            applyNormalPrice(product);
-
-            // 画像セレクターを有効化
-            enableImageSelector();
-        };
-
-        img.onerror = function () {
-            // 画像のロードに失敗した場合
-            hasImage = false;
-            console.log('Product image failed to load - applying Open Photo Bonus');
-            applyOpenPhotoBonus(product);
-        };
-
-        // 画像のロード開始
-        console.log('Starting to load image:', product.image);
-        img.src = product.image;
-    } else {
-        // 画像パスがない場合は直接ボーナスを適用
-        console.log('No image path provided, applying Open Photo Bonus directly');
-        hasImage = false;
-        applyOpenPhotoBonus(product);
-    }
-
-    // 商品オブジェクトに画像の有無情報を保存
-    product.hasImage = hasImage;
-}
-
-// デバッグ用：作成された要素の状態を確認
-function debugElements() {
-    const productImageMain = document.querySelector('.product-image-main');
-    const noPhotoContainer = document.querySelector('.no-photo-container');
-    const premiumIcon = document.querySelector('.premium-icon');
-    const bonusArrow = document.querySelector('.bonus-indicator-arrow');
-    const googleLink = document.getElementById('google-search-link');
-    
-    console.log('=== Debug Element States ===');
-    
-    if (productImageMain) {
-        const rect = productImageMain.getBoundingClientRect();
-        console.log('Product Image Main:', {
-            dimensions: `${rect.width}x${rect.height}`,
-            position: `top: ${rect.top}, left: ${rect.left}`,
-            display: window.getComputedStyle(productImageMain).display,
-            visibility: window.getComputedStyle(productImageMain).visibility
-        });
-    }
-    
-    if (noPhotoContainer) {
-        const rect = noPhotoContainer.getBoundingClientRect();
-        console.log('No Photo Container:', {
-            dimensions: `${rect.width}x${rect.height}`,
-            position: `top: ${rect.top}, left: ${rect.left}`,
-            display: window.getComputedStyle(noPhotoContainer).display,
-            visibility: window.getComputedStyle(noPhotoContainer).visibility
-        });
-    }
-    
-    if (premiumIcon) {
-        const rect = premiumIcon.getBoundingClientRect();
-        console.log('Premium Icon:', {
-            dimensions: `${rect.width}x${rect.height}`,
-            position: `top: ${rect.top}, left: ${rect.left}`,
-            display: window.getComputedStyle(premiumIcon).display,
-            visibility: window.getComputedStyle(premiumIcon).visibility,
-            opacity: window.getComputedStyle(premiumIcon).opacity
-        });
-    }
-    
-    if (bonusArrow) {
-        const rect = bonusArrow.getBoundingClientRect();
-        console.log('Bonus Arrow:', {
-            dimensions: `${rect.width}x${rect.height}`,
-            position: `top: ${rect.top}, left: ${rect.left}`,
-            display: window.getComputedStyle(bonusArrow).display,
-            visibility: window.getComputedStyle(bonusArrow).visibility,
-            opacity: window.getComputedStyle(bonusArrow).opacity
-        });
-    }
-    
-    console.log('=== End Debug ===');
-}
-
-// Open Photo Bonusを適用する関数
-function applyOpenPhotoBonus(product) {
-    console.log('Applying Open Photo Bonus');
-    
-    const productImageMain = document.querySelector('.product-image-main');
-    console.log('Product image main element:', productImageMain);
-    
-    // ボーナス価格を適用
-    applyDiscountPrice(product);
-    
-    // 画像エリアに「No Photo」表示を追加
-    if (productImageMain) {
-        // 高さを確実に設定
-        productImageMain.style.height = '400px';
-        productImageMain.style.minHeight = '400px';
-        productImageMain.style.position = 'relative';
-        productImageMain.style.display = 'flex';
-        productImageMain.style.alignItems = 'center';
-        productImageMain.style.justifyContent = 'center';
-        productImageMain.style.overflow = 'visible'; // 要素が切れないように
+        .breadcrumb a {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
         
-        // まず要素をクリア
-        productImageMain.innerHTML = '';
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
         
-        // 更にシンプルなテスト要素を作成
-        const testDiv = document.createElement('div');
-        testDiv.style.cssText = `
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
-            background-color: #bb0000;
-            border-radius: 50%;
-            z-index: 100;
-        `;
-        testDiv.textContent = 'TEST';
-        testDiv.style.display = 'flex';
-        testDiv.style.alignItems = 'center';
-        testDiv.style.justifyContent = 'center';
-        testDiv.style.color = 'white';
-        testDiv.style.fontSize = '20px';
+        .breadcrumb-separator {
+            margin: 0 0.5rem;
+        }
         
-        productImageMain.appendChild(testDiv);
+        .product-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
         
-        // SVGを直接作成してテスト
-        const testSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        testSvg.setAttribute('width', '100');
-        testSvg.setAttribute('height', '100');
-        testSvg.setAttribute('viewBox', '0 0 100 100');
-        testSvg.style.cssText = `
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: white;
-            z-index: 101;
-        `;
+        .product-media {
+            background-color: var(--surface);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
         
-        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        circle.setAttribute('cx', '50');
-        circle.setAttribute('cy', '50');
-        circle.setAttribute('r', '40');
-        circle.setAttribute('fill', '#ffeb3b');
-        circle.setAttribute('stroke', '#000');
-        circle.setAttribute('stroke-width', '2');
-        
-        testSvg.appendChild(circle);
-        productImageMain.appendChild(testSvg);
-        
-        // メインのOpen Photo Bonus要素も作成
-        const noPhotoContainer = document.createElement('div');
-        noPhotoContainer.className = 'no-photo-container';
-        noPhotoContainer.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+        .product-image-main {
+            height: 400px;
+            background-color: var(--surface-lighter);
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            z-index: 10;
-        `;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+        }
         
-        // プレミアムアイコン（赤いダイヤモンド）
-        const premiumDiv = document.createElement('div');
-        premiumDiv.style.cssText = `
+        .product-image-main svg {
             width: 120px;
             height: 120px;
-            background-color: transparent;
-            border: 3px solid #bb0000;
-            transform: rotate(45deg);
-            position: relative;
-            margin-bottom: 20px;
-        `;
-        noPhotoContainer.appendChild(premiumDiv);
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
         
-        // テキスト
-        const noPhotoText = document.createElement('div');
-        noPhotoText.style.cssText = `
-            font-size: 1.2rem;
-            color: #aaa;
+        .product-image-main div {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 0.75rem;
             font-weight: 500;
+        }
+        
+        .product-image-gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            padding: 0.75rem;
+        }
+        
+        .gallery-thumb {
+            height: 80px;
+            background-color: var(--surface-lighter);
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: border-color 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .gallery-thumb:hover, .gallery-thumb.active {
+            border-color: var(--primary);
+        }
+        
+        .gallery-thumb svg {
+            width: 32px;
+            height: 32px;
+            opacity: 0.8;
+        }
+        
+        .product-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-title {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: white;
+            line-height: 1.3;
+        }
+        
+        .product-meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .meta-tag.games {
+            background-color: #5755d9;
+        }
+        
+        .meta-tag.books {
+            background-color: #2e7d32;
+        }
+        
+        .meta-tag.music {
+            background-color: #9c27b0;
+        }
+        
+        .meta-tag.collectibles {
+            background-color: #e65100;
+        }
+        
+        .meta-tag.models {
+            background-color: #0277bd;
+        }
+        
+        .meta-tag.culture {
+            background-color: #9c27b0;
+        }
+        
+        .meta-tag.other {
+            background-color: var(--surface);
+            color: var(--text-secondary);
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .rating-stars {
+            display: flex;
+            color: #ff9800;
+            margin-right: 0.5rem;
+        }
+        
+        .rating-stars svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 1px;
+        }
+        
+        .rating-count {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .product-price-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-price {
+            font-size: 2rem;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+        
+        .price-note {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .product-condition-container {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .condition-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .condition-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .condition-label {
+            width: 120px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .condition-value {
+            font-size: 0.9rem;
+        }
+        
+        .condition-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .condition-badge.new {
+            background-color: #3a9e4e;
+            color: white;
+        }
+        
+        .condition-badge.used {
+            background-color: #2c7cb0;
+            color: white;
+        }
+        
+        .stock-status {
+            font-weight: 500;
+        }
+        
+        .in-stock {
+            color: #4CAF50;
+        }
+        
+        .low-stock {
+            color: #FFC107;
+        }
+        
+        .out-of-stock {
+            color: #F44336;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quantity-input {
+            display: flex;
+            align-items: center;
+            max-width: 140px;
+        }
+        
+        .quantity-btn {
+            width: 36px;
+            height: 44px;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .quantity-btn:hover {
+            background-color: var(--surface-lighter);
+        }
+        
+        .quantity-btn.minus {
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .quantity-btn.plus {
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .quantity-input input {
+            width: 60px;
+            height: 44px;
+            border: 1px solid var(--border);
+            border-left: none;
+            border-right: none;
+            background-color: var(--surface-lighter);
+            color: var(--text-primary);
             text-align: center;
-        `;
-        noPhotoText.textContent = 'No Photo Available';
-        noPhotoContainer.appendChild(noPhotoText);
+            font-size: 0.9rem;
+        }
         
-        productImageMain.appendChild(noPhotoContainer);
+        .quantity-input input:focus {
+            outline: none;
+        }
         
-        // Google検索リンクを作成
-        const googleLink = document.createElement('a');
-        googleLink.href = '#';
-        googleLink.className = 'search-image-link';
-        googleLink.id = 'google-search-link';
-        googleLink.target = '_blank';
-        googleLink.style.cssText = `
+        .btn {
+            height: 44px;
+            padding: 0 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--surface);
+        }
+        
+        .btn svg {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-wishlist {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            width: 44px;
+            height: 44px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-wishlist:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .trust-badges {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .trust-badge svg {
+            color: var(--primary);
+            margin-right: 0.5rem;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .product-description {
+            margin-bottom: 2rem;
+        }
+        
+        .description-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .description-content {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .product-tabs {
+            margin-bottom: 3rem;
+        }
+        
+        .tabs-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .tab-button:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+        
+        .tab-button.active {
+            color: var(--text-primary);
+        }
+        
+        .tab-button.active:after {
+            transform: scaleX(1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .specs-table tr {
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .specs-table tr:last-child {
+            border-bottom: none;
+        }
+        
+        .specs-table th, .specs-table td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .specs-table th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            width: 40%;
+        }
+        
+        .related-products {
+            margin-bottom: 3rem;
+        }
+        
+        .related-products h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .related-products .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+        
+        /* 顧客レビュー */
+        .review-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .review-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .reviewer-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .reviewer-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .review-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .review-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+        
+        .review-photos {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .review-photo {
+            width: 80px;
+            height: 80px;
+            background-color: var(--surface-lighter);
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .review-photo svg {
+            width: 24px;
+            height: 24px;
+            opacity: 0.6;
+        }
+        
+        /* 商品詳細ページの画像プレースホルダー */
+        .product-image-main {
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+        }
+        
+        /* Google検索リンクのスタイル - indexページと統一 */
+        .search-image-link {
             position: absolute;
             top: 8px;
             right: 8px;
-            background-color: #bb0000;
+            background-color: rgba(187, 0, 0, 0.8);
             color: white;
-            padding: 0.4rem 0.8rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             text-decoration: none;
-            display: inline-block;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        `;
-        googleLink.textContent = '🔍 Google';
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: background-color 0.2s;
+            z-index: 10;
+        }
         
-        productImageMain.appendChild(googleLink);
+        .search-image-link:hover {
+            background-color: var(--primary);
+            color: white;
+        }
         
-        // 背景スタイルを適用
-        productImageMain.style.background = 'linear-gradient(145deg, #2a2a2a, #1a1a1a)';
-        productImageMain.style.boxShadow = 'inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2)';
-        productImageMain.style.border = '1px solid rgba(255, 255, 255, 0.1)';
-        productImageMain.style.borderRadius = '8px 8px 0 0';
+        .search-image-link svg {
+            width: 12px;
+            height: 12px;
+        }
         
-        // Google検索リンクを設定
-        setTimeout(() => {
-            setupGoogleSearchLink(product.name);
-        }, 10);
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin: 2rem 0;
+        }
         
-        // デバッグ情報を出力
-        setTimeout(() => {
-            debugElements();
-        }, 100);
-    }
-    
-    // 割引バッジと説明を価格エリアに追加
-    addDiscountBadgeAndExplanation();
-
-    // 画像セレクターを無効化
-    disableImageSelector();
-}
-
-// 割引バッジと説明を追加
-function addDiscountBadgeAndExplanation() {
-    const priceContainer = document.querySelector('.product-price-container');
-    
-    if (priceContainer) {
-        // 割引バッジがまだ存在しない場合のみ追加
-        if (!document.getElementById('discount-badge')) {
-            const discountBadge = document.createElement('div');
-            discountBadge.id = 'discount-badge';
-            discountBadge.className = 'discount-badge';
-            discountBadge.style.cssText = `
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                padding: 8px 12px;
-                background: linear-gradient(135deg, rgba(255, 235, 59, 0.2) 0%, rgba(255, 235, 59, 0.1) 100%);
-                border-radius: 6px;
-                margin-bottom: 16px;
-                margin-top: 12px;
-                border: 1px solid rgba(255, 235, 59, 0.3);
-            `;
-            discountBadge.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 1px 3px rgba(255, 235, 59, 0.4));">
-                    <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path>
-                    <path d="M12 15V3"></path>
-                    <path d="M8 7l4-4 4 4"></path>
-                </svg>
-                <span style="color: #ffeb3b; font-size: 14px; font-weight: 600; letter-spacing: 0.3px;">8% discount applied - Open Photo Bonus</span>
-            `;
+        .error-message h2 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .error-message p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        /* レスポンシブ対応 */
+        @media (max-width: 992px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
             
-            // 価格の後に挿入
-            const priceDiv = priceContainer.querySelector('.product-price');
-            if (priceDiv) {
-                priceDiv.insertAdjacentElement('afterend', discountBadge);
+            .product-image-main {
+                height: 350px;
             }
         }
         
-        // 説明文がまだ存在しない場合のみ追加
-        if (!document.getElementById('discount-explanation')) {
-            const discountExplanation = document.createElement('div');
-            discountExplanation.id = 'discount-explanation';
-            discountExplanation.className = 'discount-explanation';
-            discountExplanation.style.cssText = `
-                position: relative;
-                padding-left: 20px;
-                margin-top: 12px;
-                margin-bottom: 20px;
-            `;
-            discountExplanation.innerHTML = `
-                <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background-color: #ffeb3b; border-radius: 2px; opacity: 0.8;"></div>
-                <p style="margin: 0; font-size: 13px; line-height: 1.6; color: var(--text-secondary);">This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>
-            `;
+        @media (max-width: 768px) {
+            .product-actions {
+                flex-direction: column;
+                gap: 1rem;
+            }
             
-            // 価格ノートの後に追加
-            const priceNote = priceContainer.querySelector('.price-note');
-            if (priceNote) {
-                priceNote.insertAdjacentElement('afterend', discountExplanation);
-            } else {
-                priceContainer.appendChild(discountExplanation);
+            .quantity-input {
+                max-width: 100%;
+            }
+            
+            .quantity-input input {
+                flex: 1;
+            }
+            
+            .trust-badges {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .tabs-nav {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 0.5rem;
             }
         }
-    }
-}
-
-// Open Photo Bonus要素を非表示
-function hideOpenPhotoBonusElements() {
-    const discountBadge = document.getElementById('discount-badge');
-    const discountExplanation = document.getElementById('discount-explanation');
-    
-    if (discountBadge) discountBadge.style.display = 'none';
-    if (discountExplanation) discountExplanation.style.display = 'none';
-}
-
-// 商品詳細を表示
-function displayProductDetails(product) {
-    console.log('Displaying product details:', product);
-    
-    // タイトルを更新
-    document.title = `${product.name} - PlayPortJP`;
-    
-    // 商品名を更新
-    const productTitle = document.querySelector('.product-title');
-    if (productTitle) {
-        productTitle.textContent = product.name;
-    }
-    
-    // パンくずリストの商品名を更新
-    const breadcrumbProductName = document.getElementById('breadcrumb-product-name');
-    if (breadcrumbProductName) {
-        breadcrumbProductName.textContent = product.name;
-    }
-    
-    // 評価部分を表示
-    const productRating = document.querySelector('.product-rating');
-    if (productRating) {
-        productRating.style.visibility = 'visible';
-    }
-    
-    // 評価カウントの更新
-    const ratingCount = document.querySelector('.rating-count');
-    if (ratingCount) {
-        const reviewCount = product.reviews || 0;
-        ratingCount.textContent = `${reviewCount} reviews`;
-    }
-    
-    // 商品価格を更新（HTML構造に合わせて修正）
-    const priceDiv = document.querySelector('.product-price');
-    if (priceDiv) {
-        console.log('Updating price in div:', product.price);
-        priceDiv.textContent = `${product.price.toFixed(2)} CAD`;
-    } else {
-        console.error('Price div not found');
-    }
-    
-    // カテゴリメタタグを更新
-    const productMeta = document.querySelector('.product-meta');
-    if (productMeta && product.category) {
-        productMeta.innerHTML = '';
         
-        // カテゴリータグを追加
-        const categoryTag = document.createElement('span');
-        categoryTag.className = `meta-tag ${product.category.toLowerCase()}`;
-        categoryTag.textContent = product.category;
-        productMeta.appendChild(categoryTag);
-        
-        // サブカテゴリータグを追加
-        if (product.subcategory) {
-            const subcategoryTag = document.createElement('span');
-            subcategoryTag.className = 'meta-tag other';
-            subcategoryTag.textContent = product.subcategory;
-            productMeta.appendChild(subcategoryTag);
-        }
-    }
-    
-    // コンディションバッジを更新
-    const conditionValue = document.querySelector('.condition-row .condition-value');
-    if (conditionValue) {
-        const conditionBadge = conditionValue.querySelector('.condition-badge');
-        if (conditionBadge) {
-            if (product.new) {
-                conditionBadge.textContent = 'NEW';
-                conditionBadge.className = 'condition-badge new';
-            } else {
-                conditionBadge.textContent = 'USED';
-                conditionBadge.className = 'condition-badge used';
+        @media (max-width: 480px) {
+            .product-rating {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .product-image-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .gallery-thumb {
+                height: 100px;
             }
         }
-    }
 
-    // 在庫状況を更新
-    const stockStatus = document.querySelector('.stock-status');
-    if (stockStatus && product.stock !== undefined) {
-        if (product.stock > 10) {
-            stockStatus.textContent = 'In Stock';
-            stockStatus.className = 'stock-status in-stock';
-        } else if (product.stock > 0) {
-            stockStatus.textContent = `Low Stock (${product.stock} left)`;
-            stockStatus.className = 'stock-status low-stock';
-        } else {
-            stockStatus.textContent = 'Out of Stock';
-            stockStatus.className = 'stock-status out-of-stock';
+        /* プレースホルダー要素を初期状態で非表示にする */
+        .product-image-main svg, .product-image-main > div {
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-    }
-
-    // 商品説明を更新
-    const descriptionContent = document.querySelector('.description-content');
-    if (descriptionContent && product.description) {
-        descriptionContent.innerHTML = `<p>${product.description}</p>`;
-
-        // 機能リストがある場合は追加
-        if (product.features && product.features.length > 0) {
-            const featuresList = document.createElement('ul');
-            product.features.forEach(feature => {
-                const li = document.createElement('li');
-                li.textContent = feature;
-                featuresList.appendChild(li);
-            });
-            descriptionContent.appendChild(featuresList);
-        }
-    }
-
-    // タブの内容を更新
-    updateTabsContent(product);
-}
-
-// 通常価格を表示
-function applyNormalPrice(product) {
-    const priceDiv = document.querySelector('.product-price');
-    
-    if (priceDiv) {
-        priceDiv.textContent = `${product.price.toFixed(2)} CAD`;
-        priceDiv.style.color = 'var(--text-primary)';
-        
-        // 価格構造を修正（元の価格と現在の価格を分ける）
-        priceDiv.innerHTML = `<span id="current-price">${product.price.toFixed(2)} CAD</span>`;
-    }
-    
-    console.log('Applied normal price:', product.price.toFixed(2));
-}
-
-// Open Photo Bonus価格を適用（割引価格）
-function applyDiscountPrice(product) {
-    console.log('Applying discount price...');
-    
-    const priceDiv = document.querySelector('.product-price');
-    
-    if (!priceDiv) {
-        console.error('Price div not found');
-        return;
-    }
-    
-    // 元の価格と割引後の価格を計算
-    const originalPrice = product.price;
-    const discountRate = 0.08; // 8%割引
-    const discountedPrice = originalPrice * (1 - discountRate);
-    
-    console.log('Price calculations:', {
-        originalPrice,
-        discountRate,
-        discountedPrice
-    });
-    
-    // 価格の表示を更新（元の価格と割引価格の両方を表示）
-    priceDiv.innerHTML = `
-        <span id="original-price" class="original-price" style="text-decoration: line-through; color: #999; font-size: 1.4rem; margin-right: 0.5rem;">
-            ${originalPrice.toFixed(2)} CAD
-        </span>
-        <span id="current-price" class="discounted" style="color: #ffeb3b; font-size: 1.8rem;">
-            ${discountedPrice.toFixed(2)} CAD
-        </span>
-    `;
-    
-    // カートに追加するときの価格を保存
-    product.discountedPrice = discountedPrice;
-    console.log('Discount price applied successfully');
-}
-
-// タブコンテンツを更新
-function updateTabsContent(product) {
-    // 詳細タブ
-    const detailsTab = document.getElementById('details');
-    if (detailsTab && product.features) {
-        const featuresList = detailsTab.querySelector('ul');
-        if (featuresList) {
-            featuresList.innerHTML = '';
-            product.features.forEach(feature => {
-                const li = document.createElement('li');
-                li.textContent = feature;
-                featuresList.appendChild(li);
-            });
-        }
-    }
-
-    // 仕様タブの更新
-    const specsTable = document.querySelector('#specifications .specs-table');
-    if (specsTable && product) {
-        // 商品タイトル行を更新
-        const titleRow = specsTable.querySelector('tr:first-child td');
-        if (titleRow) {
-            titleRow.textContent = product.name;
-        }
-
-        // その他の仕様行を更新（データがある場合）
-        const platformRow = specsTable.querySelector('tr:nth-child(2) td');
-        if (platformRow && product.platform) {
-            platformRow.textContent = product.platform;
-        }
-    }
-}
-
-// カートに追加ボタンの機能を設定
-function setupAddToCartButton(product) {
-    const addToCartBtn = document.querySelector('.product-actions .btn-primary');
-    if (addToCartBtn) {
-        // 既存のイベントリスナーを削除
-        const newAddToCartBtn = addToCartBtn.cloneNode(true);
-        addToCartBtn.parentNode.replaceChild(newAddToCartBtn, addToCartBtn);
-        
-        newAddToCartBtn.addEventListener('click', function () {
-            const quantityInput = document.querySelector('.quantity-input input');
-            const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
-
-            if (window.cartManager) {
-                // 写真がない場合はOpen Photo Bonus価格を使用
-                const hasImage = product.hasImage;
-                const price = hasImage ? product.price : (product.discountedPrice || (product.price * 0.92));
-
-                window.cartManager.addItem(
-                    product.id,
-                    product.name,
-                    price,
-                    product.image,
-                    quantity
-                );
-
-                // クリック時のフィードバック
-                this.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    Added to Cart!
-                `;
-                setTimeout(() => {
-                    this.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+    </style>
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>Play<span>Port</span>JP</h1>
+                </a>
+            </div>
+            <div class="search-container">
+                <form action="search-results.html" method="get" id="search-form">
+                    <input type="search" placeholder="Search products..." aria-label="Search" name="query" id="search-input">
+                    <button type="submit" id="search-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
-                        Add to Cart
-                    `;
-                }, 2000);
-            }
-        });
-    }
-}
+                    </button>
+                </form>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="order-history.html">Order History</a></li>
+                    <li><a href="account.html" id="account-link">Account</a></li>
+                    <li class="cart-icon">
+                        <a href="cart.html" id="cart-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span class="cart-count" id="cart-count">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-// 数量ボタンの機能を設定
-function setupQuantityButtons() {
-    const minusBtn = document.querySelector('.quantity-btn.minus');
-    const plusBtn = document.querySelector('.quantity-btn.plus');
-    const quantityInput = document.querySelector('.quantity-input input');
+    <main>
+        <div class="container">
+            <!-- パンくずリスト -->
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <span class="breadcrumb-separator">›</span>
+                <a href="category.html?cat=games">Games</a>
+                <span class="breadcrumb-separator">›</span>
+                <span id="breadcrumb-product-name">Product Detail</span>
+            </div>
 
-    if (minusBtn && plusBtn && quantityInput) {
-        minusBtn.addEventListener('click', function () {
-            let value = parseInt(quantityInput.value);
-            if (value > 1) {
-                quantityInput.value = value - 1;
-            }
-        });
-
-        plusBtn.addEventListener('click', function () {
-            let value = parseInt(quantityInput.value);
-            if (value < 10) {
-                quantityInput.value = value + 1;
-            }
-        });
-
-        // 入力値が変更された場合にバリデーション
-        quantityInput.addEventListener('change', function () {
-            let value = parseInt(this.value);
-            if (isNaN(value) || value < 1) {
-                this.value = 1;
-            } else if (value > 10) {
-                this.value = 10;
-            }
-        });
-    }
-}
-
-// タブの切り替え機能を設定
-function setupTabs() {
-    const tabButtons = document.querySelectorAll('.tab-button');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            // アクティブなタブをリセット
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-
-            // クリックされたタブをアクティブに
-            button.classList.add('active');
-            const tabId = button.getAttribute('data-tab');
-            const tabContent = document.getElementById(tabId);
-            if (tabContent) {
-                tabContent.classList.add('active');
-            }
-        });
-    });
-}
-
-// 画像セレクターの機能を設定
-function setupImageSelector() {
-    const imageOptions = document.querySelectorAll('.image-option');
-    const productImageMain = document.querySelector('.product-image-main');
-
-    imageOptions.forEach(option => {
-        option.addEventListener('click', function () {
-            // すでに無効化されている場合は何もしない
-            if (this.disabled) return;
-
-            // アクティブなオプションをリセット
-            imageOptions.forEach(opt => opt.classList.remove('active'));
-
-            // クリックされたオプションをアクティブに
-            this.classList.add('active');
-
-            // データ属性から表示するビューを取得
-            const view = this.getAttribute('data-view');
-
-            // 実際の画像が読み込まれている場合、異なるビューを表示
-            if (productImageMain && productImageMain.style.backgroundImage) {
-                console.log(`Changing view to: ${view}`);
-
-                // 表示アニメーションを追加
-                productImageMain.style.opacity = '0';
-                setTimeout(() => {
-                    productImageMain.style.opacity = '1';
-                }, 200);
-            }
-        });
-    });
-}
-
-// 画像セレクターを有効化
-function enableImageSelector() {
-    const imageSelector = document.querySelector('.product-image-selector');
-    const imageOptions = document.querySelectorAll('.image-option');
-
-    if (imageSelector) {
-        imageSelector.classList.remove('disabled');
-    }
-
-    if (imageOptions) {
-        imageOptions.forEach(option => {
-            option.disabled = false;
-        });
-    }
-}
-
-// 画像セレクターを無効化
-function disableImageSelector() {
-    const imageSelector = document.querySelector('.product-image-selector');
-    const imageOptions = document.querySelectorAll('.image-option');
-
-    if (imageSelector) {
-        imageSelector.classList.add('disabled');
-        // ボタンの無効化スタイルを適用
-        imageSelector.style.opacity = '0.5';
-        imageSelector.style.pointerEvents = 'none';
-    }
-
-    if (imageOptions) {
-        imageOptions.forEach(option => {
-            option.disabled = true;
-            option.style.cursor = 'not-allowed';
-            option.style.opacity = '0.5';
-        });
-    }
-}
-
-// DOMContentLoadedイベントリスナー
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('DOM Content Loaded');
-    
-    // URLからproduct IDを取得
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
-
-    if (productId) {
-        // 商品データを取得して表示
-        loadProductDetails(productId);
-    } else {
-        console.error('Product ID not found in URL');
-        // エラーメッセージを表示
-        const container = document.querySelector('.product-detail-container');
-        if (container) {
-            container.innerHTML = `
-                <div class="error-message">
-                    <h2>Product not found</h2>
-                    <p>Please check the URL and try again.</p>
-                    <a href="index.html" class="btn btn-primary">Back to Homepage</a>
+            <!-- 商品詳細エリア -->
+            <div class="product-detail-container">
+                <!-- 商品画像エリア -->
+                <div class="product-media">
+                    <div class="product-image-main">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 4px 6px rgba(187, 0, 0, 0.5));">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <div>商品画像</div>
+                    </div>
+                    <div class="product-image-gallery">
+                        <div class="gallery-thumb active">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <div class="gallery-thumb">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <path d="M8 12h8"></path>
+                                <path d="M12 8v8"></path>
+                            </svg>
+                        </div>
+                        <div class="gallery-thumb">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 4H3"></path>
+                                <path d="M18 8H6"></path>
+                                <path d="M19 12H9"></path>
+                                <path d="M16 16H6"></path>
+                                <path d="M11 20H9"></path>
+                            </svg>
+                        </div>
+                        <div class="gallery-thumb">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bb0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 9V5H7v4"></path>
+                                <path d="M17 9H7"></path>
+                                <rect x="4" y="12" width="16" height="8" rx="1"></rect>
+                            </svg>
+                        </div>
+                    </div>
                 </div>
-            `;
-        }
-    }
 
-    // 数量ボタンの機能
-    setupQuantityButtons();
+                <!-- 商品情報エリア -->
+                <div class="product-info">
+                    <h1 class="product-title">商品タイトル</h1>
+                    
+                    <div class="product-meta">
+                        <!-- カテゴリータグはJavaScriptによって追加されます -->
+                    </div>
+                    
+                    <div class="product-rating">
+                        <div class="rating-stars">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </div>
+                        <div class="rating-count">0 reviews</div>
+                    </div>
+                    
+                    <div class="product-price-container">
+                        <div class="product-price">0.00 CAD</div>
+                        <div class="price-note">All taxes included in price</div>
+                    </div>
+                    
+                    <div class="product-condition-container">
+                        <div class="condition-row">
+                            <div class="condition-label">Condition</div>
+                            <div class="condition-value">
+                                <span class="condition-badge new">NEW</span>
+                            </div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-label">Availability</div>
+                            <div class="condition-value">
+                                <span class="stock-status in-stock">In Stock</span>
+                            </div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-label">Region</div>
+                            <div class="condition-value">Japan (NTSC-J)</div>
+                        </div>
+                        <div class="condition-row">
+                            <div class="condition-label">Language</div>
+                            <div class="condition-value">Japanese</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-actions">
+                        <div class="quantity-input">
+                            <button class="quantity-btn minus">-</button>
+                            <input type="number" value="1" min="1" max="10">
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="btn btn-primary" id="add-to-cart-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            Add to Cart
+                        </button>
+                        <a href="cart.html" class="btn btn-secondary" id="go-to-cart-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            Go to Cart
+                        </a>
+                        <button class="btn-wishlist">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 0L2 5.67a5.5 5.5 0 0 0 0 7.78l10 10 10-10a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="trust-badges">
+                        <div class="trust-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            Authenticity Verified
+                        </div>
+                        <div class="trust-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            Carefully Inspected
+                        </div>
+                        <div class="trust-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21.5 2v6h-6"></path>
+                                <path d="M2.5 22v-6h6"></path>
+                                <path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"></path>
+                            </svg>
+                            30-Day Returns
+                        </div>
+                    </div>
+                    
+                    <div class="product-description">
+                        <h3 class="description-title">Product Description</h3>
+                        <div class="description-content">
+                            <!-- 商品の説明がJavaScriptによって挿入されます -->
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    // タブの切り替え機能
-    setupTabs();
+            <!-- タブコンテンツ -->
+            <div class="product-tabs">
+                <div class="tabs-nav">
+                    <button class="tab-button active" data-tab="details">Details</button>
+                    <button class="tab-button" data-tab="specifications">Specifications</button>
+                    <button class="tab-button" data-tab="shipping">Shipping & Returns</button>
+                    <button class="tab-button" data-tab="reviews">Customer Reviews</button>
+                </div>
+                
+                <div id="details" class="tab-content active">
+                    <h3 class="description-title">Product Features</h3>
+                    <ul class="description-content">
+                        <!-- 商品の特徴がJavaScriptによって挿入されます -->
+                    </ul>
+                </div>
+                
+                <div id="specifications" class="tab-content">
+                    <table class="specs-table">
+                        <tr>
+                            <th>Title</th>
+                            <td>Product Title</td>
+                        </tr>
+                        <tr>
+                            <th>Platform</th>
+                            <td>Platform</td>
+                        </tr>
+                        <tr>
+                            <th>Region</th>
+                            <td>Japan (NTSC-J)</td>
+                        </tr>
+                        <tr>
+                            <th>Language</th>
+                            <td>Japanese</td>
+                        </tr>
+                        <tr>
+                            <th>Developer</th>
+                            <td>Developer</td>
+                        </tr>
+                        <tr>
+                            <th>Publisher</th>
+                            <td>Publisher</td>
+                        </tr>
+                        <tr>
+                            <th>Release Date</th>
+                            <td>Release Date</td>
+                        </tr>
+                        <tr>
+                            <th>Genre</th>
+                            <td>Genre</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="shipping" class="tab-content">
+                    <h3 class="description-title">Shipping Information</h3>
+                    <div class="description-content">
+                        <p>We ship worldwide from our warehouse in Vancouver, Canada. All items are carefully packaged to ensure they arrive in the condition described.</p>
+                        
+                        <ul>
+                            <li>Orders are typically processed within 1-2 business days</li>
+                            <li>Standard shipping (5-10 business days): 8.99 CAD</li>
+                            <li>Express shipping (3-5 business days): 14.99 CAD</li>
+                            <li>International shipping (10-20 business days): 19.99 CAD</li>
+                            <li>Free shipping on orders over 100 CAD (Canada and US only)</li>
+                        </ul>
+                        
+                        <p>Tracking information will be provided via email once your order has been shipped.</p>
+                    </div>
+                    
+                    <h3 class="description-title" style="margin-top: 1.5rem;">Return Policy</h3>
+                    <div class="description-content">
+                        <p>We want you to be completely satisfied with your purchase. If for any reason you're not happy with your order, we offer a 30-day return policy from the date of delivery.</p>
+                        
+                        <ul>
+                            <li>Items must be returned in the same condition as they were received</li>
+                            <li>Original packaging must be included</li>
+                            <li>Return shipping costs are the responsibility of the customer unless the item was damaged or defective</li>
+                            <li>Refunds will be processed within 5-7 business days after we receive your return</li>
+                        </ul>
+                        
+                        <p>To initiate a return, please contact our customer service team at support@playportjp.com.</p>
+                    </div>
+                </div>
+                
+                <div id="reviews" class="tab-content">
+                    <!-- レビューはJavaScriptによって動的に挿入されるか、
+                         または利用可能なレビューがない場合のメッセージが表示されます -->
+                    <div class="no-reviews">
+                        <p>No reviews yet for this product. Be the first to leave a review!</p>
+                    </div>
+                </div>
+            </div>
 
-    // 画像セレクターの機能
-    setupImageSelector();
-});
+            <!-- 関連商品 -->
+            <div class="related-products">
+                <h2>You Might Also Like</h2>
+                <div class="product-grid">
+                    <!-- 関連商品はJavaScriptによって動的に挿入されます -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-nav">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="category.html?cat=games">Games</a></li>
+                        <li><a href="category.html?cat=books">Books</a></li>
+                        <li><a href="category.html?cat=music">Music</a></li>
+                        <li><a href="category.html?cat=collectibles">Collectibles</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav">
+                    <h3>Information</h3>
+                    <ul>
+                        <li><a href="shipping.html">Shipping</a></li>
+                        <li><a href="returns.html">Returns</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe for updates on new arrivals and special offers.</p>
+                    <form id="newsletter-form">
+                        <input type="email" placeholder="Your email" aria-label="Email for newsletter" id="newsletter-email" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 PlayPortJP. All rights reserved.</p>
+            </div>
+        </div>
+     </footer>
+
+    <!-- JavaScriptファイルの読み込み（この部分を追加） -->
+    <script src="js/common.js"></script>
+    <script src="js/product-detail.js"></script>
+</body>
+</html>
