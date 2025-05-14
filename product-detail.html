@@ -562,11 +562,39 @@
             opacity: 0.6;
         }
         
-        /* 商品詳細ページでの画像プレースホルダー */
+        /* 商品詳細ページの画像プレースホルダー */
         .product-image-main {
             background-size: contain !important;
             background-repeat: no-repeat !important;
             background-position: center !important;
+        }
+        
+        /* Google検索リンクのスタイル - indexページと統一 */
+        .search-image-link {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(187, 0, 0, 0.8);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: background-color 0.2s;
+            z-index: 10;
+        }
+        
+        .search-image-link:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .search-image-link svg {
+            width: 12px;
+            height: 12px;
         }
         
         .error-message {
