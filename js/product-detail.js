@@ -196,14 +196,10 @@ function checkProductImage(product) {
                     premiumIcon.style.display = 'block';
                     premiumIcon.style.opacity = '1';
                     premiumIcon.style.animation = 'none';
-                    premiumIcon.style.filter = 'drop-shadow(0 6px 12px rgba(187, 0, 0, 0.4))';
-                    // 確実にサイズを設定
-                    premiumIcon.style.width = '160px';
-                    premiumIcon.style.height = '160px';
-                    premiumIcon.style.minWidth = '160px';
-                    premiumIcon.style.minHeight = '160px';
-                    premiumIcon.setAttribute('width', '160');
-                    premiumIcon.setAttribute('height', '160');
+                    premiumIcon.style.filter = 'drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4))';
+                    // サイズを設定
+                    premiumIcon.style.width = '120px';
+                    premiumIcon.style.height = '120px';
                 }
                 
                 // ボーナスインジケーター矢印を表示
@@ -445,13 +441,9 @@ function displayProductDetails(product) {
     setTimeout(() => {
         const premiumIcon = document.querySelector('.premium-icon');
         if (premiumIcon) {
-            premiumIcon.style.width = '160px';
-            premiumIcon.style.height = '160px';
-            premiumIcon.style.minWidth = '160px';
-            premiumIcon.style.minHeight = '160px';
-            premiumIcon.setAttribute('width', '160');
-            premiumIcon.setAttribute('height', '160');
-            console.log('Premium icon resized to 160px');
+            premiumIcon.style.width = '120px';
+            premiumIcon.style.height = '120px';
+            console.log('Premium icon resized to 120px');
         }
     }, 100);
 }
