@@ -151,6 +151,61 @@ function checkProductImage(product) {
     product.hasImage = hasImage;
 }
 
+// デバッグ用：作成された要素の状態を確認
+function debugElements() {
+    const productImageMain = document.querySelector('.product-image-main');
+    const noPhotoContainer = document.querySelector('.no-photo-container');
+    const premiumIcon = document.querySelector('.premium-icon');
+    const bonusArrow = document.querySelector('.bonus-indicator-arrow');
+    const googleLink = document.getElementById('google-search-link');
+    
+    console.log('=== Debug Element States ===');
+    
+    if (productImageMain) {
+        const rect = productImageMain.getBoundingClientRect();
+        console.log('Product Image Main:', {
+            dimensions: `${rect.width}x${rect.height}`,
+            position: `top: ${rect.top}, left: ${rect.left}`,
+            display: window.getComputedStyle(productImageMain).display,
+            visibility: window.getComputedStyle(productImageMain).visibility
+        });
+    }
+    
+    if (noPhotoContainer) {
+        const rect = noPhotoContainer.getBoundingClientRect();
+        console.log('No Photo Container:', {
+            dimensions: `${rect.width}x${rect.height}`,
+            position: `top: ${rect.top}, left: ${rect.left}`,
+            display: window.getComputedStyle(noPhotoContainer).display,
+            visibility: window.getComputedStyle(noPhotoContainer).visibility
+        });
+    }
+    
+    if (premiumIcon) {
+        const rect = premiumIcon.getBoundingClientRect();
+        console.log('Premium Icon:', {
+            dimensions: `${rect.width}x${rect.height}`,
+            position: `top: ${rect.top}, left: ${rect.left}`,
+            display: window.getComputedStyle(premiumIcon).display,
+            visibility: window.getComputedStyle(premiumIcon).visibility,
+            opacity: window.getComputedStyle(premiumIcon).opacity
+        });
+    }
+    
+    if (bonusArrow) {
+        const rect = bonusArrow.getBoundingClientRect();
+        console.log('Bonus Arrow:', {
+            dimensions: `${rect.width}x${rect.height}`,
+            position: `top: ${rect.top}, left: ${rect.left}`,
+            display: window.getComputedStyle(bonusArrow).display,
+            visibility: window.getComputedStyle(bonusArrow).visibility,
+            opacity: window.getComputedStyle(bonusArrow).opacity
+        });
+    }
+    
+    console.log('=== End Debug ===');
+}
+
 // Open Photo Bonusを適用する関数
 function applyOpenPhotoBonus(product) {
     console.log('Applying Open Photo Bonus');
@@ -170,136 +225,97 @@ function applyOpenPhotoBonus(product) {
         productImageMain.style.display = 'flex';
         productImageMain.style.alignItems = 'center';
         productImageMain.style.justifyContent = 'center';
+        productImageMain.style.overflow = 'visible'; // 要素が切れないように
         
         // まず要素をクリア
         productImageMain.innerHTML = '';
         
-        // メインコンテナを作成
+        // 更にシンプルなテスト要素を作成
+        const testDiv = document.createElement('div');
+        testDiv.style.cssText = `
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background-color: #bb0000;
+            border-radius: 50%;
+            z-index: 100;
+        `;
+        testDiv.textContent = 'TEST';
+        testDiv.style.display = 'flex';
+        testDiv.style.alignItems = 'center';
+        testDiv.style.justifyContent = 'center';
+        testDiv.style.color = 'white';
+        testDiv.style.fontSize = '20px';
+        
+        productImageMain.appendChild(testDiv);
+        
+        // SVGを直接作成してテスト
+        const testSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        testSvg.setAttribute('width', '100');
+        testSvg.setAttribute('height', '100');
+        testSvg.setAttribute('viewBox', '0 0 100 100');
+        testSvg.style.cssText = `
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: white;
+            z-index: 101;
+        `;
+        
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', '50');
+        circle.setAttribute('cy', '50');
+        circle.setAttribute('r', '40');
+        circle.setAttribute('fill', '#ffeb3b');
+        circle.setAttribute('stroke', '#000');
+        circle.setAttribute('stroke-width', '2');
+        
+        testSvg.appendChild(circle);
+        productImageMain.appendChild(testSvg);
+        
+        // メインのOpen Photo Bonus要素も作成
         const noPhotoContainer = document.createElement('div');
         noPhotoContainer.className = 'no-photo-container';
         noPhotoContainer.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            width: 100%;
-            position: relative;
-            padding: 2rem;
+            z-index: 10;
         `;
         
-        // ボーナスインジケーター矢印を作成
-        const bonusArrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        bonusArrow.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        bonusArrow.setAttribute('width', '32');
-        bonusArrow.setAttribute('height', '32');
-        bonusArrow.setAttribute('viewBox', '0 0 24 24');
-        bonusArrow.setAttribute('fill', 'none');
-        bonusArrow.setAttribute('stroke', '#ffeb3b');
-        bonusArrow.setAttribute('stroke-width', '2.5');
-        bonusArrow.setAttribute('stroke-linecap', 'round');
-        bonusArrow.setAttribute('stroke-linejoin', 'round');
-        bonusArrow.className = 'bonus-indicator-arrow';
-        bonusArrow.style.cssText = `
-            position: absolute;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            filter: drop-shadow(0 0 8px rgba(255, 235, 59, 0.8)) drop-shadow(0 0 15px rgba(255, 235, 59, 0.5));
-            z-index: 3;
-            animation: glowPulse 2s ease-in-out infinite;
-        `;
-        
-        const arrowPath1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        arrowPath1.setAttribute('d', 'M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6');
-        const arrowPath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        arrowPath2.setAttribute('d', 'M12 15V3');
-        const arrowPath3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        arrowPath3.setAttribute('d', 'M8 7l4-4 4 4');
-        
-        bonusArrow.appendChild(arrowPath1);
-        bonusArrow.appendChild(arrowPath2);
-        bonusArrow.appendChild(arrowPath3);
-        
-        // プレミアムアイコンラッパーを作成
-        const premiumIconWrapper = document.createElement('div');
-        premiumIconWrapper.className = 'premium-icon-wrapper';
-        premiumIconWrapper.style.cssText = `
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 40px;
-            position: relative;
-        `;
-        
-        // プレミアムアイコンを作成
-        const premiumIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        premiumIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        premiumIcon.setAttribute('viewBox', '0 0 24 24');
-        premiumIcon.setAttribute('fill', 'none');
-        premiumIcon.setAttribute('stroke', '#bb0000');
-        premiumIcon.setAttribute('stroke-width', '1.5');
-        premiumIcon.setAttribute('stroke-linecap', 'round');
-        premiumIcon.setAttribute('stroke-linejoin', 'round');
-        premiumIcon.className = 'premium-icon';
-        premiumIcon.style.cssText = `
+        // プレミアムアイコン（赤いダイヤモンド）
+        const premiumDiv = document.createElement('div');
+        premiumDiv.style.cssText = `
             width: 120px;
             height: 120px;
-            filter: drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4));
-            z-index: 2;
-            display: block;
+            background-color: transparent;
+            border: 3px solid #bb0000;
+            transform: rotate(45deg);
+            position: relative;
+            margin-bottom: 20px;
         `;
+        noPhotoContainer.appendChild(premiumDiv);
         
-        const iconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        iconPath.setAttribute('d', 'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5');
-        premiumIcon.appendChild(iconPath);
-        
-        // 中心の光線を作成
-        const lightBeam = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        lightBeam.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        lightBeam.setAttribute('viewBox', '0 0 24 24');
-        lightBeam.className = 'center-light-beam';
-        lightBeam.style.cssText = `
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 140px;
-            pointer-events: none;
-            z-index: 1;
-        `;
-        
-        const beamLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        beamLine.setAttribute('x1', '12');
-        beamLine.setAttribute('y1', '0');
-        beamLine.setAttribute('x2', '12');
-        beamLine.setAttribute('y2', '14');
-        beamLine.setAttribute('stroke', '#ffeb3b');
-        beamLine.setAttribute('stroke-width', '1');
-        beamLine.style.filter = 'drop-shadow(0 0 6px rgba(255, 235, 59, 0.8))';
-        beamLine.style.opacity = '0.7';
-        lightBeam.appendChild(beamLine);
-        
-        // テキストを作成
+        // テキスト
         const noPhotoText = document.createElement('div');
         noPhotoText.style.cssText = `
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #aaa;
-            margin-top: 1.2rem;
             font-weight: 500;
             text-align: center;
         `;
         noPhotoText.textContent = 'No Photo Available';
-        
-        // 要素を組み立て
-        premiumIconWrapper.appendChild(lightBeam);
-        premiumIconWrapper.appendChild(premiumIcon);
-        noPhotoContainer.appendChild(bonusArrow);
-        noPhotoContainer.appendChild(premiumIconWrapper);
         noPhotoContainer.appendChild(noPhotoText);
         
-        // メインコンテナに追加
         productImageMain.appendChild(noPhotoContainer);
         
         // Google検索リンクを作成
@@ -312,50 +328,17 @@ function applyOpenPhotoBonus(product) {
             position: absolute;
             top: 8px;
             right: 8px;
-            background-color: rgba(187, 0, 0, 0.9);
+            background-color: #bb0000;
             color: white;
-            padding: 0.3rem 0.6rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 4px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            transition: background-color 0.2s;
-            z-index: 10;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         `;
-        
-        // 検索アイコンを作成
-        const searchIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        searchIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        searchIcon.setAttribute('viewBox', '0 0 24 24');
-        searchIcon.setAttribute('fill', 'none');
-        searchIcon.setAttribute('stroke', 'currentColor');
-        searchIcon.setAttribute('stroke-width', '2');
-        searchIcon.setAttribute('stroke-linecap', 'round');
-        searchIcon.setAttribute('stroke-linejoin', 'round');
-        searchIcon.style.cssText = 'width: 12px; height: 12px; display: block;';
-        
-        const searchCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        searchCircle.setAttribute('cx', '11');
-        searchCircle.setAttribute('cy', '11');
-        searchCircle.setAttribute('r', '8');
-        const searchLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        searchLine.setAttribute('x1', '21');
-        searchLine.setAttribute('y1', '21');
-        searchLine.setAttribute('x2', '16.65');
-        searchLine.setAttribute('y2', '16.65');
-        
-        searchIcon.appendChild(searchCircle);
-        searchIcon.appendChild(searchLine);
-        
-        const googleText = document.createElement('span');
-        googleText.textContent = 'Google';
-        googleText.style.fontSize = '0.75rem';
-        
-        googleLink.appendChild(searchIcon);
-        googleLink.appendChild(googleText);
+        googleLink.textContent = '🔍 Google';
         
         productImageMain.appendChild(googleLink);
         
@@ -365,37 +348,15 @@ function applyOpenPhotoBonus(product) {
         productImageMain.style.border = '1px solid rgba(255, 255, 255, 0.1)';
         productImageMain.style.borderRadius = '8px 8px 0 0';
         
-        // アニメーションスタイルを追加
-        if (!document.getElementById('openPhotoBonusStyles')) {
-            const style = document.createElement('style');
-            style.id = 'openPhotoBonusStyles';
-            style.textContent = `
-                @keyframes glowPulse {
-                    0%, 100% {
-                        opacity: 0.9;
-                        transform: translateX(-50%) translateY(0);
-                    }
-                    50% {
-                        opacity: 1;
-                        transform: translateX(-50%) translateY(-3px);
-                    }
-                }
-                
-                .search-image-link:hover {
-                    background-color: #990000 !important;
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
         // Google検索リンクを設定
         setTimeout(() => {
             setupGoogleSearchLink(product.name);
         }, 10);
         
-        console.log('Open Photo Bonus elements created successfully');
-        console.log('Container height:', productImageMain.offsetHeight);
-        console.log('Icon visibility:', window.getComputedStyle(premiumIcon).visibility);
+        // デバッグ情報を出力
+        setTimeout(() => {
+            debugElements();
+        }, 100);
     }
     
     // 割引バッジと説明を価格エリアに追加
