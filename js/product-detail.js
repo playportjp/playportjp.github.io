@@ -248,60 +248,76 @@ function applyOpenPhotoBonus(product) {
             height: 100%;
         `;
         
-        // 写真アイコン（SVG）
-        const photoSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        photoSvg.setAttribute('width', '120');
-        photoSvg.setAttribute('height', '120');
-        photoSvg.setAttribute('viewBox', '0 0 24 24');
-        photoSvg.setAttribute('fill', 'none');
-        photoSvg.setAttribute('stroke', '#bb0000');
-        photoSvg.setAttribute('stroke-width', '1.5');
-        photoSvg.setAttribute('stroke-linecap', 'round');
-        photoSvg.setAttribute('stroke-linejoin', 'round');
-        photoSvg.style.cssText = `
+        // プレミアムアイコン（赤いダイヤモンド）
+        const premiumIcon = document.createElement('div');
+        premiumIcon.className = 'premium-icon';
+        premiumIcon.style.cssText = `
             width: 120px;
             height: 120px;
-            margin-bottom: 1rem;
-            opacity: 1;
-            display: block;
-            filter: drop-shadow(0 4px 6px rgba(187, 0, 0, 0.5));
+            background-color: transparent;
+            border: 3px solid #bb0000;
+            transform: rotate(45deg);
+            position: relative;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 8px rgba(187, 0, 0, 0.3);
         `;
         
-        // 写真アイコンのパス定義
-        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect.setAttribute('x', '3');
-        rect.setAttribute('y', '3');
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('rx', '2');
-        rect.setAttribute('ry', '2');
-        photoSvg.appendChild(rect);
-        
-        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        circle.setAttribute('cx', '8.5');
-        circle.setAttribute('cy', '8.5');
-        circle.setAttribute('r', '1.5');
-        photoSvg.appendChild(circle);
-        
-        const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-        polyline.setAttribute('points', '21 15 16 10 5 21');
-        photoSvg.appendChild(polyline);
-        
-        noPhotoContainer.appendChild(photoSvg);
-        
-        // テキスト
-        const noPhotoText = document.createElement('div');
-        noPhotoText.style.cssText = `
-            font-size: 1rem;
-            color: #aaa;
-            font-weight: 500;
-            text-align: center;
-            margin-top: 0.75rem;
+        // プレミアムアイコンの中に内側のダイヤモンド
+        const innerDiamond = document.createElement('div');
+        innerDiamond.style.cssText = `
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 70%;
+            height: 70%;
+            border: 2px solid #bb0000;
+            background-color: rgba(187, 0, 0, 0.1);
         `;
-        noPhotoText.textContent = 'No Photo Available';
-        noPhotoContainer.appendChild(noPhotoText);
+        premiumIcon.appendChild(innerDiamond);
+        
+        noPhotoContainer.appendChild(premiumIcon);
         
         productImageMain.appendChild(noPhotoContainer);
+        
+        // ボーナスインジケーター矢印（右下）
+        const bonusArrow = document.createElement('div');
+        bonusArrow.className = 'bonus-indicator-arrow';
+        bonusArrow.style.cssText = `
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #ffeb3b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 6px rgba(255, 235, 59, 0.5);
+            z-index: 10;
+        `;
+        
+        // 矢印SVG
+        const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        arrowSvg.setAttribute('width', '30');
+        arrowSvg.setAttribute('height', '30');
+        arrowSvg.setAttribute('viewBox', '0 0 24 24');
+        arrowSvg.setAttribute('fill', 'none');
+        arrowSvg.setAttribute('stroke', '#333');
+        arrowSvg.setAttribute('stroke-width', '3');
+        arrowSvg.setAttribute('stroke-linecap', 'round');
+        arrowSvg.setAttribute('stroke-linejoin', 'round');
+        
+        const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        arrowPath.setAttribute('d', 'M19 12l-7 7-7-7');
+        arrowSvg.appendChild(arrowPath);
+        
+        const arrowPath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        arrowPath2.setAttribute('d', 'M12 5v14');
+        arrowSvg.appendChild(arrowPath2);
+        
+        bonusArrow.appendChild(arrowSvg);
+        productImageMain.appendChild(bonusArrow);
         
         // Google検索リンクを作成
         const googleLink = document.createElement('a');
