@@ -1,6 +1,25 @@
+// デバッグ用：DOM要素の存在確認
+function checkDOMElements() {
+    console.log('=== DOM Elements Check ===');
+    console.log('Product title:', document.querySelector('.product-title'));
+    console.log('Current price by ID:', document.getElementById('current-price'));
+    console.log('Current price by query:', document.querySelector('#current-price'));
+    console.log('Product price container:', document.querySelector('.product-price'));
+    console.log('No photo container:', document.querySelector('.no-photo-container'));
+    console.log('Premium icon:', document.querySelector('.premium-icon'));
+    console.log('Bonus arrow:', document.querySelector('.bonus-indicator-arrow'));
+    console.log('Google link:', document.getElementById('google-search-link'));
+    console.log('Discount badge:', document.getElementById('discount-badge'));
+    console.log('Discount explanation:', document.getElementById('discount-explanation'));
+    console.log('=== End DOM Check ===');
+}
+
 // 商品詳細データを取得して表示
 function loadProductDetails(productId) {
     console.log('Loading product details for ID:', productId);
+    
+    // DOM要素の存在確認
+    checkDOMElements();
 
     // データ取得
     fetch('data/products.json')
@@ -23,7 +42,9 @@ function loadProductDetails(productId) {
                 setupGoogleSearchLink(product.name);
                 
                 // 最後に画像チェックを実行（価格の更新も含む）
-                checkProductImage(product);
+                setTimeout(() => {
+                    checkProductImage(product);
+                }, 100);
             } else {
                 throw new Error('Product not found');
             }
@@ -46,6 +67,9 @@ function loadProductDetails(productId) {
 // Google検索リンクを設定
 function setupGoogleSearchLink(productName) {
     const googleSearchLink = document.getElementById('google-search-link');
+    console.log('Setting up Google link for:', productName);
+    console.log('Google link element:', googleSearchLink);
+    
     if (googleSearchLink && productName) {
         const encodedName = encodeURIComponent(productName);
         googleSearchLink.href = `https://www.google.com/search?q=${encodedName}&tbm=isch`;
@@ -54,6 +78,9 @@ function setupGoogleSearchLink(productName) {
         // 隠しクラスを削除して表示
         setTimeout(() => {
             googleSearchLink.classList.remove('hidden');
+            googleSearchLink.style.display = 'inline-flex';
+            googleSearchLink.style.visibility = 'visible';
+            console.log('Google link should be visible now');
         }, 50);
     }
 }
@@ -67,7 +94,7 @@ function checkProductImage(product) {
 
     // 要素を取得
     const productImageMain = document.querySelector('.product-image-main');
-    const noPhotoContainer = productImageMain?.querySelector('.no-photo-container');
+    const noPhotoContainer = document.querySelector('.no-photo-container');
     const discountExplanation = document.getElementById('discount-explanation');
     const discountBadge = document.getElementById('discount-badge');
     const premiumIcon = document.querySelector('.premium-icon');
@@ -78,7 +105,9 @@ function checkProductImage(product) {
         hasImage,
         productId: product.id,
         productImage: product.image,
-        noPhotoContainer: noPhotoContainer ? true : false
+        noPhotoContainer: !!noPhotoContainer,
+        premiumIcon: !!premiumIcon,
+        bonusArrow: !!bonusArrow
     });
 
     // 画像パスがある場合、実際に画像が読み込めるかテスト
@@ -141,10 +170,8 @@ function checkProductImage(product) {
 function applyOpenPhotoBonus(product) {
     console.log('Applying Open Photo Bonus');
     
+    // 各要素を個別に取得し、存在を確認
     const productImageMain = document.querySelector('.product-image-main');
-    console.log('Product image main found:', !!productImageMain);
-    
-    // 要素を個別に取得（改善版）
     const noPhotoContainer = document.querySelector('.no-photo-container');
     const discountExplanation = document.getElementById('discount-explanation');
     const discountBadge = document.getElementById('discount-badge');
@@ -152,58 +179,60 @@ function applyOpenPhotoBonus(product) {
     const bonusArrow = document.querySelector('.bonus-indicator-arrow');
     const googleButton = document.getElementById('google-search-link');
 
-    console.log('Elements found:', {
+    console.log('Elements check in applyOpenPhotoBonus:', {
+        productImageMain: !!productImageMain,
         noPhotoContainer: !!noPhotoContainer,
         premiumIcon: !!premiumIcon,
         bonusArrow: !!bonusArrow,
         discountBadge: !!discountBadge,
-        discountExplanation: !!discountExplanation
+        discountExplanation: !!discountExplanation,
+        googleButton: !!googleButton
     });
 
     // プレースホルダー要素を表示
     if (noPhotoContainer) {
+        console.log('Showing no photo container');
         noPhotoContainer.style.display = 'flex';
         noPhotoContainer.style.opacity = '1';
         noPhotoContainer.style.visibility = 'visible';
-        console.log('No photo container displayed');
+        noPhotoContainer.style.position = 'relative';
     }
 
     // Google検索ボタンを表示
     if (googleButton) {
-        googleButton.style.display = 'flex';
+        console.log('Showing Google button');
+        googleButton.style.display = 'inline-flex';
         googleButton.style.opacity = '1';
         googleButton.style.visibility = 'visible';
-        googleButton.style.zIndex = '5';
-        googleButton.style.position = 'absolute';
-        googleButton.style.top = '8px';
-        googleButton.style.right = '8px';
-        console.log('Google button displayed');
+        googleButton.style.zIndex = '10';
+        googleButton.classList.remove('hidden');
+    } else {
+        console.error('Google button not found!');
     }
     
     // プレミアムアイコンを表示
     if (premiumIcon) {
+        console.log('Showing premium icon');
         premiumIcon.style.display = 'block';
         premiumIcon.style.opacity = '1';
-        premiumIcon.style.animation = 'none';
-        premiumIcon.style.filter = 'drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4))';
-        premiumIcon.style.width = '120px';
-        premiumIcon.style.height = '120px';
         premiumIcon.style.visibility = 'visible';
-        console.log('Premium icon displayed');
+    } else {
+        console.error('Premium icon not found!');
     }
     
     // ボーナスインジケーター矢印を表示
     if (bonusArrow) {
+        console.log('Showing bonus arrow');
         bonusArrow.style.display = 'block';
-        bonusArrow.style.width = '28px';
-        bonusArrow.style.height = '28px';
         bonusArrow.style.opacity = '1';
         bonusArrow.style.visibility = 'visible';
-        console.log('Bonus arrow displayed');
+    } else {
+        console.error('Bonus arrow not found!');
     }
 
     // Open Photo Bonusバッジを表示
     if (discountBadge) {
+        console.log('Showing discount badge');
         discountBadge.style.display = 'flex';
         discountBadge.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -213,14 +242,13 @@ function applyOpenPhotoBonus(product) {
             </svg>
             <span>8% discount applied - Open Photo Bonus</span>
         `;
-        console.log('Discount badge displayed');
     }
 
     // 説明文を表示
     if (discountExplanation) {
+        console.log('Showing discount explanation');
         discountExplanation.style.display = 'block';
         discountExplanation.innerHTML = '<p>This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>';
-        console.log('Discount explanation displayed');
     }
 
     // ボーナス価格を適用
@@ -263,32 +291,31 @@ function displayProductDetails(product) {
     }
     
     // 商品価格を更新（修正版）
-    // まず価格コンテナ全体を取得
-    const priceContainer = document.querySelector('.product-price');
-    console.log('Price container found:', !!priceContainer);
-    
-    if (priceContainer) {
-        // 価格コンテナ内のspan要素を探す
-        const priceSpans = priceContainer.getElementsByTagName('span');
-        console.log('Price spans found:', priceSpans.length);
-        
-        // IDで取得を試みる（別の方法）
-        let currentPriceElement = null;
-        for (let span of priceSpans) {
-            if (span.id === 'current-price') {
-                currentPriceElement = span;
-                break;
+    // 価格要素を複数の方法で取得
+    let currentPriceElement = document.getElementById('current-price');
+    if (!currentPriceElement) {
+        currentPriceElement = document.querySelector('#current-price');
+    }
+    if (!currentPriceElement) {
+        const priceDiv = document.querySelector('.product-price');
+        if (priceDiv) {
+            const priceSpans = priceDiv.getElementsByTagName('span');
+            for (let span of priceSpans) {
+                if (span.id === 'current-price') {
+                    currentPriceElement = span;
+                    break;
+                }
             }
         }
-        
-        if (currentPriceElement) {
-            console.log('Setting initial price:', product.price);
-            currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
-        } else {
-            console.error('Current price element still not found');
-            // 価格コンテナの内容を確認
-            console.log('Price container HTML:', priceContainer.innerHTML);
-        }
+    }
+    
+    if (currentPriceElement) {
+        console.log('Setting initial price:', product.price);
+        currentPriceElement.textContent = `${product.price.toFixed(2)} CAD`;
+    } else {
+        console.error('Current price element not found - checking HTML structure');
+        const priceContainer = document.querySelector('.product-price-container');
+        console.log('Price container HTML:', priceContainer?.innerHTML);
     }
     
     // カテゴリメタタグを更新
@@ -384,26 +411,34 @@ function applyNormalPrice(product) {
 function applyDiscountPrice(product) {
     console.log('Applying discount price...');
     
-    // 複数の方法で価格要素を取得
+    // 価格要素を徹底的に探す
     let originalPriceElement = document.getElementById('original-price');
     let currentPriceElement = document.getElementById('current-price');
     
-    // 代替方法1: querySelector
+    // リトライメソッド1
     if (!currentPriceElement) {
         currentPriceElement = document.querySelector('#current-price');
     }
     
-    // 代替方法2: クラス名から探す
+    // リトライメソッド2
     if (!currentPriceElement) {
         const priceContainer = document.querySelector('.product-price');
         if (priceContainer) {
-            currentPriceElement = priceContainer.querySelector('span[id="current-price"]');
+            const spans = priceContainer.querySelectorAll('span');
+            spans.forEach(span => {
+                if (span.id === 'current-price') {
+                    currentPriceElement = span;
+                }
+            });
         }
     }
     
-    // 代替方法3: 後続の兄弟要素を探す
-    if (!currentPriceElement && originalPriceElement) {
-        currentPriceElement = originalPriceElement.nextElementSibling;
+    // リトライメソッド3 - 価格コンテナから直接取得
+    if (!currentPriceElement) {
+        const priceContainer = document.querySelector('.product-price-container');
+        if (priceContainer) {
+            currentPriceElement = priceContainer.querySelector('#current-price');
+        }
     }
     
     console.log('Final price elements:', {
@@ -413,9 +448,7 @@ function applyDiscountPrice(product) {
     
     if (!currentPriceElement) {
         console.error('Current price element not found after all attempts');
-        // HTMLの構造を確認
-        const priceContainer = document.querySelector('.product-price');
-        console.log('Price container content:', priceContainer?.innerHTML);
+        console.log('Document body HTML sample:', document.body.innerHTML.substring(0, 1000));
         return;
     }
     
@@ -649,6 +682,8 @@ function disableImageSelector() {
 
 // DOMContentLoadedイベントリスナー
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM Content Loaded');
+    
     // URLからproduct IDを取得
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
