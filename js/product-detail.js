@@ -351,9 +351,9 @@ function applyOpenPhotoBonus(product) {
         
         const lightLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         lightLine.setAttribute('x1', '12');
-        lightLine.setAttribute('y1', '4');
+        lightLine.setAttribute('y1', '0');
         lightLine.setAttribute('x2', '12');
-        lightLine.setAttribute('y2', '12');
+        lightLine.setAttribute('y2', '16');
         lightLine.setAttribute('stroke', '#ffeb3b');
         lightLine.setAttribute('stroke-width', '0.5');
         lightLine.style.cssText = `
