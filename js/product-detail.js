@@ -244,6 +244,8 @@ function applyOpenPhotoBonus(product) {
             align-items: center;
             justify-content: center;
             z-index: 1;
+            width: 100%;
+            height: 100%;
         `;
         
         // 写真アイコン（SVG）
@@ -257,8 +259,11 @@ function applyOpenPhotoBonus(product) {
         photoSvg.setAttribute('stroke-linecap', 'round');
         photoSvg.setAttribute('stroke-linejoin', 'round');
         photoSvg.style.cssText = `
+            width: 120px;
+            height: 120px;
             margin-bottom: 1rem;
-            opacity: 0.95;
+            opacity: 1;
+            display: block;
             filter: drop-shadow(0 4px 6px rgba(187, 0, 0, 0.5));
         `;
         
@@ -321,11 +326,11 @@ function applyOpenPhotoBonus(product) {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         `;
         googleLink.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block;">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            Google
+            <span>Google</span>
         `;
         
         productImageMain.appendChild(googleLink);
