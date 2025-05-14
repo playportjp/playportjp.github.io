@@ -246,14 +246,22 @@ function applyOpenPhotoBonus(product) {
             z-index: 1;
             width: 100%;
             height: 100%;
-            background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
-            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
-            overflow: hidden;
         `;
         
         // Open Photo Bonusインジケーター（上向き黄色い矢印）
-        const bonusArrow = document.createElement('svg');
+        const bonusArrowContainer = document.createElement('div');
+        bonusArrowContainer.className = 'bonus-indicator-arrow';
+        bonusArrowContainer.style.cssText = `
+            position: absolute;
+            top: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            width: 28px;
+            height: 28px;
+        `;
+        
+        const bonusArrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         bonusArrow.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         bonusArrow.setAttribute('width', '28');
         bonusArrow.setAttribute('height', '28');
@@ -263,13 +271,10 @@ function applyOpenPhotoBonus(product) {
         bonusArrow.setAttribute('stroke-width', '2.5');
         bonusArrow.setAttribute('stroke-linecap', 'round');
         bonusArrow.setAttribute('stroke-linejoin', 'round');
-        bonusArrow.className = 'bonus-indicator-arrow';
         bonusArrow.style.cssText = `
-            position: absolute;
-            top: 65px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 3;
+            width: 100%;
+            height: 100%;
+            display: block;
             filter: drop-shadow(0 0 8px rgba(255, 235, 59, 0.8)) 
                     drop-shadow(0 0 15px rgba(255, 235, 59, 0.5))
                     drop-shadow(0 0 25px rgba(255, 235, 59, 0.3));
@@ -287,7 +292,8 @@ function applyOpenPhotoBonus(product) {
         bonusArrow.appendChild(path1);
         bonusArrow.appendChild(path2);
         bonusArrow.appendChild(path3);
-        noPhotoContainer.appendChild(bonusArrow);
+        bonusArrowContainer.appendChild(bonusArrow);
+        noPhotoContainer.appendChild(bonusArrowContainer);
         
         // 高級感・お宝感を表すアイコン（3層ダイヤモンド）
         const premiumWrapper = document.createElement('div');
@@ -316,6 +322,7 @@ function applyOpenPhotoBonus(product) {
             color: #bb0000;
             filter: drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4));
             opacity: 0.9;
+            display: block;
         `;
         
         // 3層のダイヤモンドパス
