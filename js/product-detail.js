@@ -163,6 +163,14 @@ function applyOpenPhotoBonus(product) {
     
     // 画像エリアに「No Photo」表示を追加
     if (productImageMain) {
+        // 高さを確実に設定
+        productImageMain.style.height = '400px';
+        productImageMain.style.minHeight = '400px';
+        productImageMain.style.position = 'relative';
+        productImageMain.style.display = 'flex';
+        productImageMain.style.alignItems = 'center';
+        productImageMain.style.justifyContent = 'center';
+        
         // まず要素をクリア
         productImageMain.innerHTML = '';
         
@@ -177,6 +185,7 @@ function applyOpenPhotoBonus(product) {
             height: 100%;
             width: 100%;
             position: relative;
+            padding: 2rem;
         `;
         
         // ボーナスインジケーター矢印を作成
@@ -193,7 +202,7 @@ function applyOpenPhotoBonus(product) {
         bonusArrow.className = 'bonus-indicator-arrow';
         bonusArrow.style.cssText = `
             position: absolute;
-            top: 40px;
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
             filter: drop-shadow(0 0 8px rgba(255, 235, 59, 0.8)) drop-shadow(0 0 15px rgba(255, 235, 59, 0.5));
@@ -219,7 +228,7 @@ function applyOpenPhotoBonus(product) {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 40px;
             position: relative;
         `;
         
@@ -238,6 +247,7 @@ function applyOpenPhotoBonus(product) {
             height: 120px;
             filter: drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4));
             z-index: 2;
+            display: block;
         `;
         
         const iconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -251,37 +261,40 @@ function applyOpenPhotoBonus(product) {
         lightBeam.className = 'center-light-beam';
         lightBeam.style.cssText = `
             position: absolute;
-            top: -32px;
-            left: -10px;
-            width: 100%;
-            height: 100%;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 140px;
             pointer-events: none;
-            z-index: 4;
+            z-index: 1;
         `;
         
         const beamLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         beamLine.setAttribute('x1', '12');
-        beamLine.setAttribute('y1', '4');
+        beamLine.setAttribute('y1', '0');
         beamLine.setAttribute('x2', '12');
-        beamLine.setAttribute('y2', '12');
+        beamLine.setAttribute('y2', '14');
         beamLine.setAttribute('stroke', '#ffeb3b');
-        beamLine.setAttribute('stroke-width', '0.5');
-        beamLine.style.filter = 'drop-shadow(0 0 4px rgba(255, 235, 59, 0.8))';
+        beamLine.setAttribute('stroke-width', '1');
+        beamLine.style.filter = 'drop-shadow(0 0 6px rgba(255, 235, 59, 0.8))';
+        beamLine.style.opacity = '0.7';
         lightBeam.appendChild(beamLine);
         
         // テキストを作成
         const noPhotoText = document.createElement('div');
         noPhotoText.style.cssText = `
-            font-size: 1rem;
-            color: var(--text-secondary);
-            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-top: 1.2rem;
             font-weight: 500;
+            text-align: center;
         `;
         noPhotoText.textContent = 'No Photo Available';
         
         // 要素を組み立て
-        premiumIconWrapper.appendChild(premiumIcon);
         premiumIconWrapper.appendChild(lightBeam);
+        premiumIconWrapper.appendChild(premiumIcon);
         noPhotoContainer.appendChild(bonusArrow);
         noPhotoContainer.appendChild(premiumIconWrapper);
         noPhotoContainer.appendChild(noPhotoText);
@@ -299,7 +312,7 @@ function applyOpenPhotoBonus(product) {
             position: absolute;
             top: 8px;
             right: 8px;
-            background-color: rgba(187, 0, 0, 0.8);
+            background-color: rgba(187, 0, 0, 0.9);
             color: white;
             padding: 0.3rem 0.6rem;
             border-radius: 4px;
@@ -310,8 +323,10 @@ function applyOpenPhotoBonus(product) {
             gap: 0.25rem;
             transition: background-color 0.2s;
             z-index: 10;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         `;
         
+        // 検索アイコンを作成
         const searchIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         searchIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         searchIcon.setAttribute('viewBox', '0 0 24 24');
@@ -320,7 +335,7 @@ function applyOpenPhotoBonus(product) {
         searchIcon.setAttribute('stroke-width', '2');
         searchIcon.setAttribute('stroke-linecap', 'round');
         searchIcon.setAttribute('stroke-linejoin', 'round');
-        searchIcon.style.cssText = 'width: 12px; height: 12px;';
+        searchIcon.style.cssText = 'width: 12px; height: 12px; display: block;';
         
         const searchCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         searchCircle.setAttribute('cx', '11');
@@ -337,6 +352,7 @@ function applyOpenPhotoBonus(product) {
         
         const googleText = document.createElement('span');
         googleText.textContent = 'Google';
+        googleText.style.fontSize = '0.75rem';
         
         googleLink.appendChild(searchIcon);
         googleLink.appendChild(googleText);
@@ -346,32 +362,40 @@ function applyOpenPhotoBonus(product) {
         // 背景スタイルを適用
         productImageMain.style.background = 'linear-gradient(145deg, #2a2a2a, #1a1a1a)';
         productImageMain.style.boxShadow = 'inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2)';
+        productImageMain.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+        productImageMain.style.borderRadius = '8px 8px 0 0';
         
         // アニメーションスタイルを追加
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes glowPulse {
-                0%, 100% {
-                    opacity: 0.9;
-                    transform: translateX(-50%) translateY(0);
+        if (!document.getElementById('openPhotoBonusStyles')) {
+            const style = document.createElement('style');
+            style.id = 'openPhotoBonusStyles';
+            style.textContent = `
+                @keyframes glowPulse {
+                    0%, 100% {
+                        opacity: 0.9;
+                        transform: translateX(-50%) translateY(0);
+                    }
+                    50% {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(-3px);
+                    }
                 }
-                50% {
-                    opacity: 1;
-                    transform: translateX(-50%) translateY(-3px);
+                
+                .search-image-link:hover {
+                    background-color: #990000 !important;
                 }
-            }
-        `;
-        document.head.appendChild(style);
+            `;
+            document.head.appendChild(style);
+        }
         
         // Google検索リンクを設定
         setTimeout(() => {
             setupGoogleSearchLink(product.name);
         }, 10);
         
-        console.log('Open Photo Bonus elements created');
-        console.log('No photo container:', noPhotoContainer);
-        console.log('Premium icon:', premiumIcon);
-        console.log('Bonus arrow:', bonusArrow);
+        console.log('Open Photo Bonus elements created successfully');
+        console.log('Container height:', productImageMain.offsetHeight);
+        console.log('Icon visibility:', window.getComputedStyle(premiumIcon).visibility);
     }
     
     // 割引バッジと説明を価格エリアに追加
