@@ -153,6 +153,12 @@ function checkProductImage(product) {
             if (premiumIcon) {
                 premiumIcon.style.display = 'none';
             }
+            
+            // ボーナスインジケーター矢印も非表示
+            const bonusArrow = document.querySelector('.bonus-indicator-arrow');
+            if (bonusArrow) {
+                bonusArrow.style.display = 'none';
+            }
 
             // 通常の価格表示に戻す
             applyNormalPrice(product);
@@ -190,7 +196,22 @@ function checkProductImage(product) {
                     premiumIcon.style.display = 'block';
                     premiumIcon.style.opacity = '1';
                     premiumIcon.style.animation = 'none';
-                    premiumIcon.style.filter = 'drop-shadow(0 4px 8px rgba(187, 0, 0, 0.4))';
+                    premiumIcon.style.filter = 'drop-shadow(0 6px 12px rgba(187, 0, 0, 0.4))';
+                    // 確実にサイズを設定
+                    premiumIcon.style.width = '160px';
+                    premiumIcon.style.height = '160px';
+                    premiumIcon.style.minWidth = '160px';
+                    premiumIcon.style.minHeight = '160px';
+                    premiumIcon.setAttribute('width', '160');
+                    premiumIcon.setAttribute('height', '160');
+                }
+                
+                // ボーナスインジケーター矢印を表示
+                const bonusArrow = document.querySelector('.bonus-indicator-arrow');
+                if (bonusArrow) {
+                    bonusArrow.style.display = 'block';
+                    bonusArrow.style.width = '16px';
+                    bonusArrow.style.height = '16px';
                 }
                 
                 console.log('Showing no-photo-container after image load failure');
@@ -420,12 +441,19 @@ function displayProductDetails(product) {
     // タブの内容を更新
     updateTabsContent(product);
     
-    // プレミアムアイコンのサイズを確実に設定
-    const premiumIcon = document.querySelector('.premium-icon');
-    if (premiumIcon) {
-        premiumIcon.style.width = '140px';
-        premiumIcon.style.height = '140px';
-    }
+    // プレミアムアイコンのサイズを確実に設定（DOMContentLoaded後）
+    setTimeout(() => {
+        const premiumIcon = document.querySelector('.premium-icon');
+        if (premiumIcon) {
+            premiumIcon.style.width = '160px';
+            premiumIcon.style.height = '160px';
+            premiumIcon.style.minWidth = '160px';
+            premiumIcon.style.minHeight = '160px';
+            premiumIcon.setAttribute('width', '160');
+            premiumIcon.setAttribute('height', '160');
+            console.log('Premium icon resized to 160px');
+        }
+    }, 100);
 }
 
 // DOMの読み込み完了時に実行（2回目のリスナー）
