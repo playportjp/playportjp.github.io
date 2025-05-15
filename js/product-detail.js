@@ -238,6 +238,7 @@ function applyOpenPhotoBonus(product) {
     // 画像エリアに「No Photo」表示を追加
     if (productImageMain) {
         // 高さを確実に設定
+        productImageMain.style.width = '100%';
         productImageMain.style.height = '400px';
         productImageMain.style.minHeight = '400px';
         productImageMain.style.position = 'relative';
@@ -248,7 +249,7 @@ function applyOpenPhotoBonus(product) {
         productImageMain.style.background = 'linear-gradient(145deg, #2a2a2a, #1a1a1a)';
         productImageMain.style.boxShadow = 'inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2)';
         productImageMain.style.border = '1px solid rgba(255, 255, 255, 0.1)';
-        productImageMain.style.borderRadius = '8px 8px 0 0';
+        productImageMain.style.borderRadius = '8px';
         productImageMain.style.marginBottom = '0'; // 下マージンを削除
         
         // まず要素をクリア
@@ -426,13 +427,12 @@ function applyOpenPhotoBonus(product) {
                 .product-media.open-photo-bonus {
                     height: auto !important;
                     min-height: unset !important;
-                    display: flex;
-                    align-items: flex-start;
                 }
                 
                 .product-media.open-photo-bonus .product-image-main {
                     margin-bottom: 0 !important;
                     border-radius: 8px !important;
+                    width: 100% !important;
                 }
                 
                 .product-media.open-photo-bonus .product-image-gallery {
