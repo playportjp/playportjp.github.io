@@ -480,6 +480,20 @@ function applyOpenPhotoBonus(product) {
                     background-color: var(--primary) !important;
                     color: white !important;
                 }
+                
+                /* モバイル画面でのGoogle検索リンク調整 */
+                @media (max-width: 991px) {
+                    #google-search-link {
+                        z-index: 10 !important;
+                    }
+                }
+                
+                /* PC画面でのGoogle検索リンク調整 */
+                @media (min-width: 992px) {
+                    #google-search-link {
+                        z-index: 1000 !important;
+                    }
+                }
             `;
             document.head.appendChild(style);
         }
@@ -503,7 +517,7 @@ function applyOpenPhotoBonus(product) {
             display: flex;
             align-items: center;
             gap: 0.25rem;
-            z-index: 1000;
+            z-index: 10;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             cursor: pointer;
             transition: background-color 0.2s;
