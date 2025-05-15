@@ -415,7 +415,14 @@ function applyOpenPhotoBonus(product) {
                 /* スマホ用の微調整 */
                 @media (max-width: 768px) {
                     .bonus-indicator-arrow-custom {
-                        transform: translateX(-50%) translateX(2px) !important;
+                        transform: translateX(-50%) translateX(5px) !important;
+                    }
+                }
+                
+                /* より小さい画面用の追加調整 */
+                @media (max-width: 480px) {
+                    .bonus-indicator-arrow-custom {
+                        transform: translateX(-50%) translateX(6px) !important;
                     }
                 }
             `;
