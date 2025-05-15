@@ -385,14 +385,12 @@ function applyOpenPhotoBonus(product) {
                 @keyframes glowPulse {
                     0%, 100% {
                         opacity: 0.9;
-                        transform: translateX(-50%) translateY(0);
                         filter: drop-shadow(0 0 8px rgba(255, 235, 59, 0.8)) 
                                 drop-shadow(0 0 15px rgba(255, 235, 59, 0.5))
                                 drop-shadow(0 0 25px rgba(255, 235, 59, 0.3));
                     }
                     50% {
                         opacity: 1;
-                        transform: translateX(-50%) translateY(-3px);
                         filter: drop-shadow(0 0 12px rgba(255, 235, 59, 1)) 
                                 drop-shadow(0 0 20px rgba(255, 235, 59, 0.7))
                                 drop-shadow(0 0 30px rgba(255, 235, 59, 0.5));
@@ -409,20 +407,6 @@ function applyOpenPhotoBonus(product) {
                         opacity: 0.9;
                         filter: drop-shadow(0 0 6px rgba(255, 235, 59, 1)) 
                                 drop-shadow(0 0 10px rgba(255, 235, 59, 0.7));
-                    }
-                }
-                
-                /* スマホ用の微調整 */
-                @media (max-width: 768px) {
-                    .bonus-indicator-arrow-custom {
-                        transform: translateX(-50%) translateX(5px) !important;
-                    }
-                }
-                
-                /* より小さい画面用の追加調整 */
-                @media (max-width: 480px) {
-                    .bonus-indicator-arrow-custom {
-                        transform: translateX(-50%) translateX(6px) !important;
                     }
                 }
             `;
