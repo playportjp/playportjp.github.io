@@ -470,6 +470,12 @@ function applyOpenPhotoBonus(product) {
                         position: static !important;
                     }
                 }
+                
+                /* Google検索リンクのホバー効果 */
+                #google-search-link:hover {
+                    background-color: var(--primary) !important;
+                    color: white !important;
+                }
             `;
             document.head.appendChild(style);
         }
@@ -496,6 +502,7 @@ function applyOpenPhotoBonus(product) {
             z-index: 1000;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             cursor: pointer;
+            transition: background-color 0.2s;
         `;
         googleLink.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block;">
@@ -506,6 +513,15 @@ function applyOpenPhotoBonus(product) {
         `;
         
         productImageMain.appendChild(googleLink);
+        
+        // Googleリンクのホバー効果を追加
+        googleLink.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = 'var(--primary)';
+        });
+        
+        googleLink.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = 'rgba(187, 0, 0, 0.8)';
+        });
         
         // Google検索リンクを設定
         setTimeout(() => {
