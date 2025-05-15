@@ -244,6 +244,10 @@ function applyOpenPhotoBonus(product) {
             const header = document.querySelector('header');
             const headerHeight = header ? header.offsetHeight : 0;
             productMedia.style.top = `${headerHeight + 20}px`; // ヘッダーの高さ + 20pxの余白
+        } else {
+            // モバイル画面では通常のポジション
+            productMedia.style.position = 'static';
+            productMedia.style.top = 'auto';
         }
     }
     
@@ -1053,4 +1057,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 画像セレクターの機能
     setupImageSelector();
+    
+    // ウィンドウリサイズ時の処理
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            // Open Photo Bonusが適用されている場合のみ位置を再調整
+            const productMedia = document.querySelector('.product-media.open-photo-bonus');
+            if (productMedia) {
+                if (window.innerWidth >= 992) {
+                    productMedia.style.position = 'sticky';
+                    
+                    const header = document.querySelector('header');
+                    const headerHeight = header ? header.offsetHeight : 0;
+                    productMedia.style.top = `${headerHeight + 20}px`;
+                } else {
+                    productMedia.style.position = 'static';
+                    productMedia.style.top = 'auto';
+                }
+            }
+        }, 100);
+    });
 });
