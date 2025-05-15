@@ -353,7 +353,7 @@ function applyOpenPhotoBonus(product) {
         lightLine.setAttribute('x1', '7.2');
         lightLine.setAttribute('y1', '4');
         lightLine.setAttribute('x2', '7.2');
-        lightLine.setAttribute('y2', '16');
+        lightLine.setAttribute('y2', '15');
         lightLine.setAttribute('stroke', '#ffeb3b');
         lightLine.setAttribute('stroke-width', '0.5');
         lightLine.style.cssText = `
