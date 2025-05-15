@@ -128,6 +128,7 @@ function checkProductImage(product) {
                 productMedia.style.minHeight = '';
                 productMedia.style.paddingBottom = '';
                 productMedia.style.marginBottom = '';
+                productMedia.classList.remove('open-photo-bonus');
             }
 
             // Open Photo Bonus関連の要素を非表示（存在する場合）
@@ -231,6 +232,7 @@ function applyOpenPhotoBonus(product) {
     if (productMedia) {
         productMedia.style.height = 'auto';
         productMedia.style.minHeight = 'unset';
+        productMedia.classList.add('open-photo-bonus');
     }
     
     // 画像エリアに「No Photo」表示を追加
@@ -417,6 +419,30 @@ function applyOpenPhotoBonus(product) {
                         opacity: 0.9;
                         filter: drop-shadow(0 0 6px rgba(255, 235, 59, 1)) 
                                 drop-shadow(0 0 10px rgba(255, 235, 59, 0.7));
+                    }
+                }
+                
+                /* Open Photo Bonus専用のスタイル */
+                .product-media.open-photo-bonus {
+                    height: auto !important;
+                    min-height: unset !important;
+                    display: flex;
+                    align-items: flex-start;
+                }
+                
+                .product-media.open-photo-bonus .product-image-main {
+                    margin-bottom: 0 !important;
+                    border-radius: 8px !important;
+                }
+                
+                .product-media.open-photo-bonus .product-image-gallery {
+                    display: none !important;
+                }
+                
+                /* PC画面用の調整 */
+                @media (min-width: 992px) {
+                    .product-media.open-photo-bonus {
+                        padding-bottom: 0 !important;
                     }
                 }
             `;
@@ -915,6 +941,7 @@ function disableImageSelector() {
     const imageSelector = document.querySelector('.product-image-selector');
     const imageOptions = document.querySelectorAll('.image-option');
     const imageGallery = document.querySelector('.product-image-gallery');
+    const productMedia = document.querySelector('.product-media');
 
     if (imageSelector) {
         imageSelector.classList.add('disabled');
@@ -934,6 +961,12 @@ function disableImageSelector() {
     // Open Photo Bonus時は画像ギャラリーを完全に非表示にする
     if (imageGallery) {
         imageGallery.style.display = 'none';
+    }
+    
+    // PC画面での余分な空白を削除
+    if (productMedia) {
+        productMedia.style.minHeight = 'unset';
+        productMedia.style.height = 'auto';
     }
 }
 
