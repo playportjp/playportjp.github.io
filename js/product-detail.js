@@ -253,9 +253,9 @@ function applyOpenPhotoBonus(product) {
         bonusArrowContainer.className = 'bonus-indicator-arrow';
         bonusArrowContainer.style.cssText = `
             position: absolute;
-            top: 50%;
+            top: calc(50% - 40px);
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             z-index: 3;
             width: 28px;
             height: 28px;
@@ -294,14 +294,6 @@ function applyOpenPhotoBonus(product) {
         bonusArrow.appendChild(path3);
         bonusArrowContainer.appendChild(bonusArrow);
         noPhotoContainer.appendChild(bonusArrowContainer);
-        
-        // 位置を強制的に設定（パーセンテージで固定）
-        setTimeout(() => {
-            bonusArrowContainer.style.position = 'absolute';
-            bonusArrowContainer.style.top = '22.5%';  /* 90px / 400px = 22.5% */
-            bonusArrowContainer.style.left = '52.55%';
-            bonusArrowContainer.style.transform = 'translateX(-50%)';
-        }, 10);
         
         // 高級感・お宝感を表すアイコン（3層ダイヤモンド）
         const premiumWrapper = document.createElement('div');
