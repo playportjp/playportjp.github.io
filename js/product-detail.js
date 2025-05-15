@@ -411,6 +411,13 @@ function applyOpenPhotoBonus(product) {
                                 drop-shadow(0 0 10px rgba(255, 235, 59, 0.7));
                     }
                 }
+                
+                /* スマホ用の微調整 */
+                @media (max-width: 768px) {
+                    .bonus-indicator-arrow-custom {
+                        transform: translateX(-50%) translateX(2px) !important;
+                    }
+                }
             `;
             document.head.appendChild(style);
         }
