@@ -477,7 +477,6 @@ function applyOpenPhotoBonus(product) {
         productImageMain.style.borderRadius = '8px'; // 全体に角丸を適用
     }
     
-    const productMedia = document.querySelector('.product-media');
     if (productMedia) {
         productMedia.style.paddingBottom = '0';
         productMedia.style.marginBottom = '0';
