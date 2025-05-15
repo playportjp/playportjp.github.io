@@ -864,6 +864,7 @@ function setupImageSelector() {
 function enableImageSelector() {
     const imageSelector = document.querySelector('.product-image-selector');
     const imageOptions = document.querySelectorAll('.image-option');
+    const imageGallery = document.querySelector('.product-image-gallery');
 
     if (imageSelector) {
         imageSelector.classList.remove('disabled');
@@ -874,12 +875,18 @@ function enableImageSelector() {
             option.disabled = false;
         });
     }
+
+    // 画像がある場合は画像ギャラリーを表示する
+    if (imageGallery) {
+        imageGallery.style.display = 'grid';
+    }
 }
 
 // 画像セレクターを無効化
 function disableImageSelector() {
     const imageSelector = document.querySelector('.product-image-selector');
     const imageOptions = document.querySelectorAll('.image-option');
+    const imageGallery = document.querySelector('.product-image-gallery');
 
     if (imageSelector) {
         imageSelector.classList.add('disabled');
@@ -894,6 +901,11 @@ function disableImageSelector() {
             option.style.cursor = 'not-allowed';
             option.style.opacity = '0.5';
         });
+    }
+
+    // Open Photo Bonus時は画像ギャラリーを完全に非表示にする
+    if (imageGallery) {
+        imageGallery.style.display = 'none';
     }
 }
 
