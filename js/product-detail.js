@@ -299,7 +299,7 @@ function applyOpenPhotoBonus(product) {
         setTimeout(() => {
             bonusArrowContainer.style.position = 'absolute';
             bonusArrowContainer.style.top = '60px';
-            bonusArrowContainer.style.left = '54%';
+            bonusArrowContainer.style.left = '52%';
             bonusArrowContainer.style.transform = 'translateX(-50%)';
         }, 10);
         
