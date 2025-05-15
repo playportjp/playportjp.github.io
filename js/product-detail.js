@@ -239,7 +239,11 @@ function applyOpenPhotoBonus(product) {
         // PC画面ではstickyポジションを適用
         if (window.innerWidth >= 992) {
             productMedia.style.position = 'sticky';
-            productMedia.style.top = '20px'; // 上部から20pxの位置で固定
+            
+            // ヘッダーの高さを取得して、その分だけ下に配置
+            const header = document.querySelector('header');
+            const headerHeight = header ? header.offsetHeight : 0;
+            productMedia.style.top = `${headerHeight + 20}px`; // ヘッダーの高さ + 20pxの余白
         }
     }
     
@@ -455,8 +459,8 @@ function applyOpenPhotoBonus(product) {
                         padding-bottom: 0 !important;
                         height: 400px !important;
                         position: sticky !important;
-                        top: 20px !important;
-                        z-index: 10;
+                        top: 80px !important; /* ヘッダーの高さを考慮 */
+                        z-index: 5; /* ヘッダーより低いz-index */
                     }
                 }
                 
@@ -489,8 +493,9 @@ function applyOpenPhotoBonus(product) {
             display: flex;
             align-items: center;
             gap: 0.25rem;
-            z-index: 100;
+            z-index: 1000;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
         `;
         googleLink.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block;">
