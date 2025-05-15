@@ -291,7 +291,7 @@ function applyOpenPhotoBonus(product) {
         bonusArrowContainer.style.cssText = `
             position: absolute;
             top: 22.5%;
-            left: calc(50% + 1px);
+            left: calc(50% + 0.5px);
             transform: translateX(-50%);
             z-index: 3;
             width: 28px;
