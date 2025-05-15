@@ -128,6 +128,8 @@ function checkProductImage(product) {
                 productMedia.style.minHeight = '';
                 productMedia.style.paddingBottom = '';
                 productMedia.style.marginBottom = '';
+                productMedia.style.position = ''; // sticky位置を解除
+                productMedia.style.top = ''; // top位置をリセット
                 productMedia.classList.remove('open-photo-bonus');
             }
 
@@ -233,6 +235,12 @@ function applyOpenPhotoBonus(product) {
         productMedia.style.height = 'auto';
         productMedia.style.minHeight = 'unset';
         productMedia.classList.add('open-photo-bonus');
+        
+        // PC画面ではstickyポジションを適用
+        if (window.innerWidth >= 992) {
+            productMedia.style.position = 'sticky';
+            productMedia.style.top = '20px'; // 上部から20pxの位置で固定
+        }
     }
     
     // 画像エリアに「No Photo」表示を追加
@@ -446,6 +454,16 @@ function applyOpenPhotoBonus(product) {
                     .product-media.open-photo-bonus {
                         padding-bottom: 0 !important;
                         height: 400px !important;
+                        position: sticky !important;
+                        top: 20px !important;
+                        z-index: 10;
+                    }
+                }
+                
+                /* モバイル画面では通常のポジションを保持 */
+                @media (max-width: 991px) {
+                    .product-media.open-photo-bonus {
+                        position: static !important;
                     }
                 }
             `;
