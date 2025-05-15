@@ -253,7 +253,7 @@ function applyOpenPhotoBonus(product) {
         bonusArrowContainer.className = 'bonus-indicator-arrow';
         bonusArrowContainer.style.cssText = `
             position: absolute;
-            top: calc(50% - 40px);
+            top: 22.5%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 3;
