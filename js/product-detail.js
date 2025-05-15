@@ -298,7 +298,7 @@ function applyOpenPhotoBonus(product) {
         // 位置を強制的に設定
         setTimeout(() => {
             bonusArrowContainer.style.position = 'absolute';
-            bonusArrowContainer.style.top = '60px';
+            bonusArrowContainer.style.top = '70px';
             bonusArrowContainer.style.left = '52.6%';
             bonusArrowContainer.style.transform = 'translateX(-50%)';
         }, 10);
