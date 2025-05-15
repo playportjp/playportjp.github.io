@@ -118,6 +118,16 @@ function checkProductImage(product) {
                 productImageMain.style.backgroundSize = 'contain';
                 productImageMain.style.backgroundRepeat = 'no-repeat';
                 productImageMain.style.backgroundPosition = 'center';
+                productImageMain.style.borderRadius = '8px 8px 0 0'; // 元の形状に戻す
+            }
+            
+            // product-mediaコンテナを元の状態に戻す
+            const productMedia = document.querySelector('.product-media');
+            if (productMedia) {
+                productMedia.style.height = '';
+                productMedia.style.minHeight = '';
+                productMedia.style.paddingBottom = '';
+                productMedia.style.marginBottom = '';
             }
 
             // Open Photo Bonus関連の要素を非表示（存在する場合）
@@ -211,10 +221,17 @@ function applyOpenPhotoBonus(product) {
     console.log('Applying Open Photo Bonus');
     
     const productImageMain = document.querySelector('.product-image-main');
+    const productMedia = document.querySelector('.product-media');
     console.log('Product image main element:', productImageMain);
     
     // ボーナス価格を適用
     applyDiscountPrice(product);
+    
+    // product-mediaコンテナの高さを調整
+    if (productMedia) {
+        productMedia.style.height = 'auto';
+        productMedia.style.minHeight = 'unset';
+    }
     
     // 画像エリアに「No Photo」表示を追加
     if (productImageMain) {
@@ -230,6 +247,7 @@ function applyOpenPhotoBonus(product) {
         productImageMain.style.boxShadow = 'inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2)';
         productImageMain.style.border = '1px solid rgba(255, 255, 255, 0.1)';
         productImageMain.style.borderRadius = '8px 8px 0 0';
+        productImageMain.style.marginBottom = '0'; // 下マージンを削除
         
         // まず要素をクリア
         productImageMain.innerHTML = '';
@@ -453,6 +471,17 @@ function applyOpenPhotoBonus(product) {
 
     // 画像セレクターを無効化
     disableImageSelector();
+    
+    // PC画面での余分なスペースを削除
+    if (productImageMain) {
+        productImageMain.style.borderRadius = '8px'; // 全体に角丸を適用
+    }
+    
+    const productMedia = document.querySelector('.product-media');
+    if (productMedia) {
+        productMedia.style.paddingBottom = '0';
+        productMedia.style.marginBottom = '0';
+    }
 }
 
 // 割引バッジと説明を追加
