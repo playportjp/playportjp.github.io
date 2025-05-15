@@ -295,6 +295,14 @@ function applyOpenPhotoBonus(product) {
         bonusArrowContainer.appendChild(bonusArrow);
         noPhotoContainer.appendChild(bonusArrowContainer);
         
+        // 位置を強制的に設定
+        setTimeout(() => {
+            bonusArrowContainer.style.position = 'absolute';
+            bonusArrowContainer.style.top = '-80px';
+            bonusArrowContainer.style.left = '55%';
+            bonusArrowContainer.style.transform = 'translateX(-50%)';
+        }, 10);
+        
         // 高級感・お宝感を表すアイコン（3層ダイヤモンド）
         const premiumWrapper = document.createElement('div');
         premiumWrapper.className = 'premium-icon-wrapper';
