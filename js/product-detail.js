@@ -295,10 +295,10 @@ function applyOpenPhotoBonus(product) {
         bonusArrowContainer.appendChild(bonusArrow);
         noPhotoContainer.appendChild(bonusArrowContainer);
         
-        // 位置を強制的に設定
+        // 位置を強制的に設定（パーセンテージで固定）
         setTimeout(() => {
             bonusArrowContainer.style.position = 'absolute';
-            bonusArrowContainer.style.top = '90px';
+            bonusArrowContainer.style.top = '22.5%';  /* 90px / 400px = 22.5% */
             bonusArrowContainer.style.left = '52.55%';
             bonusArrowContainer.style.transform = 'translateX(-50%)';
         }, 10);
