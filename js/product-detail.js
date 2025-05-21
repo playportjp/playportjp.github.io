@@ -603,7 +603,7 @@ function addDiscountBadgeAndExplanation() {
                     <path d="M12 15V3"></path>
                     <path d="M8 7l4-4 4 4"></path>
                 </svg>
-                <span style="color: #ffeb3b; font-size: 14px; font-weight: 600; letter-spacing: 0.3px;">8% discount applied - Open Photo Bonus</span>
+                <span style="color: #ffeb3b; font-size: 14px; font-weight: 600; letter-spacing: 0.3px;">8% EARLY BUYER DISCOUNT</span>
             `;
             
             // 価格の後に挿入
@@ -624,9 +624,16 @@ function addDiscountBadgeAndExplanation() {
                 margin-top: 12px;
                 margin-bottom: 20px;
             `;
+            
+            // 新しい注釈形式（ヘッダーとリスト）
             discountExplanation.innerHTML = `
                 <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background-color: #ffeb3b; border-radius: 2px; opacity: 0.8;"></div>
-                <p style="margin: 0; font-size: 13px; line-height: 1.6; color: var(--text-secondary);">This item currently has no product photos. An 8% early purchase bonus has been applied to the price. Photos will be added when the item ships.</p>
+                <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.6; color: var(--text-primary);">This item has no photos yet. Photos will be uploaded within 7 days of purchase.</p>
+                <ul style="margin: 0; padding-left: 15px; font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
+                    <li style="margin-bottom: 6px;">Email notification will be sent when photos are available</li>
+                    <li style="margin-bottom: 6px;">For fastest processing (1-2 business days for refunds), we recommend canceling within 7 days of notification. Please note that international returns may take 4-8 weeks for complete processing</li>
+                    <li>30-day money-back guarantee from delivery date</li>
+                </ul>
             `;
             
             // 価格ノートの後に追加
