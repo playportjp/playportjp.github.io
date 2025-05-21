@@ -164,9 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // チェックアウトページ用の処理
     initCheckoutPage();
     
-    // ヘッダーのモバイルナビゲーション機能を初期化
-    initMobileHeader();
-    
     // 現在のページに基づいてナビゲーションアイテムの表示制御
     controlNavItems();
 });
@@ -442,56 +439,25 @@ function handleOrderSubmit(event) {
     return false;
 }
 
-// モバイルヘッダーの初期化
-function initMobileHeader() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const menuClose = document.querySelector('.menu-close');
-    const nav = document.querySelector('nav');
-    const searchToggle = document.querySelector('.search-toggle');
-    const searchContainer = document.querySelector('.search-container');
-    
-    // メニュー開閉のイベントリスナー設定
-    if (menuToggle && nav) {
-        menuToggle.addEventListener('click', function() {
-            nav.classList.add('active');
-            document.body.style.overflow = 'hidden'; // スクロール防止
-        });
-    }
-    
-    if (menuClose && nav) {
-        menuClose.addEventListener('click', function() {
-            nav.classList.remove('active');
-            document.body.style.overflow = ''; // スクロールを戻す
-        });
-    }
-    
-    // 検索フォーム表示切替のイベントリスナー設定
-    if (searchToggle && searchContainer) {
-        searchToggle.addEventListener('click', function() {
-            searchContainer.classList.toggle('active');
-        });
-    }
-    
-    // 画面外クリックでメニューを閉じる
-    document.addEventListener('click', function(event) {
-        if (nav && nav.classList.contains('active') && 
-            !nav.contains(event.target) && 
-            !menuToggle.contains(event.target)) {
-            nav.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        if (searchContainer && searchContainer.classList.contains('active') && 
-            !searchContainer.contains(event.target) && 
-            !searchToggle.contains(event.target)) {
-            searchContainer.classList.remove('active');
-        }
-    });
-}
-
 // ナビゲーションアイテムの表示制御
 function controlNavItems() {
     const currentPath = window.location.pathname;
+    const orderHistoryIcon = document.querySelector('.order-history-icon');
+    const accountIcon = document.querySelector('.account-icon');
+    
+    if (orderHistoryIcon && accountIcon) {
+        // Account画面ではAccountアイコンを非表示
+        if (currentPath.includes('account.html')) {
+            accountIcon.style.display = 'none';
+        }
+        
+        // Order History画面ではOrder Historyアイコンを非表示
+        if (currentPath.includes('order-history.html')) {
+            orderHistoryIcon.style.display = 'none';
+        }
+    }
+    
+    // 後方互換性のために既存のコードも維持
     const orderHistoryItem = document.querySelector('.nav-item.order-history');
     const accountItem = document.querySelector('.nav-item.account');
     
