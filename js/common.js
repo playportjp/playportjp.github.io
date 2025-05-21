@@ -75,7 +75,7 @@ window.cartManager = {
             cartCountElement.textContent = itemCount;
             console.log(`Cart count updated: ${itemCount} items`);
             
-            // カート数を同期（モバイル用とデスクトップ用）
+            // カート数を同期（すべてのカウント表示を更新）
             syncCartCounts();
         }
     },
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.cartManager.updateCartCount();
         console.log('Cart initialized with items:', window.cartManager.items);
         
-        // 追加：起動時に明示的にカート数を同期
+        // 起動時に明示的にカート数を同期
         syncCartCounts();
         
         // 商品カードのイベントリスナーを設定
@@ -508,21 +508,13 @@ function controlNavItems() {
     }
 }
 
-// カート数の同期（モバイル表示用とデスクトップ表示用）
+// カート数の同期（すべてのカウント表示を更新）
 function syncCartCounts() {
-    const mainCartCount = document.getElementById('cart-count');
-    const desktopCartCount = document.getElementById('cart-count-desktop');
-    const mobileCartCount = document.getElementById('cart-count-mobile');
+    const counts = document.querySelectorAll('.cart-count');
+    const itemCount = window.cartManager ? window.cartManager.getItemCount() : 0;
     
-    if (mainCartCount) {
-        const itemCount = mainCartCount.textContent;
-        
-        if (desktopCartCount) {
-            desktopCartCount.textContent = itemCount;
-        }
-        
-        if (mobileCartCount) {
-            mobileCartCount.textContent = itemCount;
-        }
-    }
+    // すべてのカート数表示を更新
+    counts.forEach(el => {
+        el.textContent = itemCount;
+    });
 }
