@@ -1,4 +1,104 @@
 <!-- header.html -->
+<style>
+  @media (max-width: 768px) {
+    /* このスタイルはヘッダーコンポーネント専用で他には影響しません */
+    .header-container {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      padding: 0.5rem 0 !important;
+    }
+    
+    .logo {
+      margin-bottom: 0 !important;
+    }
+    
+    .logo h1 {
+      font-size: 1.2rem;
+    }
+    
+    .search-container {
+      display: none;  /* 最初は隠す */
+      position: absolute !important;
+      top: 100% !important;
+      left: 0 !important;
+      width: 100% !important;
+      z-index: 1000 !important;
+      padding: 0.5rem 1rem !important;
+      background-color: var(--surface) !important;
+      border-bottom: 1px solid var(--border) !important;
+      margin: 0 !important;
+    }
+    
+    .search-container.active {
+      display: block !important;
+    }
+    
+    nav {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: -250px;
+      width: 250px;
+      height: 100vh;
+      background-color: var(--surface);
+      z-index: 1000;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+      transition: right 0.3s ease;
+    }
+    
+    nav.active {
+      display: block !important;
+      right: 0 !important;
+    }
+    
+    nav ul {
+      flex-direction: column !important;
+      padding: 2rem 1rem !important;
+      align-items: flex-start !important;
+    }
+    
+    .mobile-actions {
+      display: flex !important;
+      align-items: center !important;
+      margin-left: auto !important;
+      gap: 0.75rem !important;
+    }
+    
+    .menu-toggle, .search-toggle {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      padding: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .menu-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1002;
+      display: block;
+    }
+    
+    .mobile-cart {
+      position: relative;
+    }
+    
+    .cart-icon.desktop-only {
+      display: none !important;
+    }
+  }
+</style>
+
 <header>
     <div class="container header-container">
         <div class="logo">
@@ -17,7 +117,7 @@
             </button>
             
             <!-- カートアイコン（スマホでも常に表示） -->
-            <a href="cart.html" id="cart-link-mobile" class="mobile-cart">
+            <a href="cart.html" class="mobile-cart">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="9" cy="21" r="1"></circle>
                     <circle cx="20" cy="21" r="1"></circle>
