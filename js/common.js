@@ -152,6 +152,9 @@ document.addEventListener('DOMContentLoaded', function() {
         window.cartManager.updateCartCount();
         console.log('Cart initialized with items:', window.cartManager.items);
         
+        // 追加：起動時に明示的にカート数を同期
+        syncCartCounts();
+        
         // 商品カードのイベントリスナーを設定
         setupProductCardEvents();
     } else {
@@ -509,8 +512,17 @@ function controlNavItems() {
 function syncCartCounts() {
     const mainCartCount = document.getElementById('cart-count');
     const desktopCartCount = document.getElementById('cart-count-desktop');
+    const mobileCartCount = document.getElementById('cart-count-mobile');
     
-    if (mainCartCount && desktopCartCount) {
-        desktopCartCount.textContent = mainCartCount.textContent;
+    if (mainCartCount) {
+        const itemCount = mainCartCount.textContent;
+        
+        if (desktopCartCount) {
+            desktopCartCount.textContent = itemCount;
+        }
+        
+        if (mobileCartCount) {
+            mobileCartCount.textContent = itemCount;
+        }
     }
 }
