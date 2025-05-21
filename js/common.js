@@ -74,6 +74,9 @@ window.cartManager = {
             const itemCount = this.items.reduce((count, item) => count + item.quantity, 0);
             cartCountElement.textContent = itemCount;
             console.log(`Cart count updated: ${itemCount} items`);
+            
+            // カート数を同期（モバイル用とデスクトップ用）
+            syncCartCounts();
         }
     },
     
@@ -120,7 +123,7 @@ window.cartManager = {
     // カートの税金を計算（10%と仮定）
     getCartTax: function() {
         return this.getCartTotal() * 0.1;
-    }, // カンマを追加
+    }, 
     
     // カートの商品数を取得
     getItemCount: function() {
@@ -157,6 +160,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // チェックアウトページ用の処理
     initCheckoutPage();
+    
+    // ヘッダーのモバイルナビゲーション機能を初期化
+    initMobileHeader();
+    
+    // 現在のページに基づいてナビゲーションアイテムの表示制御
+    controlNavItems();
 });
 
 // 商品カードのイベントリスナーを設定
@@ -353,8 +362,6 @@ function displayCheckoutItems() {
 }
 
 // 注文合計の更新
-// 注文合計の更新
-// 注文合計の更新
 function updateOrderTotals() {
     // カートマネージャーからアイテムを取得
     const cartItems = window.cartManager.items;
@@ -430,4 +437,80 @@ function handleOrderSubmit(event) {
     }, 1000);
     
     return false;
+}
+
+// モバイルヘッダーの初期化
+function initMobileHeader() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const menuClose = document.querySelector('.menu-close');
+    const nav = document.querySelector('nav');
+    const searchToggle = document.querySelector('.search-toggle');
+    const searchContainer = document.querySelector('.search-container');
+    
+    // メニュー開閉のイベントリスナー設定
+    if (menuToggle && nav) {
+        menuToggle.addEventListener('click', function() {
+            nav.classList.add('active');
+            document.body.style.overflow = 'hidden'; // スクロール防止
+        });
+    }
+    
+    if (menuClose && nav) {
+        menuClose.addEventListener('click', function() {
+            nav.classList.remove('active');
+            document.body.style.overflow = ''; // スクロールを戻す
+        });
+    }
+    
+    // 検索フォーム表示切替のイベントリスナー設定
+    if (searchToggle && searchContainer) {
+        searchToggle.addEventListener('click', function() {
+            searchContainer.classList.toggle('active');
+        });
+    }
+    
+    // 画面外クリックでメニューを閉じる
+    document.addEventListener('click', function(event) {
+        if (nav && nav.classList.contains('active') && 
+            !nav.contains(event.target) && 
+            !menuToggle.contains(event.target)) {
+            nav.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        if (searchContainer && searchContainer.classList.contains('active') && 
+            !searchContainer.contains(event.target) && 
+            !searchToggle.contains(event.target)) {
+            searchContainer.classList.remove('active');
+        }
+    });
+}
+
+// ナビゲーションアイテムの表示制御
+function controlNavItems() {
+    const currentPath = window.location.pathname;
+    const orderHistoryItem = document.querySelector('.nav-item.order-history');
+    const accountItem = document.querySelector('.nav-item.account');
+    
+    if (orderHistoryItem && accountItem) {
+        // Account画面ではAccountボタンを非表示
+        if (currentPath.includes('account.html')) {
+            accountItem.style.display = 'none';
+        }
+        
+        // Order History画面ではOrder Historyボタンを非表示
+        if (currentPath.includes('order-history.html')) {
+            orderHistoryItem.style.display = 'none';
+        }
+    }
+}
+
+// カート数の同期（モバイル表示用とデスクトップ表示用）
+function syncCartCounts() {
+    const mainCartCount = document.getElementById('cart-count');
+    const desktopCartCount = document.getElementById('cart-count-desktop');
+    
+    if (mainCartCount && desktopCartCount) {
+        desktopCartCount.textContent = mainCartCount.textContent;
+    }
 }
