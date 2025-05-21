@@ -10,8 +10,47 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <!-- 追加スタイル - モバイルレイアウトとプロダクトカード -->
+    <!-- メインスタイル -->
     <style>
+        /* 基本スタイル削減対策 */
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* ヘッダーの上下の余白をさらに削減 */
+        header {
+            padding: 0 !important;
+            margin: 0 !important;
+            height: auto !important;
+            min-height: unset !important;
+        }
+
+        /* ヘッダーコンテナの調整 */
+        .header-container {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            height: 38px !important; /* さらに縮小 */
+        }
+
+        /* メインコンテンツの余白調整 */
+        main {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        /* カテゴリセクションの上部余白削減 */
+        .categories {
+            padding-top: 0.75rem !important;
+            margin-top: 0 !important;
+        }
+
+        /* カテゴリ見出しの余白削減 */
+        .categories h2 {
+            margin-top: 0 !important;
+            margin-bottom: 0.75rem !important;
+        }
+
         /* モバイルヘッダー用のスタイル */
         @media (max-width: 768px) {
             .header-container {
@@ -19,31 +58,31 @@
                 flex-direction: row !important;
                 align-items: center !important;
                 justify-content: space-between !important;
-                padding: 0.25rem 0 !important;
-                height: 45px !important; /* 縮小 */
+                padding: 0 !important;
+                height: 38px !important;
             }
             
             .logo {
                 margin-bottom: 0 !important;
-                padding-left: 0.75rem !important; /* 縮小 */
+                padding-left: 0.75rem !important;
             }
             
             .logo h1 {
-                font-size: 1.15rem; /* 縮小 */
+                font-size: 1.1rem !important;
             }
             
             .nav-actions {
                 display: flex !important;
                 align-items: center !important;
-                gap: 0.5rem !important; /* 縮小 */
-                padding-right: 0.75rem !important; /* 縮小 */
+                gap: 0.5rem !important;
+                padding-right: 0.75rem !important;
             }
             
             .nav-icon {
                 background: none;
                 border: none;
                 color: var(--text-primary);
-                padding: 0.35rem; /* 縮小 */
+                padding: 0.25rem !important;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
@@ -52,16 +91,16 @@
             }
             
             .nav-icon svg {
-                width: 18px; /* 縮小 */
-                height: 18px; /* 縮小 */
+                width: 18px;
+                height: 18px;
             }
             
             .mobile-search-container {
                 flex: 1 !important;
                 max-width: 40% !important;
-                margin: 0 0.35rem !important; /* 縮小 */
+                margin: 0 0.35rem !important;
                 display: flex !important;
-                height: 30px !important; /* 高さ固定 */
+                height: 28px !important;
             }
             
             .mobile-search-container form {
@@ -72,14 +111,14 @@
             
             .mobile-search-container input {
                 width: 100% !important;
-                padding: 0.25rem 0.4rem !important; /* 縮小 */
-                padding-right: 1.75rem !important; /* 縮小 */
+                padding: 0.25rem 0.4rem !important;
+                padding-right: 1.75rem !important;
                 border: 1px solid var(--border) !important;
                 border-radius: 4px !important;
                 background-color: var(--surface-lighter) !important;
                 color: var(--text-primary) !important;
-                font-size: 0.75rem !important; /* 縮小 */
-                height: 30px !important; /* 高さ固定 */
+                font-size: 0.75rem !important;
+                height: 28px !important;
             }
             
             .mobile-search-container button {
@@ -93,12 +132,12 @@
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                padding: 0.2rem !important; /* 縮小 */
+                padding: 0.2rem !important;
             }
             
             .mobile-search-container button svg {
-                width: 14px !important; /* 縮小 */
-                height: 14px !important; /* 縮小 */
+                width: 14px !important;
+                height: 14px !important;
             }
             
             .cart-count {
@@ -107,9 +146,9 @@
                 right: -2px;
                 background-color: var(--primary);
                 color: white;
-                font-size: 0.6rem; /* 縮小 */
-                min-width: 14px; /* 縮小 */
-                height: 14px; /* 縮小 */
+                font-size: 0.6rem;
+                min-width: 14px;
+                height: 14px;
                 padding: 0 3px;
                 border-radius: 7px;
                 display: flex;
@@ -144,7 +183,7 @@
             text-align: center;
             position: relative;
             border-bottom: 1px solid var(--border);
-            flex-shrink: 0; /* 画像領域が縮まないようにする */
+            flex-shrink: 0;
             overflow: hidden;
             background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
             box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
