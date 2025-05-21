@@ -625,15 +625,13 @@ function addDiscountBadgeAndExplanation() {
                 margin-bottom: 20px;
             `;
             
-            // 新しい注釈形式（ヘッダーとリスト）
+            // 箇条書きの代わりに段落区切りで表示する形式
             discountExplanation.innerHTML = `
                 <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background-color: #ffeb3b; border-radius: 2px; opacity: 0.8;"></div>
                 <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.6; color: var(--text-primary);">This item has no photos yet. Photos will be uploaded within 7 days of purchase.</p>
-                <ul style="margin: 0; padding-left: 15px; font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
-                    <li style="margin-bottom: 6px;">Email notification will be sent when photos are available</li>
-                    <li style="margin-bottom: 6px;">For fastest processing (1-2 business days for refunds), we recommend canceling within 7 days of notification. Please note that international returns may take 4-8 weeks for complete processing</li>
-                    <li>30-day money-back guarantee from delivery date</li>
-                </ul>
+                <p style="margin: 0 0 6px 0; font-size: 13px; line-height: 1.6; color: var(--text-secondary);">• Email notification will be sent when photos are available</p>
+                <p style="margin: 0 0 6px 0; font-size: 13px; line-height: 1.6; color: var(--text-secondary);">• For fastest processing (1-2 business days for refunds), we recommend canceling within 7 days of notification. Please note that international returns may take 4-8 weeks for complete processing</p>
+                <p style="margin: 0; font-size: 13px; line-height: 1.6; color: var(--text-secondary);">• 30-day money-back guarantee from delivery date</p>
             `;
             
             // 価格ノートの後に追加
