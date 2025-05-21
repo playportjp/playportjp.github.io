@@ -705,61 +705,6 @@ input:focus, select:focus, textarea:focus {
     font-size: 1rem;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .logo {
-        margin-bottom: 1rem;
-        text-align: center;
-    }
-    
-    .search-container {
-        margin: 0 0 1rem 0;
-        max-width: none;
-    }
-    
-    nav ul {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 1rem 1.5rem;
-    }
-    
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-    
-    .checkout-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .order-summary {
-        margin-bottom: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .product-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .footer-newsletter form {
-        flex-direction: column;
-    }
-    
-    .footer-newsletter input {
-        border-radius: 4px;
-        margin-bottom: 0.5rem;
-    }
-    
-    .footer-newsletter button {
-        border-radius: 4px;
-    }
-}
-
 /* アカウントページのスタイル */
 .account-container {
     display: grid;
@@ -1118,6 +1063,199 @@ input:focus, select:focus, textarea:focus {
     padding: 1rem 1.5rem;
     display: flex;
     gap: 0.75rem;
+}
+
+/* ハンバーガーメニューボタンのスタイル（通常時は非表示） */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* モバイルヘッダー関連の追加スタイル */
+.mobile-actions {
+    display: none; /* 通常は非表示 */
+    align-items: center;
+}
+
+.mobile-cart {
+    position: relative;
+    margin: 0 0.75rem;
+}
+
+.desktop-only {
+    display: block;
+}
+
+/* 検索アイコンボタン */
+.search-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* メニュー閉じるボタン */
+.menu-close {
+    display: none;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1002;
+}
+
+/* 背景オーバーレイ（メニュー表示時） */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: row; /* 横方向に変更 */
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+    
+    .logo {
+        margin-bottom: 0; /* 余白を削除 */
+        text-align: left;
+        flex-shrink: 1;
+    }
+    
+    /* ロゴのテキストサイズを小さく */
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+    
+    .mobile-actions {
+        display: flex; /* スマホサイズでのみ表示 */
+    }
+    
+    .desktop-only {
+        display: none; /* スマホサイズでは非表示 */
+    }
+    
+    .search-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.5rem;
+    }
+    
+    .menu-close {
+        display: block;
+    }
+    
+    .search-container {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--surface);
+        padding: 0.5rem 1rem;
+        margin: 0;
+        z-index: 999;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        border-top: 1px solid var(--border);
+    }
+    
+    .search-container.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    /* ハンバーガーメニュー表示 */
+    .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1001;
+    }
+    
+    nav {
+        position: fixed;
+        top: 0;
+        right: -250px; /* 初期状態では画面外 */
+        width: 250px;
+        height: 100vh;
+        background-color: var(--surface);
+        z-index: 1000;
+        transition: right 0.3s ease;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    nav.active {
+        right: 0;
+    }
+    
+    nav ul {
+        flex-direction: column;
+        padding: 2rem 1rem;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+    
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    
+    .checkout-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .order-summary {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-newsletter form {
+        flex-direction: column;
+    }
+    
+    .footer-newsletter input {
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .footer-newsletter button {
+        border-radius: 4px;
+    }
 }
 
 /* レスポンシブ対応 */
