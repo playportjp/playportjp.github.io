@@ -10,48 +10,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
+    <!-- メインスタイル -->
     <style>
-        /* デスクトップ版を保護するため、PC版のスタイルを明示的に定義 */
-        @media (min-width: 769px) {
-            .header-container {
-                display: flex !important;
-                flex-direction: row !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                padding: 1rem 0 !important;
-            }
-            
-            .logo {
-                margin-bottom: 0 !important;
-            }
-            
-            .search-container {
-                flex-grow: 1 !important;
-                max-width: 500px !important;
-                margin: 0 2rem !important;
-                display: block !important;
-                position: static !important;
-            }
-            
-            .header-desktop-nav {
-                display: block !important;
-            }
-            
-            .header-top-row,
-            .header-search-row,
-            .nav-actions,
-            .mobile-search-container {
-                display: none !important;
-            }
+        /* 基本スタイル削減対策 */
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
-        /* スマホ版のスタイル - PC版に影響しないよう分離 */
+        /* ヘッダーの上下の余白をさらに削減 */
+        header {
+            padding: 0 !important;
+            margin: 0 !important;
+            height: auto !important;
+            min-height: unset !important;
+            background-color: var(--surface) !important;
+        }
+
+        /* Amazon風2行レイアウト用スタイル */
         @media (max-width: 768px) {
-            /* 基本レイアウトのリセット */
-            header {
-                padding: 0 !important;
-            }
-            
+            /* ヘッダー全体のスタイル */
             .header-container {
                 display: flex !important;
                 flex-direction: column !important;
@@ -81,24 +59,23 @@
             .nav-actions {
                 display: flex !important;
                 align-items: center !important;
-                gap: 1rem !important;
+                gap: 1rem !important; /* アイコン間の間隔を広げる */
             }
             
             .nav-icon {
                 background: none;
                 border: none;
                 color: var(--text-primary);
-                padding: 0.5rem !important;
+                padding: 0.5rem !important; /* タップ領域を拡大 */
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 position: relative;
-                text-decoration: none;
             }
             
             .nav-icon svg {
-                width: 22px !important;
+                width: 22px !important; /* アイコンサイズを拡大 */
                 height: 22px !important;
             }
             
@@ -133,7 +110,7 @@
                 flex: 1 !important;
                 display: flex !important;
                 width: 100% !important;
-                height: 40px !important;
+                height: 40px !important; /* 高さを増加 */
             }
             
             .mobile-search-container form {
@@ -176,8 +153,7 @@
             }
             
             /* デスクトップ用要素を非表示 */
-            .search-container,
-            .header-desktop-nav {
+            .search-container, .header-desktop-nav {
                 display: none !important;
             }
 
@@ -198,8 +174,15 @@
                 margin-top: 0 !important;
             }
         }
+        
+        /* デスクトップ向けスタイル */
+        @media (min-width: 769px) {
+            .nav-actions, .mobile-search-container, .header-top-row, .header-search-row {
+                display: none !important;
+            }
+        }
 
-        /* 商品カード関連のスタイル（デバイス共通） */
+        /* 以下はプロダクトカードのスタイル（変更なし） */
         .image-placeholder {
             height: 180px;
             background-color: var(--surface-lighter);
@@ -300,7 +283,7 @@
             line-height: 1.4;
             font-weight: 600;
             color: white;
-            min-height: 2.8rem;
+            min-height: 2.8rem; /* タイトルの最小高さを固定 */
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -489,7 +472,7 @@
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <!-- モバイル用: 1行目 - ロゴとアイコン -->
+            <!-- 1行目: ロゴとアイコン -->
             <div class="header-top-row">
                 <div class="logo">
                     <a href="index.html">
@@ -527,7 +510,7 @@
                 </div>
             </div>
             
-            <!-- モバイル用: 2行目 - 検索バー -->
+            <!-- 2行目: 検索バー -->
             <div class="header-search-row">
                 <div class="mobile-search-container">
                     <form action="search-results.html" method="get">
@@ -542,14 +525,7 @@
                 </div>
             </div>
             
-            <!-- PC用: ロゴ -->
-            <div class="logo">
-                <a href="index.html">
-                    <h1>Play<span>Port</span>JP</h1>
-                </a>
-            </div>
-            
-            <!-- PC用: 検索バー -->
+            <!-- デスクトップ用検索バー -->
             <div class="search-container">
                 <form action="search-results.html" method="get" id="search-form">
                     <input type="search" placeholder="Search products..." aria-label="Search" name="query" id="search-input">
@@ -562,7 +538,7 @@
                 </form>
             </div>
             
-            <!-- PC用: ナビゲーション -->
+            <!-- デスクトップ用ナビゲーション -->
             <nav class="header-desktop-nav">
                 <ul>
                     <li><a href="order-history.html">Order History</a></li>
