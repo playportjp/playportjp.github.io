@@ -1,5 +1,92 @@
 // common.js - 共通で使用される関数やオブジェクト
 
+// ヘッダーコンポーネント読み込み機能
+window.headerLoader = {
+    load: async function() {
+        try {
+            console.log('Loading header component...');
+            const response = await fetch('components/header.html');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const headerHtml = await response.text();
+            const headerContainer = document.getElementById('header-container');
+            
+            if (headerContainer) {
+                headerContainer.innerHTML = headerHtml;
+                console.log('Header component loaded successfully');
+                
+                // ヘッダーコンポーネントのJavaScriptが初期化されるまで待機
+                setTimeout(() => {
+                    if (window.headerComponent) {
+                        window.headerComponent.init();
+                        console.log('Header component initialized');
+                    }
+                    
+                    // カート管理初期化
+                    if (window.cartManager) {
+                        window.cartManager.updateCartCount();
+                        console.log('Cart counts synced with header');
+                    }
+                }, 100);
+            } else {
+                console.error('Header container not found');
+            }
+        } catch (error) {
+            console.error('Failed to load header component:', error);
+            // フォールバック: 基本的なヘッダーを表示
+            this.createFallbackHeader();
+        }
+    },
+    
+    createFallbackHeader: function() {
+        const headerContainer = document.getElementById('header-container');
+        if (headerContainer) {
+            headerContainer.innerHTML = `
+                <header>
+                    <div class="container header-container">
+                        <div class="logo">
+                            <a href="index.html">
+                                <h1>Play<span>Port</span>JP</h1>
+                            </a>
+                        </div>
+                        <div class="search-container">
+                            <form action="search-results.html" method="get">
+                                <input type="search" placeholder="Search products..." aria-label="Search" name="query">
+                                <button type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                        <nav>
+                            <ul>
+                                <li><a href="order-history.html">Order History</a></li>
+                                <li><a href="account.html">Account</a></li>
+                                <li class="cart-icon">
+                                    <a href="cart.html">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="9" cy="21" r="1"></circle>
+                                            <circle cx="20" cy="21" r="1"></circle>
+                                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                        </svg>
+                                        <span class="cart-count" id="cart-count">0</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </header>
+            `;
+            console.log('Fallback header created');
+        }
+    }
+};
+
 // カート管理機能
 window.cartManager = {
     items: [],
@@ -69,15 +156,18 @@ window.cartManager = {
     
     // カート数を更新
     updateCartCount: function() {
-        const cartCountElement = document.getElementById('cart-count');
-        if (cartCountElement) {
-            const itemCount = this.items.reduce((count, item) => count + item.quantity, 0);
-            cartCountElement.textContent = itemCount;
-            console.log(`Cart count updated: ${itemCount} items`);
-            
-            // カート数を同期（すべてのカウント表示を更新）
-            syncCartCounts();
-        }
+        const itemCount = this.items.reduce((count, item) => count + item.quantity, 0);
+        
+        // 全てのカート数表示要素を更新
+        const cartCountElements = document.querySelectorAll('.cart-count');
+        cartCountElements.forEach(element => {
+            element.textContent = itemCount;
+        });
+        
+        console.log(`Cart count updated: ${itemCount} items (${cartCountElements.length} elements updated)`);
+        
+        // カート数を同期（すべてのカウント表示を更新）
+        syncCartCounts();
     },
     
     // カート内のアイテムの数量を更新
@@ -142,11 +232,14 @@ window.cartManager = {
     }
 };
 
-// DOM読み込み完了時にカート情報を読み込む
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing cart manager');
+// DOM読み込み完了時の初期化処理
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('DOM loaded, initializing components');
     
-    // カート情報を読み込み、カウントを更新
+    // 1. ヘッダーコンポーネントを最初に読み込み
+    await window.headerLoader.load();
+    
+    // 2. カート管理を初期化
     if (window.cartManager) {
         window.cartManager.loadCart();
         window.cartManager.updateCartCount();
@@ -155,16 +248,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // 起動時に明示的にカート数を同期
         syncCartCounts();
         
-        // 商品カードのイベントリスナーを設定
-        setupProductCardEvents();
+        // 商品カードのイベントリスナーを設定（少し遅延）
+        setTimeout(() => {
+            setupProductCardEvents();
+        }, 200);
     } else {
         console.error('Cart manager not available');
     }
     
-    // チェックアウトページ用の処理
+    // 3. チェックアウトページ用の処理
     initCheckoutPage();
     
-    // 現在のページに基づいてナビゲーションアイテムの表示制御
+    // 4. 現在のページに基づいてナビゲーションアイテムの表示制御
     controlNavItems();
 });
 
