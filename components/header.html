@@ -583,6 +583,7 @@ window.headerComponent = {
     init: function() {
         console.log('Header component initialized with Amazon-style responsive design');
         this.setupCartCounts();
+        this.setupMobileSearch(); // モバイル検索の強化
     },
     
     setupCartCounts: function() {
@@ -590,6 +591,34 @@ window.headerComponent = {
         if (window.cartManager) {
             window.cartManager.updateCartCount();
             console.log('Cart counts synchronized across all header elements');
+        }
+    },
+    
+    setupMobileSearch: function() {
+        // モバイル検索フォームの機能強化
+        const mobileSearchForm = document.querySelector('.mobile-search-container form');
+        const mobileSearchInput = document.querySelector('#mobile-search-input');
+        
+        if (mobileSearchForm && mobileSearchInput) {
+            // キーボードの「search」ボタンでも検索実行
+            mobileSearchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const searchQuery = mobileSearchInput.value.trim();
+                if (searchQuery) {
+                    window.location.href = `search-results.html?query=${encodeURIComponent(searchQuery)}`;
+                }
+            });
+            
+            // Enterキーでも検索実行
+            mobileSearchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const searchQuery = this.value.trim();
+                    if (searchQuery) {
+                        window.location.href = `search-results.html?query=${encodeURIComponent(searchQuery)}`;
+                    }
+                }
+            });
         }
     }
 };
