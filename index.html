@@ -14,11 +14,9 @@
     <!-- Header will be loaded by JavaScript -->
     <div id="header-container"></div>
 
-    <!-- Main Content -->
     <main>
-        <div class="container">
-            <!-- Categories Section -->
-            <section class="categories">
+        <section id="categories" class="categories">
+            <div class="container">
                 <h2>Browse by Category</h2>
                 <div class="category-grid">
                     <a href="search-results.html?category=games" class="category-card" data-category="games">
@@ -38,25 +36,27 @@
                         <h3>Collectibles</h3>
                     </a>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- Featured Products Section -->
-            <section class="featured-products">
+        <section id="featured" class="featured-products">
+            <div class="container">
                 <h2>Featured Products</h2>
                 <div class="product-grid">
-                    <!-- Products will be loaded by JavaScript from data/products.json -->
+                    <!-- JavaScript で商品が動的に挿入されます -->
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- About Section -->
-            <section class="about-section">
-                <h2>Why Choose PlayPortJP?</h2>
+        <section id="about" class="about-section">
+            <div class="container">
                 <div class="about-content">
-                    <p>Premium Japanese treasures. Quality-verified in Japan. All-inclusive pricing.</p>
+                    <h2>About PlayPortJP</h2>
+                    <p>Japanese treasures, globally delivered. Quality-verified in Japan. All-inclusive pricing.</p>
                     <p>100% authenticity, 0% complexity</p>
                 </div>
-            </section>
-        </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
