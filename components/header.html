@@ -1,346 +1,455 @@
-<!-- components/header.html -->
+<!-- header.html - 再利用可能なヘッダーコンポーネント -->
 <style>
-    /* レスポンシブヘッダー専用スタイル */
-    
-    /* モバイル用2行レイアウト */
-    @media (max-width: 768px) {
-        /* ヘッダーコンテナ */
-        .header-container {
-            display: flex !important;
-            flex-direction: column !important;
-            padding: 0 !important;
-        }
-        
-        /* 1行目：ロゴとアイコンの行 */
-        .header-top-row {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            width: 100% !important;
-            height: 50px !important;
-            padding: 0 0.75rem !important;
-        }
-        
-        .header-top-row .logo {
-            margin-bottom: 0 !important;
-        }
-        
-        .header-top-row .logo h1 {
-            font-size: 1.2rem !important;
-        }
-        
-        /* アクションアイコン */
-        .nav-actions {
-            display: flex !important;
-            align-items: center !important;
-            gap: 1rem !important;
-        }
-        
-        .nav-icon {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            padding: 0.5rem !important;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            text-decoration: none;
-        }
-        
-        .nav-icon svg {
-            width: 22px !important;
-            height: 22px !important;
-        }
-        
-        .nav-icon .cart-count {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background-color: var(--primary);
-            color: white;
-            font-size: 0.7rem;
-            min-width: 16px;
-            height: 16px;
-            padding: 0 3px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-        
-        /* タップ時のフィードバック */
-        .nav-icon:active {
-            background-color: rgba(255, 255, 255, 0.1) !important;
-            border-radius: 4px !important;
-        }
-        
-        /* 2行目：検索バーの行 */
-        .header-search-row {
-            display: flex !important;
-            width: 100% !important;
-            padding: 0.5rem 0.75rem !important;
-            margin-bottom: 0.5rem !important;
-        }
-        
-        /* 検索バー */
-        .mobile-search-container {
-            flex: 1 !important;
-            display: flex !important;
-            width: 100% !important;
-            height: 40px !important;
-        }
-        
-        .mobile-search-container form {
-            width: 100% !important;
-            display: flex !important;
-            position: relative !important;
-        }
-        
-        .mobile-search-container input {
-            width: 100% !important;
-            padding: 0.5rem 2.25rem 0.5rem 0.75rem !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 4px !important;
-            background-color: var(--surface-lighter) !important;
-            color: var(--text-primary) !important;
-            font-size: 0.95rem !important;
-            height: 40px !important;
-            box-sizing: border-box;
-        }
-        
-        .mobile-search-container button {
-            position: absolute !important;
-            right: 2px !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            background-color: var(--primary) !important;
-            border: none !important;
-            color: white !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 0.5rem !important;
-            border-radius: 0 4px 4px 0 !important;
-            height: 38px !important;
-            width: 42px !important;
-            cursor: pointer;
-        }
-        
-        .mobile-search-container button svg {
-            width: 18px !important;
-            height: 18px !important;
-        }
-        
-        /* デスクトップ用要素を非表示 */
-        .search-container:not(.mobile-search-container),
-        .header-desktop-nav {
-            display: none !important;
-        }
-        
-        /* コンテンツの上部余白調整 */
-        main {
-            padding-top: 0 !important;
-            margin-top: 0 !important;
-        }
-        
-        .categories {
-            padding-top: 0.5rem !important;
-            margin-top: 0 !important;
-        }
+/* ヘッダーコンポーネント専用スタイル */
+@media (max-width: 768px) {
+    .header-container {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0.5rem 0 !important;
+        flex-wrap: nowrap !important;
     }
     
-    /* デスクトップ用スタイル */
-    @media (min-width: 769px) {
-        /* モバイル要素を非表示 */
-        .nav-actions,
-        .mobile-search-container,
-        .header-top-row,
-        .header-search-row {
-            display: none !important;
-        }
-
-        /* デスクトップ用ヘッダーレイアウト */
-        .header-container {
-            display: flex !important;
-            flex-direction: row !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            padding: 1rem 1.5rem !important;
-            max-width: 1200px !important;
-            margin: 0 auto !important;
-            width: 100% !important;
-        }
-
-        /* ロゴの表示確保 */
-        .logo {
-            display: block !important;
-            margin-bottom: 0 !important;
-            flex-shrink: 0 !important;
-        }
-
-        .logo h1 {
-            font-size: 1.6rem !important;
-            margin: 0 !important;
-            color: white !important;
-            font-weight: 600 !important;
-        }
-
-        .logo h1 span {
-            color: var(--primary) !important;
-            font-weight: 700 !important;
-        }
-
-        /* デスクトップ用検索バーの表示確保 */
-        .search-container {
-            display: block !important;
-            flex-grow: 1 !important;
-            max-width: 500px !important;
-            margin: 0 2rem !important;
-        }
-
-        .search-container form {
-            display: flex !important;
-            position: relative !important;
-        }
-
-        .search-container input {
-            width: 100% !important;
-            padding: 0.6rem 1rem !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 4px !important;
-            background-color: var(--surface-lighter) !important;
-            color: var(--text-primary) !important;
-            font-size: 0.9rem !important;
-        }
-
-        .search-container button {
-            position: absolute !important;
-            right: 8px !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            background: none !important;
-            border: none !important;
-            color: var(--text-secondary) !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 0.25rem !important;
-            cursor: pointer !important;
-        }
-
-        .search-container button:hover {
-            color: var(--text-primary) !important;
-        }
-
-        /* デスクトップ用ナビゲーションの表示確保 */
-        .header-desktop-nav {
-            display: block !important;
-        }
-
-        .header-desktop-nav ul {
-            display: flex !important;
-            list-style: none !important;
-            gap: 1.5rem !important;
-            align-items: center !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        .header-desktop-nav ul li a {
-            font-size: 0.9rem !important;
-            font-weight: 400 !important;
-            color: var(--text-primary) !important;
-            text-decoration: none !important;
-        }
-
-        .header-desktop-nav ul li a:hover {
-            color: var(--primary) !important;
-        }
-
-        .header-desktop-nav .cart-icon {
-            position: relative !important;
-        }
-
-        .header-desktop-nav .cart-count {
-            position: absolute !important;
-            top: -8px !important;
-            right: -8px !important;
-            background-color: var(--primary) !important;
-            color: white !important;
-            font-size: 0.7rem !important;
-            padding: 0.1rem 0.4rem !important;
-            border-radius: 10px !important;
-            font-weight: 600 !important;
-        }
+    .logo {
+        margin-bottom: 0 !important;
+        flex-shrink: 1 !important;
     }
+    
+    .logo h1 {
+        font-size: 1.2rem !important;
+    }
+    
+    .mobile-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+        min-width: 120px !important;
+        justify-content: flex-end !important;
+    }
+    
+    .search-toggle, .menu-toggle {
+        background: none !important;
+        border: none !important;
+        color: var(--text-primary) !important;
+        padding: 0.5rem !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .mobile-cart {
+        position: relative !important;
+    }
+    
+    .search-container {
+        display: none !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        width: 100% !important;
+        background-color: var(--surface) !important;
+        padding: 0.5rem 1rem !important;
+        border-bottom: 1px solid var(--border) !important;
+        z-index: 1000 !important;
+        margin: 0 !important;
+    }
+    
+    .search-container.active {
+        display: block !important;
+    }
+    
+    nav {
+        display: none !important;
+        position: fixed !important;
+        top: 0 !important;
+        right: -250px !important;
+        width: 250px !important;
+        height: 100vh !important;
+        background-color: var(--surface) !important;
+        z-index: 1000 !important;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2) !important;
+        transition: right 0.3s ease !important;
+    }
+    
+    nav.active {
+        display: block !important;
+        right: 0 !important;
+    }
+    
+    nav ul {
+        flex-direction: column !important;
+        padding: 2rem 1rem !important;
+        align-items: flex-start !important;
+        gap: 1.5rem !important;
+    }
+    
+    .menu-close {
+        position: absolute !important;
+        top: 1rem !important;
+        right: 1rem !important;
+        background: none !important;
+        border: none !important;
+        color: var(--text-primary) !important;
+        font-size: 1.5rem !important;
+        cursor: pointer !important;
+        z-index: 1002 !important;
+        display: block !important;
+    }
+    
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .mobile-actions {
+        display: none !important;
+    }
+    
+    .search-container {
+        display: block !important;
+        position: static !important;
+        width: auto !important;
+        padding: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        flex-grow: 1 !important;
+        max-width: 500px !important;
+        margin: 0 2rem !important;
+    }
+    
+    nav {
+        display: block !important;
+        position: static !important;
+        width: auto !important;
+        height: auto !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    
+    nav ul {
+        flex-direction: row !important;
+        padding: 0 !important;
+        gap: 1.5rem !important;
+        align-items: center !important;
+    }
+    
+    .menu-close {
+        display: none !important;
+    }
+}
+
+/* 商品カード用スタイル（ヘッダーコンポーネントと一緒に管理） */
+.image-placeholder {
+    height: 180px;
+    background-color: var(--surface-lighter);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-secondary);
+    padding: 1rem 0.75rem;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    overflow: hidden;
+    background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.image-placeholder svg {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 0.5rem;
+    opacity: 0.95;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover .image-placeholder svg {
+    transform: scale(1.05);
+}
+
+.image-placeholder div {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+.search-image-link {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(187, 0, 0, 0.8);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: background-color 0.2s;
+    z-index: 2;
+}
+
+.search-image-link:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.search-image-link svg {
+    width: 12px;
+    height: 12px;
+}
+
+.product-card {
+    background-color: var(--card);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    border-color: rgba(187, 0, 0, 0.3);
+}
+
+.product-details {
+    padding: 1rem;
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-details h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    font-weight: 600;
+    color: white;
+    min-height: 2.8rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-card:hover .product-details h3 {
+    color: var(--primary);
+}
+
+.product-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.meta-tag {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    color: white;
+    font-weight: 500;
+}
+
+.meta-tag.game, .meta-tag.games {
+    background-color: #5755d9;
+}
+
+.meta-tag.book, .meta-tag.books {
+    background-color: #2e7d32;
+}
+
+.meta-tag.music {
+    background-color: #9c27b0;
+}
+
+.meta-tag.collectible, .meta-tag.collectibles {
+    background-color: #e65100;
+}
+
+.meta-tag.console {
+    background-color: #0277bd;
+}
+
+.meta-tag.other {
+    background-color: var(--surface);
+    color: var(--text-secondary);
+}
+
+.product-condition {
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.condition-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.condition-badge.new {
+    background-color: #3a9e4e;
+    color: white;
+}
+
+.condition-badge.used {
+    background-color: #2c7cb0;
+    color: white;
+}
+
+.stock-status {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+.stock-status.in-stock {
+    background-color: rgba(58, 158, 78, 0.2);
+    color: #3a9e4e;
+}
+
+.stock-status.out-of-stock {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}
+
+.product-price {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    margin-top: auto;
+}
+
+.product-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.btn {
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    flex: 1;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background-color: var(--surface);
+}
+
+.product-card {
+    cursor: pointer;
+    position: relative;
+}
+
+.product-actions .btn {
+    position: relative;
+    z-index: 5;
+    cursor: pointer;
+}
+
+.product-card .image-placeholder,
+.product-card .product-details h3,
+.product-card .product-meta,
+.product-card .product-price {
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    border-color: var(--primary);
+}
+
+.product-card:hover .product-details h3 {
+    color: var(--primary);
+    text-decoration: underline;
+}
 </style>
 
 <header>
     <div class="container header-container">
-        <!-- 1行目: ロゴとアイコン（モバイルのみ） -->
-        <div class="header-top-row">
-            <div class="logo">
-                <a href="index.html">
-                    <h1>Play<span>Port</span>JP</h1>
-                </a>
-            </div>
-            
-            <!-- ヘッダーのアクションアイコン -->
-            <div class="nav-actions">
-                <!-- 注文履歴アイコン -->
-                <a href="order-history.html" class="nav-icon order-history-icon" title="Order History">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                </a>
-                
-                <!-- アカウントアイコン -->
-                <a href="account.html" class="nav-icon account-icon" title="Account">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                </a>
-                
-                <!-- カートアイコン -->
-                <a href="cart.html" class="nav-icon cart-icon" title="Cart">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    <span class="cart-count" id="cart-count">0</span>
-                </a>
-            </div>
-        </div>
-        
-        <!-- 2行目: 検索バー（モバイルのみ） -->
-        <div class="header-search-row">
-            <div class="mobile-search-container">
-                <form action="search-results.html" method="get">
-                    <input type="search" placeholder="Search products..." aria-label="Search" name="query" id="mobile-search-input">
-                    <button type="submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- デスクトップ用ロゴ -->
         <div class="logo">
             <a href="index.html">
                 <h1>Play<span>Port</span>JP</h1>
             </a>
         </div>
         
-        <!-- デスクトップ用検索バー -->
+        <!-- モバイル用アクション -->
+        <div class="mobile-actions">
+            <!-- 検索アイコン -->
+            <button type="button" class="search-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            
+            <!-- カートアイコン（モバイル） -->
+            <a href="cart.html" class="mobile-cart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count" id="cart-count-mobile">0</span>
+            </a>
+            
+            <!-- ハンバーガーメニューボタン -->
+            <button type="button" class="menu-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- 検索コンテナ -->
         <div class="search-container">
             <form action="search-results.html" method="get" id="search-form">
                 <input type="search" placeholder="Search products..." aria-label="Search" name="query" id="search-input">
@@ -353,12 +462,20 @@
             </form>
         </div>
         
-        <!-- デスクトップ用ナビゲーション -->
-        <nav class="header-desktop-nav">
+        <!-- ナビゲーション -->
+        <nav>
+            <!-- 閉じるボタン -->
+            <button type="button" class="menu-close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            
             <ul>
-                <li class="nav-item order-history"><a href="order-history.html">Order History</a></li>
-                <li class="nav-item account"><a href="account.html" id="account-link">Account</a></li>
-                <li class="cart-icon">
+                <li><a href="order-history.html">Order History</a></li>
+                <li><a href="account.html" id="account-link">Account</a></li>
+                <li class="cart-icon desktop-only">
                     <a href="cart.html" id="cart-link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="9" cy="21" r="1"></circle>
@@ -372,3 +489,102 @@
         </nav>
     </div>
 </header>
+
+<script>
+// ヘッダーコンポーネントのJavaScript機能
+window.headerComponent = {
+    init: function() {
+        console.log('Header component initialized');
+        this.setupMobileMenu();
+        this.setupSearchToggle();
+        this.setupCartCounts();
+    },
+    
+    setupMobileMenu: function() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menuClose = document.querySelector('.menu-close');
+        const nav = document.querySelector('nav');
+        
+        if (menuToggle && nav) {
+            menuToggle.addEventListener('click', () => {
+                nav.classList.add('active');
+                this.closeSearch();
+            });
+        }
+        
+        if (menuClose && nav) {
+            menuClose.addEventListener('click', () => {
+                nav.classList.remove('active');
+            });
+        }
+        
+        // 背景クリックでメニューを閉じる
+        document.addEventListener('click', (event) => {
+            if (nav && nav.classList.contains('active')) {
+                if (!nav.contains(event.target) && !menuToggle.contains(event.target)) {
+                    nav.classList.remove('active');
+                }
+            }
+        });
+    },
+    
+    setupSearchToggle: function() {
+        const searchToggle = document.querySelector('.search-toggle');
+        const searchContainer = document.querySelector('.search-container');
+        
+        if (searchToggle && searchContainer) {
+            searchToggle.addEventListener('click', () => {
+                searchContainer.classList.toggle('active');
+                this.closeMenu();
+                
+                // 検索バーが開いたらフォーカス
+                if (searchContainer.classList.contains('active')) {
+                    const searchInput = searchContainer.querySelector('input');
+                    if (searchInput) {
+                        setTimeout(() => searchInput.focus(), 100);
+                    }
+                }
+            });
+        }
+        
+        // 検索バー外クリックで閉じる
+        document.addEventListener('click', (event) => {
+            if (searchContainer && searchContainer.classList.contains('active')) {
+                if (!searchContainer.contains(event.target) && !searchToggle.contains(event.target)) {
+                    searchContainer.classList.remove('active');
+                }
+            }
+        });
+    },
+    
+    setupCartCounts: function() {
+        // カート数を同期
+        if (window.cartManager) {
+            window.cartManager.updateCartCount();
+        }
+    },
+    
+    closeMenu: function() {
+        const nav = document.querySelector('nav');
+        if (nav) {
+            nav.classList.remove('active');
+        }
+    },
+    
+    closeSearch: function() {
+        const searchContainer = document.querySelector('.search-container');
+        if (searchContainer) {
+            searchContainer.classList.remove('active');
+        }
+    }
+};
+
+// ヘッダーコンポーネント読み込み後に初期化
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        window.headerComponent.init();
+    });
+} else {
+    window.headerComponent.init();
+}
+</script>
