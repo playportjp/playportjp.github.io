@@ -14,20 +14,20 @@
     <style>
         /* 基本スタイル削減対策 */
         body {
-            margin: 0 !important;
-            padding: 0 !important;
+            margin: 0;
+            padding: 0;
         }
 
         /* ヘッダーの上下の余白をさらに削減 */
         header {
-            padding: 0 !important;
-            margin: 0 !important;
-            height: auto !important;
-            min-height: unset !important;
-            background-color: var(--surface) !important;
+            padding: 0;
+            margin: 0;
+            height: auto;
+            min-height: unset;
+            background-color: var(--surface);
         }
 
-        /* Amazon風2行レイアウト用スタイル */
+        /* モバイル用2行レイアウトスタイル */
         @media (max-width: 768px) {
             /* ヘッダー全体のスタイル */
             .header-container {
@@ -59,14 +59,14 @@
             .nav-actions {
                 display: flex !important;
                 align-items: center !important;
-                gap: 1rem !important; /* アイコン間の間隔を広げる */
+                gap: 1rem !important;
             }
             
             .nav-icon {
                 background: none;
                 border: none;
                 color: var(--text-primary);
-                padding: 0.5rem !important; /* タップ領域を拡大 */
+                padding: 0.5rem !important;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
@@ -75,7 +75,7 @@
             }
             
             .nav-icon svg {
-                width: 22px !important; /* アイコンサイズを拡大 */
+                width: 22px !important;
                 height: 22px !important;
             }
             
@@ -110,7 +110,7 @@
                 flex: 1 !important;
                 display: flex !important;
                 width: 100% !important;
-                height: 40px !important; /* 高さを増加 */
+                height: 40px !important;
             }
             
             .mobile-search-container form {
@@ -177,8 +177,107 @@
         
         /* デスクトップ向けスタイル */
         @media (min-width: 769px) {
+            /* モバイル要素を非表示 */
             .nav-actions, .mobile-search-container, .header-top-row, .header-search-row {
                 display: none !important;
+            }
+
+            /* デスクトップ用ヘッダーレイアウト */
+            .header-container {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding: 1rem 1.5rem !important;
+                max-width: 1200px !important;
+                margin: 0 auto !important;
+                width: 100% !important;
+            }
+
+            /* ロゴの表示確保 */
+            .logo {
+                display: block !important;
+                margin-bottom: 0 !important;
+                flex-shrink: 0 !important;
+            }
+
+            .logo h1 {
+                font-size: 1.6rem !important;
+                margin: 0 !important;
+            }
+
+            /* デスクトップ用検索バーの表示確保 */
+            .search-container {
+                display: block !important;
+                flex-grow: 1 !important;
+                max-width: 500px !important;
+                margin: 0 2rem !important;
+            }
+
+            .search-container form {
+                display: flex !important;
+                position: relative !important;
+            }
+
+            .search-container input {
+                width: 100% !important;
+                padding: 0.6rem 1rem !important;
+                border: 1px solid var(--border) !important;
+                border-radius: 4px !important;
+                background-color: var(--surface-lighter) !important;
+                color: var(--text-primary) !important;
+                font-size: 0.9rem !important;
+            }
+
+            .search-container button {
+                position: absolute !important;
+                right: 8px !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+                background: none !important;
+                border: none !important;
+                color: var(--text-secondary) !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 0.25rem !important;
+            }
+
+            /* デスクトップ用ナビゲーションの表示確保 */
+            .header-desktop-nav {
+                display: block !important;
+            }
+
+            .header-desktop-nav ul {
+                display: flex !important;
+                list-style: none !important;
+                gap: 1.5rem !important;
+                align-items: center !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .header-desktop-nav ul li a {
+                font-size: 0.9rem !important;
+                font-weight: 400 !important;
+                color: var(--text-primary) !important;
+                text-decoration: none !important;
+            }
+
+            .header-desktop-nav .cart-icon {
+                position: relative !important;
+            }
+
+            .header-desktop-nav .cart-count {
+                position: absolute !important;
+                top: -8px !important;
+                right: -8px !important;
+                background-color: var(--primary) !important;
+                color: white !important;
+                font-size: 0.7rem !important;
+                padding: 0.1rem 0.4rem !important;
+                border-radius: 10px !important;
+                font-weight: 600 !important;
             }
         }
 
@@ -235,207 +334,6 @@
             align-items: center;
             gap: 0.25rem;
             transition: background-color 0.2s;
-            z-index: 2;
-        }
-        
-        .search-image-link:hover {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .search-image-link svg {
-            width: 12px;
-            height: 12px;
-        }
-        
-        /* プロダクトカードの高さ固定 */
-        .product-card {
-            background-color: var(--card);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.3s ease;
-            border: 1px solid var(--border);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            cursor: pointer;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-            border-color: rgba(187, 0, 0, 0.3);
-        }
-        
-        /* プロダクト詳細の強化 */
-        .product-details {
-            padding: 1rem;
-            position: relative;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .product-details h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.75rem;
-            line-height: 1.4;
-            font-weight: 600;
-            color: white;
-            min-height: 2.8rem; /* タイトルの最小高さを固定 */
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .product-card:hover .product-details h3 {
-            color: var(--primary);
-        }
-        
-        .product-meta {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .meta-tag {
-            font-size: 0.75rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            color: white;
-            font-weight: 500;
-        }
-        
-        .meta-tag.game, .meta-tag.games {
-            background-color: #5755d9;
-        }
-        
-        .meta-tag.book, .meta-tag.books {
-            background-color: #2e7d32;
-        }
-        
-        .meta-tag.music {
-            background-color: #9c27b0;
-        }
-        
-        .meta-tag.collectible, .meta-tag.collectibles {
-            background-color: #e65100;
-        }
-        
-        .meta-tag.console {
-            background-color: #0277bd;
-        }
-        
-        .meta-tag.other {
-            background-color: var(--surface);
-            color: var(--text-secondary);
-        }
-        
-        .product-condition {
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .condition-badge {
-            display: inline-block;
-            padding: 0.2rem 0.5rem;
-            border-radius: 3px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .condition-badge.new {
-            background-color: #3a9e4e;
-            color: white;
-        }
-        
-        .condition-badge.used {
-            background-color: #2c7cb0;
-            color: white;
-        }
-        
-        .stock-status {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 3px;
-            font-weight: 600;
-        }
-        
-        .stock-status.in-stock {
-            background-color: rgba(58, 158, 78, 0.2);
-            color: #3a9e4e;
-        }
-        
-        .stock-status.out-of-stock {
-            background-color: rgba(244, 67, 54, 0.2);
-            color: #f44336;
-        }
-        
-        .product-price {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-            margin-top: auto;
-        }
-        
-        .product-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: auto;
-        }
-        
-        .btn {
-            padding: 0.6rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-decoration: none;
-            text-align: center;
-            transition: background-color 0.2s;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            flex: 1;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background-color: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-        
-        .btn-secondary:hover {
-            background-color: var(--surface);
-        }
-        
-        /* 商品カードのクリック可能化のためのスタイル */
-        .product-card {
-            cursor: pointer;
-            position: relative;
-        }
-
-        /* Google検索リンクのスタイル */
-        .search-image-link {
-            position: absolute;
-            top: 8px;
-            right: 8px;
             z-index: 10;
             cursor: pointer;
         }
@@ -472,7 +370,7 @@
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <!-- 1行目: ロゴとアイコン -->
+            <!-- 1行目: ロゴとアイコン（モバイルのみ） -->
             <div class="header-top-row">
                 <div class="logo">
                     <a href="index.html">
@@ -510,7 +408,7 @@
                 </div>
             </div>
             
-            <!-- 2行目: 検索バー -->
+            <!-- 2行目: 検索バー（モバイルのみ） -->
             <div class="header-search-row">
                 <div class="mobile-search-container">
                     <form action="search-results.html" method="get">
@@ -523,6 +421,13 @@
                         </button>
                     </form>
                 </div>
+            </div>
+
+            <!-- デスクトップ用ロゴ -->
+            <div class="logo">
+                <a href="index.html">
+                    <h1>Play<span>Port</span>JP</h1>
+                </a>
             </div>
             
             <!-- デスクトップ用検索バー -->
@@ -544,13 +449,13 @@
                     <li><a href="order-history.html">Order History</a></li>
                     <li><a href="account.html" id="account-link">Account</a></li>
                     <li class="cart-icon">
-                        <a href="cart.html" id="cart-link-desktop">
+                        <a href="cart.html" id="cart-link">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="9" cy="21" r="1"></circle>
                                 <circle cx="20" cy="21" r="1"></circle>
                                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                             </svg>
-                            <span class="cart-count" id="cart-count-desktop">0</span>
+                            <span class="cart-count" id="cart-count">0</span>
                         </a>
                     </li>
                 </ul>
@@ -558,49 +463,49 @@
         </div>
     </header>
 
+    <!-- Main Content -->
     <main>
-        <section id="categories" class="categories">
-            <div class="container">
+        <div class="container">
+            <!-- Categories Section -->
+            <section class="categories">
                 <h2>Browse by Category</h2>
                 <div class="category-grid">
                     <a href="search-results.html?category=games" class="category-card" data-category="games">
                         <div class="category-image"></div>
                         <h3>Games</h3>
                     </a>
-                    <a href="search-results.html?category=books" class="category-card" data-category="books">
-                        <div class="category-image"></div>
-                        <h3>Books</h3>
-                    </a>
-                    <a href="search-results.html?category=music" class="category-card" data-category="music">
-                        <div class="category-image"></div>
-                        <h3>Music</h3>
-                    </a>
                     <a href="search-results.html?category=collectibles" class="category-card" data-category="collectibles">
                         <div class="category-image"></div>
                         <h3>Collectibles</h3>
                     </a>
+                    <a href="search-results.html?category=culture" class="category-card" data-category="culture">
+                        <div class="category-image"></div>
+                        <h3>Culture</h3>
+                    </a>
+                    <a href="search-results.html?category=models" class="category-card" data-category="models">
+                        <div class="category-image"></div>
+                        <h3>Models</h3>
+                    </a>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="featured" class="featured-products">
-            <div class="container">
+            <!-- Featured Products Section -->
+            <section class="featured-products">
                 <h2>Featured Products</h2>
                 <div class="product-grid">
-                    <!-- JavaScript で商品が動的に挿入されます -->
+                    <!-- Products will be loaded by JavaScript -->
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="about" class="about-section">
-            <div class="container">
+            <!-- About Section -->
+            <section class="about-section">
+                <h2>Why Choose PlayPortJP?</h2>
                 <div class="about-content">
-                    <h2>About PlayPortJP</h2>
-                    <p>Japanese treasures, globally delivered. Quality-verified in Japan. All-inclusive pricing.</p>
+                    <p>Premium Japanese treasures. Quality-verified in Japan. All-inclusive pricing.</p>
                     <p>100% authenticity, 0% complexity</p>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     </main>
 
     <!-- Footer -->
