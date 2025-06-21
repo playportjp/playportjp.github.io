@@ -167,7 +167,7 @@ header {
 
 /* デスクトップ向けスタイル */
 @media (min-width: 769px) {
-    .nav-actions, .mobile-search-container, .header-top-row, .header-search-row {
+    .nav-actions, .mobile-search-container, .header-search-row {
         display: none !important;
     }
     
@@ -176,6 +176,23 @@ header {
         justify-content: space-between !important;
         align-items: center !important;
         padding: 1rem 0 !important;
+    }
+    
+    /* デスクトップでロゴを表示 */
+    .header-top-row {
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 !important;
+        height: auto !important;
+        width: auto !important;
+    }
+    
+    .header-top-row .logo {
+        margin-bottom: 0 !important;
+    }
+    
+    .header-top-row .logo h1 {
+        font-size: 1.6rem !important; /* デスクトップサイズに戻す */
     }
     
     .search-container {
