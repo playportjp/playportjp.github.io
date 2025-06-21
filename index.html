@@ -10,21 +10,34 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <!-- ヘッダーレスポンシブ対応のみ -->
+    <!-- メインスタイル -->
     <style>
-        /* ヘッダー以外には一切影響しないよう厳密に限定 */
-        
-        /* モバイル用2行レイアウト */
+        /* 基本スタイル削減対策 */
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* ヘッダーの上下の余白をさらに削減 */
+        header {
+            padding: 0 !important;
+            margin: 0 !important;
+            height: auto !important;
+            min-height: unset !important;
+            background-color: var(--surface) !important;
+        }
+
+        /* Amazon風2行レイアウト用スタイル */
         @media (max-width: 768px) {
-            /* ヘッダーコンテナのみ対象 */
-            header .header-container {
+            /* ヘッダー全体のスタイル */
+            .header-container {
                 display: flex !important;
                 flex-direction: column !important;
                 padding: 0 !important;
             }
             
-            /* 1行目：ロゴとアイコン */
-            header .header-top-row {
+            /* 1行目：ロゴとアイコンの行 */
+            .header-top-row {
                 display: flex !important;
                 justify-content: space-between !important;
                 align-items: center !important;
@@ -33,40 +46,41 @@
                 padding: 0 0.75rem !important;
             }
             
-            header .header-top-row .logo {
+            /* ロゴ */
+            .logo {
                 margin-bottom: 0 !important;
             }
             
-            header .header-top-row .logo h1 {
+            .logo h1 {
                 font-size: 1.2rem !important;
             }
             
             /* アクションアイコン */
-            header .nav-actions {
+            .nav-actions {
                 display: flex !important;
                 align-items: center !important;
-                gap: 1rem !important;
+                gap: 1rem !important; /* アイコン間の間隔を広げる */
             }
             
-            header .nav-icon {
+            .nav-icon {
                 background: none;
                 border: none;
                 color: var(--text-primary);
-                padding: 0.5rem !important;
+                padding: 0.5rem !important; /* タップ領域を拡大 */
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 position: relative;
-                text-decoration: none;
             }
             
-            header .nav-icon svg {
-                width: 22px !important;
+            .nav-icon svg {
+                width: 22px !important; /* アイコンサイズを拡大 */
                 height: 22px !important;
             }
             
-            header .nav-icon .cart-count {
+            /* カートカウント */
+            .cart-count {
                 position: absolute;
                 top: -2px;
                 right: -2px;
@@ -83,28 +97,29 @@
                 font-weight: 600;
             }
             
-            /* 2行目：検索バー */
-            header .header-search-row {
+            /* 2行目：検索バーの行 */
+            .header-search-row {
                 display: flex !important;
                 width: 100% !important;
                 padding: 0.5rem 0.75rem !important;
                 margin-bottom: 0.5rem !important;
             }
             
-            header .mobile-search-container {
+            /* 検索バー */
+            .mobile-search-container {
                 flex: 1 !important;
                 display: flex !important;
                 width: 100% !important;
-                height: 40px !important;
+                height: 40px !important; /* 高さを増加 */
             }
             
-            header .mobile-search-container form {
+            .mobile-search-container form {
                 width: 100% !important;
                 display: flex !important;
                 position: relative !important;
             }
             
-            header .mobile-search-container input {
+            .mobile-search-container input {
                 width: 100% !important;
                 padding: 0.5rem 2.25rem 0.5rem 0.75rem !important;
                 border: 1px solid var(--border) !important;
@@ -113,10 +128,9 @@
                 color: var(--text-primary) !important;
                 font-size: 0.95rem !important;
                 height: 40px !important;
-                box-sizing: border-box !important;
             }
             
-            header .mobile-search-container button {
+            .mobile-search-container button {
                 position: absolute !important;
                 right: 2px !important;
                 top: 50% !important;
@@ -131,20 +145,24 @@
                 border-radius: 0 4px 4px 0 !important;
                 height: 38px !important;
                 width: 42px !important;
-                cursor: pointer !important;
             }
             
-            header .mobile-search-container button svg {
+            .mobile-search-container button svg {
                 width: 18px !important;
                 height: 18px !important;
             }
             
             /* デスクトップ用要素を非表示 */
-            header .search-container:not(.mobile-search-container),
-            header .header-desktop-nav {
+            .search-container, .header-desktop-nav {
                 display: none !important;
             }
-            
+
+            /* タップ時のフィードバック */
+            .nav-icon:active {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+                border-radius: 4px !important;
+            }
+
             /* コンテンツの上部余白調整 */
             main {
                 padding-top: 0 !important;
@@ -159,112 +177,294 @@
         
         /* デスクトップ向けスタイル */
         @media (min-width: 769px) {
-            /* モバイル要素を非表示 */
-            header .nav-actions,
-            header .mobile-search-container,
-            header .header-top-row,
-            header .header-search-row {
+            .nav-actions, .mobile-search-container, .header-top-row, .header-search-row {
                 display: none !important;
             }
+        }
 
-            /* デスクトップ用ヘッダーレイアウト */
-            header .header-container {
-                display: flex !important;
-                flex-direction: row !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                padding: 1rem 1.5rem !important;
-                max-width: 1200px !important;
-                margin: 0 auto !important;
-                width: 100% !important;
-            }
+        /* 以下はプロダクトカードのスタイル（変更なし） */
+        .image-placeholder {
+            height: 180px;
+            background-color: var(--surface-lighter);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-secondary);
+            padding: 1rem 0.75rem;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            overflow: hidden;
+            background: linear-gradient(145deg, var(--surface-lighter), var(--surface));
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .image-placeholder svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 0.5rem;
+            opacity: 0.95;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+            transition: transform 0.2s ease;
+        }
+        
+        .product-card:hover .image-placeholder svg {
+            transform: scale(1.05);
+        }
+        
+        .image-placeholder div {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .search-image-link {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(187, 0, 0, 0.8);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: background-color 0.2s;
+            z-index: 2;
+        }
+        
+        .search-image-link:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .search-image-link svg {
+            width: 12px;
+            height: 12px;
+        }
+        
+        /* プロダクトカードの高さ固定 */
+        .product-card {
+            background-color: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            border-color: rgba(187, 0, 0, 0.3);
+        }
+        
+        /* プロダクト詳細の強化 */
+        .product-details {
+            padding: 1rem;
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-details h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+            font-weight: 600;
+            color: white;
+            min-height: 2.8rem; /* タイトルの最小高さを固定 */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .product-card:hover .product-details h3 {
+            color: var(--primary);
+        }
+        
+        .product-meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .meta-tag.game, .meta-tag.games {
+            background-color: #5755d9;
+        }
+        
+        .meta-tag.book, .meta-tag.books {
+            background-color: #2e7d32;
+        }
+        
+        .meta-tag.music {
+            background-color: #9c27b0;
+        }
+        
+        .meta-tag.collectible, .meta-tag.collectibles {
+            background-color: #e65100;
+        }
+        
+        .meta-tag.console {
+            background-color: #0277bd;
+        }
+        
+        .meta-tag.other {
+            background-color: var(--surface);
+            color: var(--text-secondary);
+        }
+        
+        .product-condition {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .condition-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .condition-badge.new {
+            background-color: #3a9e4e;
+            color: white;
+        }
+        
+        .condition-badge.used {
+            background-color: #2c7cb0;
+            color: white;
+        }
+        
+        .stock-status {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        .stock-status.in-stock {
+            background-color: rgba(58, 158, 78, 0.2);
+            color: #3a9e4e;
+        }
+        
+        .stock-status.out-of-stock {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            margin-top: auto;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+        
+        .btn {
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--surface);
+        }
+        
+        /* 商品カードのクリック可能化のためのスタイル */
+        .product-card {
+            cursor: pointer;
+            position: relative;
+        }
 
-            /* ロゴの表示確保 */
-            header .logo {
-                display: block !important;
-                margin-bottom: 0 !important;
-                flex-shrink: 0 !important;
-            }
+        /* Google検索リンクのスタイル */
+        .search-image-link {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 10;
+            cursor: pointer;
+        }
 
-            header .logo h1 {
-                font-size: 1.6rem !important;
-                margin: 0 !important;
-            }
+        /* Add to Cartボタンとデテールボタンのスタイル */
+        .product-actions .btn {
+            position: relative;
+            z-index: 5;
+            cursor: pointer;
+        }
 
-            /* デスクトップ用検索バーの表示確保 */
-            header .search-container {
-                display: block !important;
-                flex-grow: 1 !important;
-                max-width: 500px !important;
-                margin: 0 2rem !important;
-            }
+        /* 商品カード内の要素にカーソルポインタを設定 */
+        .product-card .image-placeholder,
+        .product-card .product-details h3,
+        .product-card .product-meta,
+        .product-card .product-price {
+            cursor: pointer;
+        }
 
-            header .search-container form {
-                display: flex !important;
-                position: relative !important;
-            }
+        /* ホバー効果を強化 */
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
 
-            header .search-container input {
-                width: 100% !important;
-                padding: 0.6rem 1rem !important;
-                border: 1px solid var(--border) !important;
-                border-radius: 4px !important;
-                background-color: var(--surface-lighter) !important;
-                color: var(--text-primary) !important;
-                font-size: 0.9rem !important;
-            }
-
-            header .search-container button {
-                position: absolute !important;
-                right: 8px !important;
-                top: 50% !important;
-                transform: translateY(-50%) !important;
-                background: none !important;
-                border: none !important;
-                color: var(--text-secondary) !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                padding: 0.25rem !important;
-                cursor: pointer !important;
-            }
-
-            /* デスクトップ用ナビゲーションの表示確保 */
-            header .header-desktop-nav {
-                display: block !important;
-            }
-
-            header .header-desktop-nav ul {
-                display: flex !important;
-                list-style: none !important;
-                gap: 1.5rem !important;
-                align-items: center !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            header .header-desktop-nav ul li a {
-                font-size: 0.9rem !important;
-                font-weight: 400 !important;
-                color: var(--text-primary) !important;
-                text-decoration: none !important;
-            }
-
-            header .header-desktop-nav .cart-icon {
-                position: relative !important;
-            }
-
-            header .header-desktop-nav .cart-count {
-                position: absolute !important;
-                top: -8px !important;
-                right: -8px !important;
-                background-color: var(--primary) !important;
-                color: white !important;
-                font-size: 0.7rem !important;
-                padding: 0.1rem 0.4rem !important;
-                border-radius: 10px !important;
-                font-weight: 600 !important;
-            }
+        .product-card:hover .product-details h3 {
+            color: var(--primary);
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -272,7 +472,7 @@
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <!-- 1行目: ロゴとアイコン（モバイルのみ） -->
+            <!-- 1行目: ロゴとアイコン -->
             <div class="header-top-row">
                 <div class="logo">
                     <a href="index.html">
@@ -310,7 +510,7 @@
                 </div>
             </div>
             
-            <!-- 2行目: 検索バー（モバイルのみ） -->
+            <!-- 2行目: 検索バー -->
             <div class="header-search-row">
                 <div class="mobile-search-container">
                     <form action="search-results.html" method="get">
@@ -323,13 +523,6 @@
                         </button>
                     </form>
                 </div>
-            </div>
-
-            <!-- デスクトップ用ロゴ -->
-            <div class="logo">
-                <a href="index.html">
-                    <h1>Play<span>Port</span>JP</h1>
-                </a>
             </div>
             
             <!-- デスクトップ用検索バー -->
@@ -351,13 +544,13 @@
                     <li><a href="order-history.html">Order History</a></li>
                     <li><a href="account.html" id="account-link">Account</a></li>
                     <li class="cart-icon">
-                        <a href="cart.html" id="cart-link">
+                        <a href="cart.html" id="cart-link-desktop">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="9" cy="21" r="1"></circle>
                                 <circle cx="20" cy="21" r="1"></circle>
                                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                             </svg>
-                            <span class="cart-count" id="cart-count">0</span>
+                            <span class="cart-count" id="cart-count-desktop">0</span>
                         </a>
                     </li>
                 </ul>
@@ -365,49 +558,49 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main>
-        <div class="container">
-            <!-- Categories Section -->
-            <section class="categories">
+        <section id="categories" class="categories">
+            <div class="container">
                 <h2>Browse by Category</h2>
                 <div class="category-grid">
                     <a href="search-results.html?category=games" class="category-card" data-category="games">
                         <div class="category-image"></div>
                         <h3>Games</h3>
                     </a>
+                    <a href="search-results.html?category=books" class="category-card" data-category="books">
+                        <div class="category-image"></div>
+                        <h3>Books</h3>
+                    </a>
+                    <a href="search-results.html?category=music" class="category-card" data-category="music">
+                        <div class="category-image"></div>
+                        <h3>Music</h3>
+                    </a>
                     <a href="search-results.html?category=collectibles" class="category-card" data-category="collectibles">
                         <div class="category-image"></div>
                         <h3>Collectibles</h3>
                     </a>
-                    <a href="search-results.html?category=culture" class="category-card" data-category="culture">
-                        <div class="category-image"></div>
-                        <h3>Culture</h3>
-                    </a>
-                    <a href="search-results.html?category=models" class="category-card" data-category="models">
-                        <div class="category-image"></div>
-                        <h3>Models</h3>
-                    </a>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- Featured Products Section -->
-            <section class="featured-products">
+        <section id="featured" class="featured-products">
+            <div class="container">
                 <h2>Featured Products</h2>
                 <div class="product-grid">
-                    <!-- Products will be loaded by JavaScript from data/products.json -->
+                    <!-- JavaScript で商品が動的に挿入されます -->
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- About Section -->
-            <section class="about-section">
-                <h2>Why Choose PlayPortJP?</h2>
+        <section id="about" class="about-section">
+            <div class="container">
                 <div class="about-content">
-                    <p>Premium Japanese treasures. Quality-verified in Japan. All-inclusive pricing.</p>
+                    <h2>About PlayPortJP</h2>
+                    <p>Japanese treasures, globally delivered. Quality-verified in Japan. All-inclusive pricing.</p>
                     <p>100% authenticity, 0% complexity</p>
                 </div>
-            </section>
-        </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
