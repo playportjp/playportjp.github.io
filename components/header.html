@@ -1,143 +1,348 @@
-<!-- header.html -->
+<!-- components/header.html -->
 <style>
-  @media (max-width: 768px) {
-    /* このスタイルはヘッダーコンポーネント専用で他には影響しません */
-    .header-container {
-      display: flex !important;
-      flex-direction: row !important;
-      align-items: center !important;
-      padding: 0.5rem 0 !important;
+    /* レスポンシブヘッダー専用スタイル */
+    
+    /* モバイル用2行レイアウト */
+    @media (max-width: 768px) {
+        /* ヘッダーコンテナ */
+        .header-container {
+            display: flex !important;
+            flex-direction: column !important;
+            padding: 0 !important;
+        }
+        
+        /* 1行目：ロゴとアイコンの行 */
+        .header-top-row {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            width: 100% !important;
+            height: 50px !important;
+            padding: 0 0.75rem !important;
+        }
+        
+        .header-top-row .logo {
+            margin-bottom: 0 !important;
+        }
+        
+        .header-top-row .logo h1 {
+            font-size: 1.2rem !important;
+        }
+        
+        /* アクションアイコン */
+        .nav-actions {
+            display: flex !important;
+            align-items: center !important;
+            gap: 1rem !important;
+        }
+        
+        .nav-icon {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            padding: 0.5rem !important;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-decoration: none;
+        }
+        
+        .nav-icon svg {
+            width: 22px !important;
+            height: 22px !important;
+        }
+        
+        .nav-icon .cart-count {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            min-width: 16px;
+            height: 16px;
+            padding: 0 3px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* タップ時のフィードバック */
+        .nav-icon:active {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            border-radius: 4px !important;
+        }
+        
+        /* 2行目：検索バーの行 */
+        .header-search-row {
+            display: flex !important;
+            width: 100% !important;
+            padding: 0.5rem 0.75rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        /* 検索バー */
+        .mobile-search-container {
+            flex: 1 !important;
+            display: flex !important;
+            width: 100% !important;
+            height: 40px !important;
+        }
+        
+        .mobile-search-container form {
+            width: 100% !important;
+            display: flex !important;
+            position: relative !important;
+        }
+        
+        .mobile-search-container input {
+            width: 100% !important;
+            padding: 0.5rem 2.25rem 0.5rem 0.75rem !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 4px !important;
+            background-color: var(--surface-lighter) !important;
+            color: var(--text-primary) !important;
+            font-size: 0.95rem !important;
+            height: 40px !important;
+            box-sizing: border-box;
+        }
+        
+        .mobile-search-container button {
+            position: absolute !important;
+            right: 2px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            background-color: var(--primary) !important;
+            border: none !important;
+            color: white !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0.5rem !important;
+            border-radius: 0 4px 4px 0 !important;
+            height: 38px !important;
+            width: 42px !important;
+            cursor: pointer;
+        }
+        
+        .mobile-search-container button svg {
+            width: 18px !important;
+            height: 18px !important;
+        }
+        
+        /* デスクトップ用要素を非表示 */
+        .search-container:not(.mobile-search-container),
+        .header-desktop-nav {
+            display: none !important;
+        }
+        
+        /* コンテンツの上部余白調整 */
+        main {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+        
+        .categories {
+            padding-top: 0.5rem !important;
+            margin-top: 0 !important;
+        }
     }
     
-    .logo {
-      margin-bottom: 0 !important;
+    /* デスクトップ用スタイル */
+    @media (min-width: 769px) {
+        /* モバイル要素を非表示 */
+        .nav-actions,
+        .mobile-search-container,
+        .header-top-row,
+        .header-search-row {
+            display: none !important;
+        }
+
+        /* デスクトップ用ヘッダーレイアウト */
+        .header-container {
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 1rem 1.5rem !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            width: 100% !important;
+        }
+
+        /* ロゴの表示確保 */
+        .logo {
+            display: block !important;
+            margin-bottom: 0 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .logo h1 {
+            font-size: 1.6rem !important;
+            margin: 0 !important;
+            color: white !important;
+            font-weight: 600 !important;
+        }
+
+        .logo h1 span {
+            color: var(--primary) !important;
+            font-weight: 700 !important;
+        }
+
+        /* デスクトップ用検索バーの表示確保 */
+        .search-container {
+            display: block !important;
+            flex-grow: 1 !important;
+            max-width: 500px !important;
+            margin: 0 2rem !important;
+        }
+
+        .search-container form {
+            display: flex !important;
+            position: relative !important;
+        }
+
+        .search-container input {
+            width: 100% !important;
+            padding: 0.6rem 1rem !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 4px !important;
+            background-color: var(--surface-lighter) !important;
+            color: var(--text-primary) !important;
+            font-size: 0.9rem !important;
+        }
+
+        .search-container button {
+            position: absolute !important;
+            right: 8px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            background: none !important;
+            border: none !important;
+            color: var(--text-secondary) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0.25rem !important;
+            cursor: pointer !important;
+        }
+
+        .search-container button:hover {
+            color: var(--text-primary) !important;
+        }
+
+        /* デスクトップ用ナビゲーションの表示確保 */
+        .header-desktop-nav {
+            display: block !important;
+        }
+
+        .header-desktop-nav ul {
+            display: flex !important;
+            list-style: none !important;
+            gap: 1.5rem !important;
+            align-items: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .header-desktop-nav ul li a {
+            font-size: 0.9rem !important;
+            font-weight: 400 !important;
+            color: var(--text-primary) !important;
+            text-decoration: none !important;
+        }
+
+        .header-desktop-nav ul li a:hover {
+            color: var(--primary) !important;
+        }
+
+        .header-desktop-nav .cart-icon {
+            position: relative !important;
+        }
+
+        .header-desktop-nav .cart-count {
+            position: absolute !important;
+            top: -8px !important;
+            right: -8px !important;
+            background-color: var(--primary) !important;
+            color: white !important;
+            font-size: 0.7rem !important;
+            padding: 0.1rem 0.4rem !important;
+            border-radius: 10px !important;
+            font-weight: 600 !important;
+        }
     }
-    
-    .logo h1 {
-      font-size: 1.2rem;
-    }
-    
-    .search-container {
-      display: none;  /* 最初は隠す */
-      position: absolute !important;
-      top: 100% !important;
-      left: 0 !important;
-      width: 100% !important;
-      z-index: 1000 !important;
-      padding: 0.5rem 1rem !important;
-      background-color: var(--surface) !important;
-      border-bottom: 1px solid var(--border) !important;
-      margin: 0 !important;
-    }
-    
-    .search-container.active {
-      display: block !important;
-    }
-    
-    nav {
-      display: none;
-      position: fixed;
-      top: 0;
-      right: -250px;
-      width: 250px;
-      height: 100vh;
-      background-color: var(--surface);
-      z-index: 1000;
-      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
-      transition: right 0.3s ease;
-    }
-    
-    nav.active {
-      display: block !important;
-      right: 0 !important;
-    }
-    
-    nav ul {
-      flex-direction: column !important;
-      padding: 2rem 1rem !important;
-      align-items: flex-start !important;
-    }
-    
-    .mobile-actions {
-      display: flex !important;
-      align-items: center !important;
-      margin-left: auto !important;
-      gap: 0.75rem !important;
-    }
-    
-    .menu-toggle, .search-toggle {
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      padding: 0.5rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .menu-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      font-size: 1.5rem;
-      cursor: pointer;
-      z-index: 1002;
-      display: block;
-    }
-    
-    .mobile-cart {
-      position: relative;
-    }
-    
-    .cart-icon.desktop-only {
-      display: none !important;
-    }
-  }
 </style>
 
 <header>
     <div class="container header-container">
+        <!-- 1行目: ロゴとアイコン（モバイルのみ） -->
+        <div class="header-top-row">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>Play<span>Port</span>JP</h1>
+                </a>
+            </div>
+            
+            <!-- ヘッダーのアクションアイコン -->
+            <div class="nav-actions">
+                <!-- 注文履歴アイコン -->
+                <a href="order-history.html" class="nav-icon order-history-icon" title="Order History">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </a>
+                
+                <!-- アカウントアイコン -->
+                <a href="account.html" class="nav-icon account-icon" title="Account">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+                
+                <!-- カートアイコン -->
+                <a href="cart.html" class="nav-icon cart-icon" title="Cart">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count" id="cart-count">0</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 2行目: 検索バー（モバイルのみ） -->
+        <div class="header-search-row">
+            <div class="mobile-search-container">
+                <form action="search-results.html" method="get">
+                    <input type="search" placeholder="Search products..." aria-label="Search" name="query" id="mobile-search-input">
+                    <button type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- デスクトップ用ロゴ -->
         <div class="logo">
             <a href="index.html">
                 <h1>Play<span>Port</span>JP</h1>
             </a>
         </div>
         
-        <div class="mobile-actions">
-            <!-- 検索アイコン -->
-            <button type="button" class="search-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </button>
-            
-            <!-- カートアイコン（スマホでも常に表示） -->
-            <a href="cart.html" class="mobile-cart">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-                <span class="cart-count" id="cart-count-mobile">0</span>
-            </a>
-            
-            <!-- ハンバーガーメニューボタン -->
-            <button type="button" class="menu-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-        
+        <!-- デスクトップ用検索バー -->
         <div class="search-container">
-            <form action="search-results.html" method="get">
+            <form action="search-results.html" method="get" id="search-form">
                 <input type="search" placeholder="Search products..." aria-label="Search" name="query" id="search-input">
                 <button type="submit" id="search-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -148,26 +353,19 @@
             </form>
         </div>
         
-        <nav>
-            <!-- 閉じるボタン -->
-            <button type="button" class="menu-close">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            
+        <!-- デスクトップ用ナビゲーション -->
+        <nav class="header-desktop-nav">
             <ul>
                 <li class="nav-item order-history"><a href="order-history.html">Order History</a></li>
                 <li class="nav-item account"><a href="account.html" id="account-link">Account</a></li>
-                <li class="cart-icon desktop-only">
-                    <a href="cart.html" id="cart-link-desktop">
+                <li class="cart-icon">
+                    <a href="cart.html" id="cart-link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="9" cy="21" r="1"></circle>
                             <circle cx="20" cy="21" r="1"></circle>
                             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                         </svg>
-                        <span class="cart-count" id="cart-count-desktop">0</span>
+                        <span class="cart-count" id="cart-count">0</span>
                     </a>
                 </li>
             </ul>
