@@ -32,7 +32,7 @@ header {
         justify-content: space-between !important;
         align-items: center !important;
         width: 100% !important;
-        height: 45px !important;
+        height: 40px !important; /* さらに細く */
         padding: 0 0.75rem !important;
     }
     
@@ -42,7 +42,7 @@ header {
     }
     
     .logo h1 {
-        font-size: 1.2rem !important;
+        font-size: 1.1rem !important; /* より細いヘッダーに合わせて調整 */
     }
     
     /* アクションアイコン */
@@ -56,7 +56,7 @@ header {
         background: none;
         border: none;
         color: var(--text-primary);
-        padding: 0.5rem !important; /* タップ領域を拡大 */
+        padding: 0.4rem !important; /* パディング少し削減 */
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -65,8 +65,8 @@ header {
     }
     
     .nav-icon svg {
-        width: 22px !important; /* アイコンサイズを拡大 */
-        height: 22px !important;
+        width: 20px !important; /* アイコンサイズを少し小さく */
+        height: 20px !important;
     }
     
     /* カートカウント */
@@ -76,11 +76,11 @@ header {
         right: -2px;
         background-color: var(--primary);
         color: white;
-        font-size: 0.7rem;
-        min-width: 16px;
-        height: 16px;
-        padding: 0 3px;
-        border-radius: 8px;
+        font-size: 0.65rem; /* 少し小さく */
+        min-width: 14px;
+        height: 14px;
+        padding: 0 2px;
+        border-radius: 7px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -91,8 +91,8 @@ header {
     .header-search-row {
         display: flex !important;
         width: 100% !important;
-        padding: 0.25rem 0.75rem !important;
-        margin-bottom: 0.25rem !important;
+        padding: 0.15rem 0.75rem !important; /* 余白をさらに削減 */
+        margin-bottom: 0.15rem !important; /* 下余白も削減 */
     }
     
     /* 検索バー */
@@ -100,7 +100,7 @@ header {
         flex: 1 !important;
         display: flex !important;
         width: 100% !important;
-        height: 35px !important; /* 高さを細く */
+        height: 32px !important; /* さらに細く */
     }
     
     .mobile-search-container form {
@@ -111,18 +111,18 @@ header {
     
     .mobile-search-container input {
         width: 100% !important;
-        padding: 0.4rem 2.25rem 0.4rem 0.75rem !important;
+        padding: 0.35rem 2rem 0.35rem 0.7rem !important; /* パディング調整 */
         border: 1px solid var(--border) !important;
         border-radius: 4px !important;
         background-color: var(--surface-lighter) !important;
         color: var(--text-primary) !important;
-        font-size: 0.9rem !important;
-        height: 35px !important; /* 高さを細く */
+        font-size: 0.85rem !important; /* フォントサイズも少し小さく */
+        height: 32px !important; /* 高さを細く */
     }
     
     .mobile-search-container button {
         position: absolute !important;
-        right: 8px !important;
+        right: 6px !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
         background: none !important; /* PC版と同じく透明背景 */
@@ -131,10 +131,10 @@ header {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 0.25rem !important;
-        border-radius: 4px !important;
-        height: 30px !important; /* ボタンも細く */
-        width: 30px !important;
+        padding: 0.2rem !important; /* パディング削減 */
+        border-radius: 3px !important;
+        height: 26px !important; /* ボタンも細く */
+        width: 26px !important;
     }
     
     .mobile-search-container button:hover {
@@ -142,8 +142,8 @@ header {
     }
     
     .mobile-search-container button svg {
-        width: 16px !important; /* アイコンサイズも少し小さく */
-        height: 16px !important;
+        width: 14px !important; /* アイコンサイズも調整 */
+        height: 14px !important;
     }
     
     /* デスクトップ用要素を非表示 */
@@ -164,7 +164,7 @@ header {
     }
     
     .categories {
-        padding-top: 0.25rem !important; /* より細かい調整 */
+        padding-top: 0.1rem !important; /* さらに詰める */
         margin-top: 0 !important;
     }
 }
