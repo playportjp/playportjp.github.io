@@ -7,6 +7,12 @@
   @-o-viewport { width: device-width; }
   @viewport { width: device-width; }
 
+  /* ヘッダー全体の基本余白調整 */
+  header {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
   /* モバイル最適化スタイル（768px以下） */
   @media (max-width: 768px) {
     /* ヘッダー全体の基本設定 */
@@ -27,9 +33,9 @@
       justify-content: space-between !important;
       align-items: center !important;
       width: 100% !important;
-      height: 50px !important;
+      height: 46px !important; /* 少し高さ調整 */
       padding: 0 1rem !important;
-      gap: 1rem !important; /* 間隔を少し短縮 */
+      gap: 0.8rem !important; /* 間隔をさらに短縮 */
     }
     
     /* ロゴ部分 */
@@ -39,14 +45,14 @@
     }
     
     .logo h1 {
-      font-size: 1.2rem !important;
+      font-size: 1.15rem !important; /* フォントサイズ微調整 */
     }
     
     /* ナビアクション部分 */
     .nav-actions {
       display: flex !important;
       align-items: center !important;
-      gap: 0.75rem !important;
+      gap: 0.65rem !important; /* ギャップ微調整 */
       flex-shrink: 0 !important;
     }
     
@@ -55,9 +61,9 @@
       background: none !important;
       border: none !important;
       color: var(--text-primary) !important;
-      padding: 0.5rem !important;
-      min-width: 44px !important;
-      min-height: 44px !important;
+      padding: 0.45rem !important; /* パディング微調整 */
+      min-width: 42px !important; /* サイズ微調整 */
+      min-height: 42px !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -71,20 +77,20 @@
     }
     
     .nav-icon svg {
-      width: 20px !important;
-      height: 20px !important;
+      width: 19px !important; /* アイコンサイズ微調整 */
+      height: 19px !important;
     }
     
     /* カートカウントの調整 */
     .cart-count {
       position: absolute !important;
-      top: -2px !important;
-      right: -2px !important;
+      top: -1px !important; /* 位置微調整 */
+      right: -1px !important;
       background-color: var(--primary) !important;
       color: white !important;
       font-size: 0.7rem !important;
-      min-width: 16px !important;
-      height: 16px !important;
+      min-width: 15px !important; /* サイズ微調整 */
+      height: 15px !important;
       padding: 0 3px !important;
       border-radius: 8px !important;
       display: flex !important;
@@ -97,12 +103,12 @@
     .header-search-row {
       display: flex !important;
       width: 100% !important;
-      padding: 0 1rem 0.75rem 1rem !important;
+      padding: 0.25rem 1rem 0.5rem 1rem !important; /* 上下余白調整 */
     }
     
-    /* 検索バーコンテナ - 80%幅で中央配置 */
+    /* 検索バーコンテナ - 90%幅で中央配置 */
     .mobile-search-container {
-      width: 80% !important;
+      width: 90% !important; /* 80%から90%に拡大 */
       margin: 0 auto !important;
       display: flex !important;
     }
@@ -116,13 +122,13 @@
     /* 検索入力フィールド - iPhone最適化 */
     .mobile-search-container input {
       width: 100% !important;
-      padding: 0.75rem 3rem 0.75rem 1rem !important;
+      padding: 0.7rem 3rem 0.7rem 1rem !important; /* パディング微調整 */
       border: 1px solid var(--border) !important;
       border-radius: 4px !important;
       background-color: var(--surface-lighter) !important;
       color: var(--text-primary) !important;
       font-size: 16px !important; /* iOSズーム防止の必須設定 */
-      height: 48px !important; /* 高さを太く */
+      height: 46px !important; /* 高さを46pxに調整 */
       box-sizing: border-box !important;
       -webkit-text-size-adjust: 100% !important;
       -webkit-appearance: none !important;
@@ -146,11 +152,11 @@
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      padding: 0.75rem !important;
+      padding: 0.7rem !important; /* パディング調整 */
       border-radius: 0 4px 4px 0 !important;
-      height: 44px !important;
-      width: 44px !important;
-      min-width: 44px !important;
+      height: 42px !important; /* 高さを42pxに調整 */
+      width: 42px !important; /* 幅も42pxに調整 */
+      min-width: 42px !important;
     }
     
     .mobile-search-container button:hover {
@@ -158,8 +164,8 @@
     }
     
     .mobile-search-container button svg {
-      width: 18px !important;
-      height: 18px !important;
+      width: 16px !important; /* アイコンサイズ微調整 */
+      height: 16px !important;
     }
     
     /* デスクトップ用要素を非表示 */
