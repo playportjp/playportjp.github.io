@@ -21,7 +21,22 @@ function loadProducts() {
         })
         .catch(error => {
             console.error('Error loading products:', error);
+            // エラー時のフォールバック表示
+            displayErrorMessage();
         });
+}
+
+// エラーメッセージの表示
+function displayErrorMessage() {
+    const productGrid = document.querySelector('.featured-products .product-grid');
+    if (productGrid) {
+        productGrid.innerHTML = `
+            <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                <h3>製品の読み込みに失敗しました</h3>
+                <p>しばらくしてから再度お試しください。</p>
+            </div>
+        `;
+    }
 }
 
 // 商品を表示
@@ -81,40 +96,105 @@ function displayProducts(products) {
                 <div>No Image</div>
             `;
         
-        const productHtml = `
-            <div class="product-card" data-product-id="${product.id}">
-                <div class="image-placeholder" style="${imageStyle}">
-                    ${!product.image ? imageContent : ''}
-                    <a href="https://www.google.com/search?q=${encodeURIComponent(product.name)}&tbm=isch" class="search-image-link" target="_blank">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        Google
-                    </a>
+        // 商品カードを作成
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+        productCard.setAttribute('data-product-id', product.id);
+        productCard.setAttribute('data-product-name', product.name);
+        productCard.setAttribute('data-product-price', product.price);
+        productCard.setAttribute('data-product-image', product.image || '');
+        
+        // 商品カードの内容を設定
+        productCard.innerHTML = `
+            <div class="image-placeholder" style="${imageStyle}">
+                ${!product.image ? imageContent : ''}
+                <a href="https://www.google.com/search?q=${encodeURIComponent(product.name)}&tbm=isch" class="search-image-link" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    Google
+                </a>
+            </div>
+            <div class="product-details">
+                <h3>${product.name}</h3>
+                <div class="product-meta">
+                    ${categoryTagHtml}
                 </div>
-                <div class="product-details">
-                    <h3>${product.name}</h3>
-                    <div class="product-meta">
-                        ${categoryTagHtml}
-                    </div>
-                    <div class="product-condition">
-                        <span class="condition-badge ${conditionBadgeClass}">${conditionBadgeText}</span>
-                        <span class="stock-status ${stockStatusClass}">${stockStatusText}</span>
-                    </div>
-                    <p class="product-price">${product.price.toFixed(2)} CAD</p>
-                    <div class="product-actions">
-                        <button class="btn btn-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
-                        <a href="product-detail.html?id=${product.id}" class="btn btn-secondary">Details</a>
-                    </div>
+                <div class="product-condition">
+                    <span class="condition-badge ${conditionBadgeClass}">${conditionBadgeText}</span>
+                    <span class="stock-status ${stockStatusClass}">${stockStatusText}</span>
+                </div>
+                <p class="product-price">${product.price.toFixed(2)} CAD</p>
+                <div class="product-actions">
+                    <button class="btn btn-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
+                    <a href="product-detail.html?id=${product.id}" class="btn btn-secondary">Details</a>
                 </div>
             </div>
         `;
         
-        productGrid.innerHTML += productHtml;
+        // 商品カードをグリッドに追加
+        productGrid.appendChild(productCard);
+        
+        // カートに追加ボタンのイベントリスナーを設定
+        const addToCartButton = productCard.querySelector('.add-to-cart');
+        addToCartButton.addEventListener('click', function(event) {
+            // リンクのナビゲーションを防止
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const productId = this.getAttribute('data-id');
+            const productData = {
+                id: productId,
+                name: product.name,
+                price: product.price,
+                image: product.image || ''
+            };
+            
+            // カートマネージャーが利用可能な場合
+            if (window.cartManager) {
+                window.cartManager.addItem(
+                    productData.id,
+                    productData.name,
+                    productData.price,
+                    productData.image
+                );
+                
+                // ボタンのフィードバック
+                const originalText = this.textContent;
+                this.textContent = 'Added!';
+                this.style.backgroundColor = '#16a34a';
+                
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.backgroundColor = '';
+                }, 1500);
+                
+                // カート追加のフィードバック（common.jsの関数を使用）
+                if (typeof showCartFeedback === 'function') {
+                    showCartFeedback();
+                }
+            } else {
+                console.warn('Cart manager not available');
+                // フォールバック: アラート表示
+                alert(`${productData.name} added to cart!`);
+            }
+        });
+        
+        // Googleリンククリックのイベント伝播を防止
+        const googleLink = productCard.querySelector('.search-image-link');
+        googleLink.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+        
+        // 商品詳細ボタンのイベント伝播を防止
+        const detailsButton = productCard.querySelector('.btn-secondary');
+        detailsButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
     }
     
-    // 商品カードのイベントリスナーを設定
+    // 商品カードのクリックイベントを設定
     setupProductCardEvents();
 }
 
@@ -130,53 +210,8 @@ function setupProductCardEvents() {
                 !event.target.closest('.search-image-link')) {
                 
                 const productId = this.getAttribute('data-product-id');
-                window.location.href = `product-detail.html?id=${productId}`;
-            }
-        });
-    });
-    
-    // Googleリンククリックのイベント伝播を防止
-    const googleLinks = document.querySelectorAll('.search-image-link');
-    googleLinks.forEach(link => {
-        link.addEventListener('click', function(event) {
-            event.stopPropagation();
-        });
-    });
-    
-    // カートボタンにイベントリスナーを追加
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
-            // リンクのナビゲーションを防止
-            event.preventDefault();
-            event.stopPropagation();
-            
-            const productId = this.getAttribute('data-id');
-            const productCard = this.closest('.product-card');
-            const product = {
-                id: productId,
-                name: productCard.querySelector('h3').textContent,
-                price: parseFloat(productCard.querySelector('.product-price').textContent),
-                image: productCard.querySelector('.image-placeholder').style.backgroundImage.replace(/url\(['"]?([^'"]+)['"]?\)/i, '$1')
-            };
-            
-            if (product && window.cartManager) {
-                window.cartManager.addItem(
-                    product.id,
-                    product.name,
-                    product.price,
-                    product.image
-                );
-                
-                // クリック時のフィードバック
-                this.textContent = 'Added!';
-                setTimeout(() => {
-                    this.textContent = 'Add to Cart';
-                }, 1000);
-                
-                // 追加：右下に通知を表示（common.jsのshowAddedToCartFeedback関数を呼び出し）
-                if (typeof showAddedToCartFeedback === 'function') {
-                    showAddedToCartFeedback(productCard);
+                if (productId) {
+                    window.location.href = `product-detail.html?id=${productId}`;
                 }
             }
         });
