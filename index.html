@@ -262,9 +262,38 @@
     </style>
 </head>
 <body>
-    <!-- components/header.htmlが動的に読み込まれます -->
-    
-    <main>
+    <!-- components/header.htmlを動的に読み込み -->
+    <script>
+        // ページ読み込み前にヘッダーコンポーネントを読み込み（ちらつき防止）
+        (function() {
+            // ヘッダーコンポーネントを即座に読み込み
+            fetch('components/header.html')
+                .then(response => response.text())
+                .then(html => {
+                    // ヘッダーHTMLをbodyの最初に挿入
+                    document.body.insertAdjacentHTML('afterbegin', html);
+                    
+                    // header-containerにIDを設定
+                    const headerContainer = document.querySelector('.header-container');
+                    if (headerContainer) {
+                        headerContainer.id = 'header-container';
+                    }
+                    
+                    // ページの表示を有効化
+                    document.body.classList.add('loaded');
+                    
+                    // ヘッダーコンポーネントの初期化
+                    if (window.headerComponent) {
+                        window.headerComponent.init();
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to load header component:', error);
+                    // エラーでも表示は有効化
+                    document.body.classList.add('loaded');
+                });
+        })();
+    </script>
         <section id="categories" class="categories">
             <div class="container">
                 <h2>Browse by Category</h2>
