@@ -146,9 +146,9 @@
       right: 2px !important;
       top: 50% !important;
       transform: translateY(-50%) !important;
-      background-color: var(--primary) !important;
+      background: none !important; /* デスクトップ版と統一：透明背景 */
       border: none !important;
-      color: white !important;
+      color: var(--text-secondary) !important; /* デスクトップ版と統一：グレー */
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -160,7 +160,7 @@
     }
     
     .mobile-search-container button:hover {
-      background-color: var(--primary-hover) !important;
+      color: var(--text-primary) !important; /* ホバー時：白 */
     }
     
     .mobile-search-container button svg {
