@@ -16,6 +16,11 @@
       padding: 0 !important;
     }
     
+    /* デスクトップ用ロゴを非表示 */
+    .header-container > .logo {
+      display: none !important;
+    }
+    
     /* 第1行：ロゴとナビの間隔を少し短縮 */
     .header-top-row {
       display: flex !important;
@@ -175,6 +180,11 @@
     /* モバイル用要素を非表示 */
     .header-top-row, .header-search-row, .nav-actions, .mobile-search-container {
       display: none !important;
+    }
+    
+    /* デスクトップ用ロゴを表示 */
+    .header-container > .logo {
+      display: block !important;
     }
     
     .search-container {
