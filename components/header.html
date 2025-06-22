@@ -13,54 +13,7 @@
     margin: 0 !important;
   }
 
-  /* モバイル専用：スクロール時もヘッダー固定表示 - 最優先 */
-  @media (max-width: 768px) {
-    /* bodyとhtmlの設定でstickyを確実にする */
-    html, body {
-      overflow-x: hidden !important;
-    }
-    
-    /* 既存のheaderスタイルを完全にオーバーライド */
-    header {
-      position: -webkit-sticky !important;
-      position: sticky !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      z-index: 9999 !important; /* 最高優先度 */
-      background-color: var(--surface) !important;
-      border-bottom: 1px solid var(--border) !important;
-      width: 100% !important;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-      transform: translateZ(0) !important; /* GPU加速でsticky強化 */
-      padding: 0 !important;
-      margin: 0 !important;
-      /* style.cssのスタイルを強制的にオーバーライド */
-      display: block !important;
-      flex-direction: unset !important;
-      justify-content: unset !important;
-      align-items: unset !important;
-    }
-    
-    /* header内のコンテナも確実に設定 */
-    header .header-container {
-      position: relative !important;
-      z-index: inherit !important;
-    }
-  }
-
-  /* デスクトップ：通常のヘッダー（スクロールで隠れる） - 明確に指定 */
-  @media (min-width: 769px) {
-    header {
-      position: static !important; /* 通常の位置 */
-      background-color: var(--surface) !important;
-      border-bottom: 1px solid var(--border) !important;
-      padding: 1rem 0 !important;
-      z-index: auto !important;
-      box-shadow: none !important;
-      transform: none !important;
-    }
-  }
+  /* CSSによるstickyは削除し、JavaScriptで完全制御 */
 
   /* 全デバイス共通：カートカウントスタイル統一 */
   .cart-count {
@@ -375,35 +328,94 @@ window.headerComponent = {
         // ナビゲーションアイテムの表示制御
         this.controlNavItems();
         
+        // bodyとhtmlのoverflowを確実に設定
+        this.fixBodyOverflow();
+        
         // モバイルでStickyヘッダーを強制適用
         this.applyStickyHeader();
+    },
+    
+    fixBodyOverflow: function() {
+        // stickyの阻害要因を除去
+        document.documentElement.style.overflowX = 'hidden';
+        document.body.style.overflowX = 'hidden';
+        document.documentElement.style.overflowY = 'auto';
+        document.body.style.overflowY = 'auto';
+        console.log('Body overflow fixed for sticky header');
     },
     
     applyStickyHeader: function() {
         // ウィンドウサイズをチェック
         const isMobile = window.innerWidth <= 768;
+        const headerContainer = document.getElementById('header-container');
         const header = document.querySelector('header');
         
-        if (header) {
+        console.log('=== Sticky Header Debug ===');
+        console.log('Is Mobile:', isMobile);
+        console.log('Header Container:', headerContainer);
+        console.log('Header Element:', header);
+        
+        if (headerContainer) {
             if (isMobile) {
-                // モバイル：stickyを強制適用
-                header.style.position = 'sticky';
-                header.style.top = '0';
-                header.style.zIndex = '9999';
-                header.style.backgroundColor = 'var(--surface)';
-                header.style.borderBottom = '1px solid var(--border)';
-                header.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-                header.style.width = '100%';
-                console.log('Mobile sticky header applied');
+                // モバイル：親コンテナをstickyに設定
+                headerContainer.style.position = 'sticky';
+                headerContainer.style.top = '0';
+                headerContainer.style.zIndex = '9999';
+                headerContainer.style.backgroundColor = 'var(--surface)';
+                headerContainer.style.borderBottom = '1px solid var(--border)';
+                headerContainer.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                headerContainer.style.width = '100%';
+                
+                // header要素自体はstatic
+                if (header) {
+                    header.style.position = 'static';
+                    header.style.padding = '0';
+                    header.style.margin = '0';
+                    header.style.background = 'none';
+                    header.style.border = 'none';
+                    header.style.boxShadow = 'none';
+                }
+                
+                // 適用後の確認
+                console.log('Applied styles:');
+                console.log('Container position:', headerContainer.style.position);
+                console.log('Container top:', headerContainer.style.top);
+                console.log('Container z-index:', headerContainer.style.zIndex);
+                
+                // 親要素のチェック
+                let parent = headerContainer.parentElement;
+                console.log('Parent elements:');
+                while (parent && parent !== document.body) {
+                    const styles = window.getComputedStyle(parent);
+                    console.log(`Parent: ${parent.tagName}, overflow: ${styles.overflow}, position: ${styles.position}, transform: ${styles.transform}`);
+                    parent = parent.parentElement;
+                }
+                
+                console.log('Mobile sticky header-container applied');
             } else {
-                // デスクトップ：通常のヘッダー
-                header.style.position = 'static';
-                header.style.boxShadow = 'none';
+                // デスクトップ：通常設定
+                headerContainer.style.position = 'static';
+                headerContainer.style.boxShadow = 'none';
+                headerContainer.style.backgroundColor = 'transparent';
+                headerContainer.style.borderBottom = 'none';
+                
+                if (header) {
+                    header.style.position = 'static';
+                    header.style.backgroundColor = 'var(--surface)';
+                    header.style.borderBottom = '1px solid var(--border)';
+                    header.style.padding = '1rem 0';
+                }
+                
                 console.log('Desktop static header applied');
             }
+        } else {
+            console.error('Header container not found!');
         }
         
+        console.log('=== End Debug ===');
+        
         // リサイズ時にも再適用
+        window.removeEventListener('resize', this.applyStickyHeader);
         window.addEventListener('resize', () => {
             this.applyStickyHeader();
         });
@@ -475,4 +487,17 @@ setTimeout(() => {
         window.headerComponent.applyStickyHeader();
     }
 }, 100);
+
+setTimeout(() => {
+    if (window.headerComponent) {
+        window.headerComponent.applyStickyHeader();
+    }
+}, 500);
+
+// ページロード完了後にも実行
+window.addEventListener('load', function() {
+    if (window.headerComponent) {
+        window.headerComponent.applyStickyHeader();
+    }
+});
 </script>
