@@ -15,12 +15,23 @@
 
   /* モバイル専用：スクロール時もヘッダー固定表示 */
   @media (max-width: 768px) {
+    /* bodyとhtmlの設定でstickyを確実にする */
+    html, body {
+      overflow-x: hidden !important;
+    }
+    
     header {
+      position: -webkit-sticky !important;
       position: sticky !important;
       top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
       z-index: 1000 !important;
       background-color: var(--surface) !important;
       border-bottom: 1px solid var(--border) !important;
+      width: 100% !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+      transform: translateZ(0) !important; /* GPU加速でsticky強化 */
     }
   }
 
@@ -37,8 +48,8 @@
   /* 全デバイス共通：カートカウントスタイル統一 */
   .cart-count {
     position: absolute !important;
-    top: -2px !important; /* さらにカートアイコンに近く */
-    right: -2px !important; /* さらにカートアイコンに近く */
+    top: -2px !important; /* カートアイコンにより近づける */
+    right: -2px !important; /* カートアイコンにより近づける */
     background: none !important;
     color: var(--primary) !important;
     font-size: 0.75rem !important;
