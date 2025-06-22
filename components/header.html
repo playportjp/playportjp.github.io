@@ -320,7 +320,7 @@
 // ヘッダーコンポーネント専用JavaScript
 window.headerComponent = {
     init: function() {
-        console.log('Header component initialized - minimal iPhone optimization');
+        console.log('Header component initialized - iPhone optimization with sticky');
         
         // カート数を更新
         this.updateCartCounts();
@@ -328,97 +328,65 @@ window.headerComponent = {
         // ナビゲーションアイテムの表示制御
         this.controlNavItems();
         
-        // bodyとhtmlのoverflowを確実に設定
-        this.fixBodyOverflow();
-        
-        // モバイルでStickyヘッダーを強制適用
-        this.applyStickyHeader();
-    },
-    
-    fixBodyOverflow: function() {
-        // stickyの阻害要因を除去
-        document.documentElement.style.overflowX = 'hidden';
-        document.body.style.overflowX = 'hidden';
-        document.documentElement.style.overflowY = 'auto';
-        document.body.style.overflowY = 'auto';
-        console.log('Body overflow fixed for sticky header');
+        // 重要：stickyヘッダーを即座に適用
+        setTimeout(() => {
+            this.applyStickyHeader();
+        }, 50);
     },
     
     applyStickyHeader: function() {
-        // ウィンドウサイズをチェック
+        console.log('=== Applying Sticky Header ===');
+        
         const isMobile = window.innerWidth <= 768;
         const headerContainer = document.getElementById('header-container');
         const header = document.querySelector('header');
         
-        console.log('=== Sticky Header Debug ===');
         console.log('Is Mobile:', isMobile);
-        console.log('Header Container:', headerContainer);
-        console.log('Header Element:', header);
+        console.log('Header Container Found:', !!headerContainer);
+        console.log('Header Element Found:', !!header);
         
-        if (headerContainer) {
-            if (isMobile) {
-                // モバイル：親コンテナをstickyに設定
-                headerContainer.style.position = 'sticky';
-                headerContainer.style.top = '0';
-                headerContainer.style.zIndex = '9999';
-                headerContainer.style.backgroundColor = 'var(--surface)';
-                headerContainer.style.borderBottom = '1px solid var(--border)';
-                headerContainer.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-                headerContainer.style.width = '100%';
-                
-                // header要素自体はstatic
-                if (header) {
-                    header.style.position = 'static';
-                    header.style.padding = '0';
-                    header.style.margin = '0';
-                    header.style.background = 'none';
-                    header.style.border = 'none';
-                    header.style.boxShadow = 'none';
-                }
-                
-                // 適用後の確認
-                console.log('Applied styles:');
-                console.log('Container position:', headerContainer.style.position);
-                console.log('Container top:', headerContainer.style.top);
-                console.log('Container z-index:', headerContainer.style.zIndex);
-                
-                // 親要素のチェック
-                let parent = headerContainer.parentElement;
-                console.log('Parent elements:');
-                while (parent && parent !== document.body) {
-                    const styles = window.getComputedStyle(parent);
-                    console.log(`Parent: ${parent.tagName}, overflow: ${styles.overflow}, position: ${styles.position}, transform: ${styles.transform}`);
-                    parent = parent.parentElement;
-                }
-                
-                console.log('Mobile sticky header-container applied');
-            } else {
-                // デスクトップ：通常設定
-                headerContainer.style.position = 'static';
-                headerContainer.style.boxShadow = 'none';
-                headerContainer.style.backgroundColor = 'transparent';
-                headerContainer.style.borderBottom = 'none';
-                
-                if (header) {
-                    header.style.position = 'static';
-                    header.style.backgroundColor = 'var(--surface)';
-                    header.style.borderBottom = '1px solid var(--border)';
-                    header.style.padding = '1rem 0';
-                }
-                
-                console.log('Desktop static header applied');
+        if (isMobile && headerContainer) {
+            // モバイル：header-containerをstickyに
+            headerContainer.style.setProperty('position', 'sticky', 'important');
+            headerContainer.style.setProperty('top', '0', 'important');
+            headerContainer.style.setProperty('z-index', '9999', 'important');
+            headerContainer.style.setProperty('background-color', 'var(--surface)', 'important');
+            headerContainer.style.setProperty('border-bottom', '1px solid var(--border)', 'important');
+            headerContainer.style.setProperty('box-shadow', '0 2px 4px rgba(0, 0, 0, 0.1)', 'important');
+            headerContainer.style.setProperty('width', '100%', 'important');
+            
+            // header要素をstatic
+            if (header) {
+                header.style.setProperty('position', 'static', 'important');
+                header.style.setProperty('padding', '0', 'important');
+                header.style.setProperty('margin', '0', 'important');
             }
-        } else {
-            console.error('Header container not found!');
+            
+            console.log('✅ Mobile sticky applied to header-container');
+            
+            // 適用後の状態確認
+            const computedStyle = window.getComputedStyle(headerContainer);
+            console.log('Final position:', computedStyle.position);
+            console.log('Final top:', computedStyle.top);
+            console.log('Final z-index:', computedStyle.zIndex);
+            
+        } else if (!isMobile && headerContainer) {
+            // デスクトップ：通常設定
+            headerContainer.style.setProperty('position', 'static', 'important');
+            headerContainer.style.removeProperty('top');
+            headerContainer.style.removeProperty('z-index');
+            headerContainer.style.removeProperty('box-shadow');
+            
+            if (header) {
+                header.style.setProperty('position', 'static', 'important');
+                header.style.setProperty('background-color', 'var(--surface)', 'important');
+                header.style.setProperty('padding', '1rem 0', 'important');
+            }
+            
+            console.log('✅ Desktop static applied');
         }
         
-        console.log('=== End Debug ===');
-        
-        // リサイズ時にも再適用
-        window.removeEventListener('resize', this.applyStickyHeader);
-        window.addEventListener('resize', () => {
-            this.applyStickyHeader();
-        });
+        console.log('=== Sticky Header Complete ===');
     },
     
     updateCartCounts: function() {
@@ -438,18 +406,15 @@ window.headerComponent = {
         const accountIcon = document.querySelector('.account-icon');
         
         if (orderHistoryIcon && accountIcon) {
-            // Account画面ではAccountアイコンを非表示
             if (currentPath.includes('account.html')) {
                 accountIcon.style.display = 'none';
             }
             
-            // Order History画面ではOrder Historyアイコンを非表示
             if (currentPath.includes('order-history.html')) {
                 orderHistoryIcon.style.display = 'none';
             }
         }
         
-        // デスクトップ版の制御
         const orderHistoryItem = document.querySelector('.nav-item.order-history');
         const accountItem = document.querySelector('.nav-item.account');
         
@@ -465,39 +430,17 @@ window.headerComponent = {
     }
 };
 
+// リサイズ時の再適用
+window.addEventListener('resize', function() {
+    if (window.headerComponent && window.headerComponent.applyStickyHeader) {
+        window.headerComponent.applyStickyHeader();
+    }
+});
+
 // カート更新イベントのリスナー
 document.addEventListener('cart:updated', function() {
     if (window.headerComponent) {
         window.headerComponent.updateCartCounts();
-    }
-});
-
-// 確実に実行するための複数のタイミング
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        window.headerComponent.init();
-    });
-} else {
-    window.headerComponent.init();
-}
-
-// さらに遅延実行で確実に適用
-setTimeout(() => {
-    if (window.headerComponent) {
-        window.headerComponent.applyStickyHeader();
-    }
-}, 100);
-
-setTimeout(() => {
-    if (window.headerComponent) {
-        window.headerComponent.applyStickyHeader();
-    }
-}, 500);
-
-// ページロード完了後にも実行
-window.addEventListener('load', function() {
-    if (window.headerComponent) {
-        window.headerComponent.applyStickyHeader();
     }
 });
 </script>
