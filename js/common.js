@@ -30,6 +30,9 @@ window.headerLoader = {
                         window.cartManager.updateCartCount();
                         console.log('Cart counts synced with header');
                     }
+                    
+                    // ★ Stickyヘッダーを直接適用
+                    this.applyStickyHeader();
                 }, 100);
             } else {
                 console.error('Header container not found');
@@ -39,6 +42,62 @@ window.headerLoader = {
             // フォールバック: 基本的なヘッダーを表示
             this.createFallbackHeader();
         }
+    },
+    
+    // ★ 新しく追加：Stickyヘッダー機能
+    applyStickyHeader: function() {
+        console.log('=== Applying Sticky Header ===');
+        
+        const isMobile = window.innerWidth <= 768;
+        const headerContainer = document.getElementById('header-container');
+        const header = document.querySelector('header');
+        
+        console.log('Is Mobile:', isMobile);
+        console.log('Header Container Found:', !!headerContainer);
+        console.log('Header Element Found:', !!header);
+        
+        if (isMobile && headerContainer) {
+            // モバイル：header-containerをstickyに
+            headerContainer.style.setProperty('position', 'sticky', 'important');
+            headerContainer.style.setProperty('top', '0', 'important');
+            headerContainer.style.setProperty('z-index', '9999', 'important');
+            headerContainer.style.setProperty('background-color', 'var(--surface)', 'important');
+            headerContainer.style.setProperty('border-bottom', '1px solid var(--border)', 'important');
+            headerContainer.style.setProperty('box-shadow', '0 2px 4px rgba(0, 0, 0, 0.1)', 'important');
+            headerContainer.style.setProperty('width', '100%', 'important');
+            
+            // header要素をstatic
+            if (header) {
+                header.style.setProperty('position', 'static', 'important');
+                header.style.setProperty('padding', '0', 'important');
+                header.style.setProperty('margin', '0', 'important');
+            }
+            
+            console.log('✅ Mobile sticky applied to header-container');
+            
+            // 適用後の状態確認
+            const computedStyle = window.getComputedStyle(headerContainer);
+            console.log('Final position:', computedStyle.position);
+            console.log('Final top:', computedStyle.top);
+            console.log('Final z-index:', computedStyle.zIndex);
+            
+        } else if (!isMobile && headerContainer) {
+            // デスクトップ：通常設定
+            headerContainer.style.setProperty('position', 'static', 'important');
+            headerContainer.style.removeProperty('top');
+            headerContainer.style.removeProperty('z-index');
+            headerContainer.style.removeProperty('box-shadow');
+            
+            if (header) {
+                header.style.setProperty('position', 'static', 'important');
+                header.style.setProperty('background-color', 'var(--surface)', 'important');
+                header.style.setProperty('padding', '1rem 0', 'important');
+            }
+            
+            console.log('✅ Desktop static applied');
+        }
+        
+        console.log('=== Sticky Header Complete ===');
     },
     
     createFallbackHeader: function() {
@@ -83,9 +142,18 @@ window.headerLoader = {
                 </header>
             `;
             console.log('Fallback header created');
+            // フォールバック後もstickyを適用
+            this.applyStickyHeader();
         }
     }
 };
+
+// ★ リサイズ時の再適用
+window.addEventListener('resize', function() {
+    if (window.headerLoader && window.headerLoader.applyStickyHeader) {
+        window.headerLoader.applyStickyHeader();
+    }
+});
 
 // カート管理機能
 window.cartManager = {
@@ -261,6 +329,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // 4. 現在のページに基づいてナビゲーションアイテムの表示制御
     controlNavItems();
+    
+    // ★ 5. 追加で確実にStickyヘッダーを適用
+    setTimeout(() => {
+        if (window.headerLoader) {
+            window.headerLoader.applyStickyHeader();
+        }
+    }, 300);
 });
 
 // 商品カードのイベントリスナーを設定
