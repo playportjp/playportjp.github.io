@@ -13,6 +13,25 @@
     margin: 0 !important;
   }
 
+  /* 全デバイス共通：カートカウントスタイル統一 */
+  .cart-count {
+    position: absolute !important;
+    top: 2px !important;
+    right: 2px !important;
+    background: none !important;
+    color: var(--primary) !important;
+    font-size: 0.75rem !important;
+    min-width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+  }
+
   /* モバイル最適化スタイル（768px以下） */
   @media (max-width: 768px) {
     /* ヘッダー全体の基本設定 */
@@ -79,24 +98,6 @@
     .nav-icon svg {
       width: 19px !important; /* アイコンサイズ微調整 */
       height: 19px !important;
-    }
-    
-    /* カートカウントの調整 */
-    .cart-count {
-      position: absolute !important;
-      top: -1px !important; /* 位置微調整 */
-      right: -1px !important;
-      background-color: var(--primary) !important;
-      color: white !important;
-      font-size: 0.7rem !important;
-      min-width: 15px !important; /* サイズ微調整 */
-      height: 15px !important;
-      padding: 0 3px !important;
-      border-radius: 8px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      font-weight: 600 !important;
     }
     
     /* 第2行：検索バーの最適化 */
