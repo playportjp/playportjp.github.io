@@ -135,20 +135,46 @@ function displayProducts(products) {
         
         // 商品カードをグリッドに追加
         productGrid.appendChild(productCard);
-        
-        // カートに追加ボタンのイベントリスナーを設定
-        const addToCartButton = productCard.querySelector('.add-to-cart');
-        addToCartButton.addEventListener('click', function(event) {
+    }
+    
+    // 商品カードのイベントリスナーを設定
+    setupProductCardEvents();
+}
+
+// 商品カードのイベントリスナーを設定
+function setupProductCardEvents() {
+    // 商品カードのクリックイベントを設定
+    const productCards = document.querySelectorAll('.product-card');
+    productCards.forEach(card => {
+        card.addEventListener('click', function(event) {
+            // イベントターゲットがボタンやGoogle検索リンクでない場合
+            if (!event.target.closest('.add-to-cart') && 
+                !event.target.closest('.btn-secondary') && 
+                !event.target.closest('.search-image-link')) {
+                
+                const productId = this.getAttribute('data-product-id');
+                if (productId) {
+                    window.location.href = `product-detail.html?id=${productId}`;
+                }
+            }
+        });
+    });
+
+    // カートに追加ボタンのイベントリスナーを設定
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
             // リンクのナビゲーションを防止
             event.preventDefault();
             event.stopPropagation();
             
             const productId = this.getAttribute('data-id');
+            const productCard = this.closest('.product-card');
             const productData = {
                 id: productId,
-                name: product.name,
-                price: product.price,
-                image: product.image || ''
+                name: productCard.getAttribute('data-product-name'),
+                price: parseFloat(productCard.getAttribute('data-product-price')),
+                image: productCard.getAttribute('data-product-image')
             };
             
             // カートマネージャーが利用可能な場合
@@ -180,40 +206,21 @@ function displayProducts(products) {
                 alert(`${productData.name} added to cart!`);
             }
         });
-        
-        // Googleリンククリックのイベント伝播を防止
-        const googleLink = productCard.querySelector('.search-image-link');
-        googleLink.addEventListener('click', function(event) {
-            event.stopPropagation();
-        });
-        
-        // 商品詳細ボタンのイベント伝播を防止
-        const detailsButton = productCard.querySelector('.btn-secondary');
-        detailsButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-        });
-    }
+    });
     
-    // 商品カードのクリックイベントを設定
-    setupProductCardEvents();
-}
-
-// 商品カードのイベントリスナーを設定
-function setupProductCardEvents() {
-    // 商品カードのクリックイベントを設定
-    const productCards = document.querySelectorAll('.product-card');
-    productCards.forEach(card => {
-        card.addEventListener('click', function(event) {
-            // イベントターゲットがボタンやGoogle検索リンクでない場合
-            if (!event.target.closest('.add-to-cart') && 
-                !event.target.closest('.btn-secondary') && 
-                !event.target.closest('.search-image-link')) {
-                
-                const productId = this.getAttribute('data-product-id');
-                if (productId) {
-                    window.location.href = `product-detail.html?id=${productId}`;
-                }
-            }
+    // Googleリンククリックのイベント伝播を防止
+    const googleLinks = document.querySelectorAll('.search-image-link');
+    googleLinks.forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    });
+    
+    // 商品詳細ボタンのイベント伝播を防止
+    const detailsButtons = document.querySelectorAll('.btn-secondary');
+    detailsButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.stopPropagation();
         });
     });
 }
