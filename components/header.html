@@ -13,11 +13,32 @@
     margin: 0 !important;
   }
 
+  /* モバイル専用：スクロール時もヘッダー固定表示 */
+  @media (max-width: 768px) {
+    header {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 1000 !important;
+      background-color: var(--surface) !important;
+      border-bottom: 1px solid var(--border) !important;
+    }
+  }
+
+  /* デスクトップ：通常のヘッダー（スクロールで隠れる） */
+  @media (min-width: 769px) {
+    header {
+      position: static !important;
+      background-color: var(--surface) !important;
+      border-bottom: 1px solid var(--border) !important;
+      padding: 1rem 0 !important;
+    }
+  }
+
   /* 全デバイス共通：カートカウントスタイル統一 */
   .cart-count {
     position: absolute !important;
-    top: 2px !important;
-    right: 2px !important;
+    top: -2px !important; /* さらにカートアイコンに近く */
+    right: -2px !important; /* さらにカートアイコンに近く */
     background: none !important;
     color: var(--primary) !important;
     font-size: 0.75rem !important;
