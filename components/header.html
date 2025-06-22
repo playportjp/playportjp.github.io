@@ -374,6 +374,39 @@ window.headerComponent = {
         
         // ナビゲーションアイテムの表示制御
         this.controlNavItems();
+        
+        // モバイルでStickyヘッダーを強制適用
+        this.applyStickyHeader();
+    },
+    
+    applyStickyHeader: function() {
+        // ウィンドウサイズをチェック
+        const isMobile = window.innerWidth <= 768;
+        const header = document.querySelector('header');
+        
+        if (header) {
+            if (isMobile) {
+                // モバイル：stickyを強制適用
+                header.style.position = 'sticky';
+                header.style.top = '0';
+                header.style.zIndex = '9999';
+                header.style.backgroundColor = 'var(--surface)';
+                header.style.borderBottom = '1px solid var(--border)';
+                header.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                header.style.width = '100%';
+                console.log('Mobile sticky header applied');
+            } else {
+                // デスクトップ：通常のヘッダー
+                header.style.position = 'static';
+                header.style.boxShadow = 'none';
+                console.log('Desktop static header applied');
+            }
+        }
+        
+        // リサイズ時にも再適用
+        window.addEventListener('resize', () => {
+            this.applyStickyHeader();
+        });
     },
     
     updateCartCounts: function() {
@@ -426,4 +459,20 @@ document.addEventListener('cart:updated', function() {
         window.headerComponent.updateCartCounts();
     }
 });
+
+// 確実に実行するための複数のタイミング
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        window.headerComponent.init();
+    });
+} else {
+    window.headerComponent.init();
+}
+
+// さらに遅延実行で確実に適用
+setTimeout(() => {
+    if (window.headerComponent) {
+        window.headerComponent.applyStickyHeader();
+    }
+}, 100);
 </script>
