@@ -13,8 +13,6 @@
     margin: 0 !important;
   }
 
-  /* CSSによるstickyは削除し、JavaScriptで完全制御 */
-
   /* 全デバイス共通：カートカウントスタイル統一 */
   .cart-count {
     position: absolute !important;
@@ -186,11 +184,14 @@
 
   /* デスクトップスタイル（769px以上） */
   @media (min-width: 769px) {
+    /* ヘッダー全体の基本設定 - 高さとパディング最適化 */
     .header-container {
       display: flex !important;
       justify-content: space-between !important;
       align-items: center !important;
-      padding: 1rem 0 !important;
+      padding: 0.75rem 0 !important; /* パディングを少し削減 */
+      height: 70px !important; /* 固定高さを設定 */
+      box-sizing: border-box !important;
     }
     
     /* モバイル用要素を非表示 */
@@ -201,17 +202,88 @@
     /* デスクトップ用ロゴを表示 */
     .header-container > .logo {
       display: block !important;
+      flex-shrink: 0 !important;
     }
     
+    .header-container > .logo h1 {
+      font-size: 1.5rem !important; /* ロゴサイズ最適化 */
+      margin: 0 !important;
+    }
+    
+    /* 検索コンテナ - サイズとスタイル最適化 */
     .search-container {
       display: flex !important;
       flex-grow: 1 !important;
-      max-width: 500px !important;
+      max-width: 600px !important; /* 幅を少し拡大 */
       margin: 0 2rem !important;
+      height: 42px !important; /* 固定高さ */
     }
     
+    .search-container form {
+      width: 100% !important;
+      display: flex !important;
+      position: relative !important;
+      height: 100% !important;
+    }
+    
+    /* デスクトップ検索入力フィールド */
+    .search-container input {
+      width: 100% !important;
+      height: 42px !important; /* 固定高さ */
+      padding: 0 50px 0 1rem !important; /* 右側にボタンスペース確保 */
+      border: 1px solid var(--border) !important;
+      border-radius: 4px !important;
+      background-color: var(--surface-lighter) !important;
+      color: var(--text-primary) !important;
+      font-size: 14px !important;
+      box-sizing: border-box !important;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+    }
+    
+    .search-container input:focus {
+      outline: none !important;
+      box-shadow: 0 0 0 2px var(--focus-ring) !important;
+      border-color: var(--primary) !important;
+    }
+    
+    .search-container input::placeholder {
+      color: var(--text-secondary) !important;
+    }
+    
+    /* デスクトップ検索ボタン */
+    .search-container button {
+      position: absolute !important;
+      right: 2px !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      background: none !important;
+      border: none !important;
+      color: var(--text-secondary) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      border-radius: 0 4px 4px 0 !important;
+      height: 38px !important; /* 入力フィールドより少し小さく */
+      width: 42px !important;
+      min-width: 42px !important;
+      cursor: pointer !important;
+      transition: color 0.2s ease !important;
+    }
+    
+    .search-container button:hover {
+      color: var(--text-primary) !important;
+    }
+    
+    .search-container button svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+    
+    /* デスクトップナビゲーション */
     .header-desktop-nav {
       display: block !important;
+      flex-shrink: 0 !important;
     }
     
     .header-desktop-nav ul {
@@ -219,12 +291,63 @@
       list-style: none !important;
       gap: 1.5rem !important;
       align-items: center !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
+    .header-desktop-nav li {
+      margin: 0 !important;
+    }
+    
+    .header-desktop-nav a {
+      color: var(--text-primary) !important;
+      text-decoration: none !important;
+      font-weight: 500 !important;
+      padding: 0.5rem 0 !important;
+      transition: color 0.2s ease !important;
+    }
+    
+    .header-desktop-nav a:hover {
+      color: var(--primary) !important;
+    }
+    
+    /* デスクトップカートアイコン */
+    .header-desktop-nav .cart-icon a {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      position: relative !important;
+      padding: 0.5rem !important;
+      border-radius: 4px !important;
+      transition: background-color 0.2s ease !important;
+    }
+    
+    .header-desktop-nav .cart-icon a:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .header-desktop-nav .cart-icon svg {
+      width: 20px !important;
+      height: 20px !important;
+    }
+    
+    /* デスクトップカート数字の位置調整 */
+    .header-desktop-nav .cart-count {
+      position: absolute !important;
+      top: 2px !important; /* デスクトップ用に調整 */
+      right: 2px !important; /* デスクトップ用に調整 */
+      background: none !important;
+      color: var(--primary) !important;
+      font-size: 0.7rem !important; /* サイズ調整 */
+      font-weight: 700 !important;
+      line-height: 1 !important;
+      z-index: 10 !important;
     }
   }
 </style>
 
 <header>
-    <div class="container header-container">
+    <div class="container header-container" id="header-container">
         <!-- モバイル用：第1行（ロゴとナビ） -->
         <div class="header-top-row">
             <div class="logo">
@@ -320,7 +443,7 @@
 // ヘッダーコンポーネント専用JavaScript
 window.headerComponent = {
     init: function() {
-        console.log('Header component initialized - iPhone optimization with sticky');
+        console.log('Header component initialized - PC version optimized');
         
         // カート数を更新
         this.updateCartCounts();
@@ -364,26 +487,22 @@ window.headerComponent = {
             
             console.log('✅ Mobile sticky applied to header-container');
             
-            // 適用後の状態確認
-            const computedStyle = window.getComputedStyle(headerContainer);
-            console.log('Final position:', computedStyle.position);
-            console.log('Final top:', computedStyle.top);
-            console.log('Final z-index:', computedStyle.zIndex);
-            
         } else if (!isMobile && headerContainer) {
-            // デスクトップ：通常設定
+            // デスクトップ：通常設定（高さ70pxで固定）
             headerContainer.style.setProperty('position', 'static', 'important');
             headerContainer.style.removeProperty('top');
             headerContainer.style.removeProperty('z-index');
             headerContainer.style.removeProperty('box-shadow');
+            headerContainer.style.setProperty('height', '70px', 'important');
             
             if (header) {
                 header.style.setProperty('position', 'static', 'important');
                 header.style.setProperty('background-color', 'var(--surface)', 'important');
-                header.style.setProperty('padding', '1rem 0', 'important');
+                header.style.setProperty('padding', '0', 'important');
+                header.style.setProperty('margin', '0', 'important');
             }
             
-            console.log('✅ Desktop static applied');
+            console.log('✅ Desktop optimized applied');
         }
         
         console.log('=== Sticky Header Complete ===');
