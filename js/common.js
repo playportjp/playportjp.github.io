@@ -44,7 +44,7 @@ window.headerLoader = {
         }
     },
     
-    // ★ 新しく追加：Stickyヘッダー機能
+    // ★ 修正済み：Stickyヘッダー機能（パディング競合解消）
     applyStickyHeader: function() {
         console.log('=== Applying Sticky Header ===');
         
@@ -82,7 +82,7 @@ window.headerLoader = {
             console.log('Final z-index:', computedStyle.zIndex);
             
         } else if (!isMobile && headerContainer) {
-            // デスクトップ：通常設定
+            // ★ 修正：デスクトップではパディングを上書きしない
             headerContainer.style.setProperty('position', 'static', 'important');
             headerContainer.style.removeProperty('top');
             headerContainer.style.removeProperty('z-index');
@@ -91,10 +91,11 @@ window.headerLoader = {
             if (header) {
                 header.style.setProperty('position', 'static', 'important');
                 header.style.setProperty('background-color', 'var(--surface)', 'important');
-                header.style.setProperty('padding', '1rem 0', 'important');
+                // ★ パディング設定を削除：ヘッダーコンポーネントのCSSに任せる
+                // header.style.setProperty('padding', '1rem 0', 'important');
             }
             
-            console.log('✅ Desktop static applied');
+            console.log('✅ Desktop static applied without padding override');
         }
         
         console.log('=== Sticky Header Complete ===');
@@ -330,12 +331,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 4. 現在のページに基づいてナビゲーションアイテムの表示制御
     controlNavItems();
     
-    // ★ 5. 追加で確実にStickyヘッダーを適用
-    setTimeout(() => {
-        if (window.headerLoader) {
-            window.headerLoader.applyStickyHeader();
-        }
-    }, 300);
+    // ★ 5. 追加で確実にStickyヘッダーを適用（パディング競合回避のため削除）
+    // setTimeout(() => {
+    //     if (window.headerLoader) {
+    //         window.headerLoader.applyStickyHeader();
+    //     }
+    // }, 300);
 });
 
 // 商品カードのイベントリスナーを設定
