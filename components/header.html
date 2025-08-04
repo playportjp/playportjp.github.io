@@ -184,13 +184,13 @@
 
   /* デスクトップスタイル（769px以上） */
   @media (min-width: 769px) {
-    /* ヘッダー全体の基本設定 - コンパクトなサイズ */
+    /* ヘッダー全体の基本設定 - cart.htmlの旧ヘッダーサイズに合わせる */
     .header-container {
       display: flex !important;
       justify-content: space-between !important;
       align-items: center !important;
-      padding: 0.5rem 0 !important; /* パディングを削減 */
-      height: 50px !important; /* 高さをコンパクトに */
+      padding: 1rem 0 !important; /* cart.htmlと同じパディング */
+      height: auto !important; /* 高さを自動調整 */
       box-sizing: border-box !important;
     }
     
@@ -199,24 +199,25 @@
       display: none !important;
     }
     
-    /* デスクトップ用ロゴを表示 */
+    /* デスクトップ用ロゴを表示 - cart.htmlと同じサイズ */
     .header-container > .logo {
       display: block !important;
       flex-shrink: 0 !important;
     }
     
     .header-container > .logo h1 {
-      font-size: 1.5rem !important; /* ロゴサイズ最適化 */
+      font-size: 1.8rem !important; /* cart.htmlのロゴサイズに合わせる */
       margin: 0 !important;
+      font-weight: 600 !important;
     }
     
-    /* 検索コンテナ - サイズとスタイル最適化 */
+    /* 検索コンテナ - cart.htmlのサイズに合わせる */
     .search-container {
       display: flex !important;
       flex-grow: 1 !important;
-      max-width: 600px !important; /* 幅を少し拡大 */
+      max-width: 500px !important; /* cart.htmlと同じ幅 */
       margin: 0 2rem !important;
-      height: 36px !important; /* コンパクトな高さ */
+      height: 40px !important; /* cart.htmlと同じ高さ */
     }
     
     .search-container form {
@@ -226,11 +227,11 @@
       height: 100% !important;
     }
     
-    /* デスクトップ検索入力フィールド */
+    /* デスクトップ検索入力フィールド - cart.htmlに合わせる */
     .search-container input {
       width: 100% !important;
-      height: 36px !important; /* コンパクトな高さ */
-      padding: 0 45px 0 0.8rem !important; /* パディングも調整 */
+      height: 40px !important; /* cart.htmlの高さに合わせる */
+      padding: 0 50px 0 1rem !important; /* cart.htmlのパディングに合わせる */
       border: 1px solid var(--border) !important;
       border-radius: 4px !important;
       background-color: var(--surface-lighter) !important;
@@ -250,7 +251,7 @@
       color: var(--text-secondary) !important;
     }
     
-    /* デスクトップ検索ボタン */
+    /* デスクトップ検索ボタン - cart.htmlに合わせる */
     .search-container button {
       position: absolute !important;
       right: 2px !important;
@@ -264,9 +265,9 @@
       justify-content: center !important;
       padding: 0 !important;
       border-radius: 0 4px 4px 0 !important;
-      height: 32px !important; /* 入力フィールドより少し小さく */
-      width: 36px !important; /* 幅も調整 */
-      min-width: 36px !important;
+      height: 36px !important; /* 入力フィールドより少し小さく */
+      width: 42px !important; /* cart.htmlの幅に合わせる */
+      min-width: 42px !important;
       cursor: pointer !important;
       transition: color 0.2s ease !important;
     }
@@ -488,12 +489,12 @@ window.headerComponent = {
             console.log('✅ Mobile sticky applied to header-container');
             
         } else if (!isMobile && headerContainer) {
-            // デスクトップ：通常設定（高さ50pxでコンパクト）
+            // デスクトップ：通常設定（cart.htmlの旧ヘッダーサイズに合わせる）
             headerContainer.style.setProperty('position', 'static', 'important');
             headerContainer.style.removeProperty('top');
             headerContainer.style.removeProperty('z-index');
             headerContainer.style.removeProperty('box-shadow');
-            headerContainer.style.setProperty('height', '50px', 'important');
+            headerContainer.style.removeProperty('height'); // 高さ制限を削除
             
             if (header) {
                 header.style.setProperty('position', 'static', 'important');
@@ -502,7 +503,7 @@ window.headerComponent = {
                 header.style.setProperty('margin', '0', 'important');
             }
             
-            console.log('✅ Desktop optimized applied');
+            console.log('✅ Desktop optimized applied with cart.html sizing');
         }
         
         console.log('=== Sticky Header Complete ===');
