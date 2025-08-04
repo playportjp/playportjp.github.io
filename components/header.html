@@ -199,16 +199,28 @@
       display: none !important;
     }
     
-    /* デスクトップ用ロゴを表示 - cart.htmlと同じサイズ */
+    /* デスクトップ用ロゴを表示 - cart.htmlの正確なサイズに合わせる */
     .header-container > .logo {
       display: block !important;
       flex-shrink: 0 !important;
     }
     
+    .header-container > .logo a {
+      text-decoration: none !important;
+    }
+    
     .header-container > .logo h1 {
-      font-size: 1.8rem !important; /* cart.htmlのロゴサイズに合わせる */
+      font-size: 2rem !important; /* cart.htmlの実際のサイズに合わせる */
       margin: 0 !important;
       font-weight: 600 !important;
+      color: white !important;
+      display: flex !important;
+      align-items: center !important;
+      height: 100% !important;
+    }
+    
+    .header-container > .logo h1 span {
+      color: var(--primary) !important;
     }
     
     /* 検索コンテナ - cart.htmlのサイズに合わせる */
