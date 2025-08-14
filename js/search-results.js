@@ -72,6 +72,27 @@ let allProducts = [];
 // 現在表示中の商品（フィルター適用後）
 let currentFilteredProducts = [];
 
+// カテゴリタグのHTMLを生成（カテゴリ色対応）
+function generateCategoryTagHtml(product) {
+    let categoryTagHtml = '';
+    
+    if (product.category) {
+        const categoryClass = product.category.toLowerCase();
+        const conditionClass = product.new ? 'new' : 'used';
+        
+        // カテゴリ×状態のクラスを適用
+        categoryTagHtml += `<span class="meta-tag ${categoryClass} ${conditionClass}">${product.category}</span>`;
+        
+        console.log(`Generated category tag: ${categoryClass} ${conditionClass} for ${product.name}`);
+    }
+    
+    if (product.subcategory) {
+        categoryTagHtml += `<span class="meta-tag other">${product.subcategory}</span>`;
+    }
+    
+    return categoryTagHtml;
+}
+
 // 商品を検索して表示
 function searchProducts(query, page = 1) {
     console.log('Searching products for query:', query, 'page:', page);
@@ -185,108 +206,6 @@ function updateCategoryFilter(category) {
                 currentFilters.category = 'All';
             }
         });
-    }
-}
-
-// コンディションフィルターを更新
-function updateConditionFilter(condition) {
-    console.log('Updating condition filter for:', condition);
-    
-    // コンディションフィルターオプションを取得
-    const filterGroups = document.querySelectorAll('.filter-group');
-    let conditionFilters;
-    
-    // コンディションフィルターグループを探す
-    filterGroups.forEach(group => {
-        const heading = group.querySelector('.filter-heading');
-        if (heading && heading.textContent.trim() === 'Condition') {
-            conditionFilters = group.querySelectorAll('.filter-option');
-            console.log('Found condition filters:', conditionFilters.length);
-        }
-    });
-    
-    if (!conditionFilters || conditionFilters.length === 0) {
-        console.error('Condition filters not found');
-        return;
-    }
-    
-    // すべてのフィルターからアクティブクラスを削除
-    conditionFilters.forEach(filter => {
-        filter.classList.remove('active');
-    });
-    
-    // 選択されたコンディションに応じてフィルターをアクティブに
-    let foundMatch = false;
-    
-    conditionFilters.forEach(filter => {
-        const filterText = filter.textContent.trim();
-        console.log('Checking filter:', filterText, 'against condition:', condition);
-        
-        if (filterText === condition) {
-            filter.classList.add('active');
-            foundMatch = true;
-            console.log('Match found! Setting', filterText, 'as active');
-            // フィルター状態を更新
-            currentFilters.condition = filterText;
-        }
-    });
-    
-    // マッチするフィルターが見つからなかった場合、状態をAllに設定
-    if (!foundMatch) {
-        console.log('No matching filter found, defaulting to All');
-        // フィルター状態を更新
-        currentFilters.condition = 'All';
-    }
-}
-
-// 価格フィルターを更新
-function updatePriceFilter(priceRange) {
-    console.log('Updating price filter for:', priceRange);
-    
-    // 価格フィルターオプションを取得
-    const filterGroups = document.querySelectorAll('.filter-group');
-    let priceFilters;
-    
-    // 価格フィルターグループを探す
-    filterGroups.forEach(group => {
-        const heading = group.querySelector('.filter-heading');
-        if (heading && heading.textContent.trim() === 'Price Range') {
-            priceFilters = group.querySelectorAll('.filter-option');
-            console.log('Found price filters:', priceFilters.length);
-        }
-    });
-    
-    if (!priceFilters || priceFilters.length === 0) {
-        console.error('Price filters not found');
-        return;
-    }
-    
-    // すべてのフィルターからアクティブクラスを削除
-    priceFilters.forEach(filter => {
-        filter.classList.remove('active');
-    });
-    
-    // 選択された価格範囲に応じてフィルターをアクティブに
-    let foundMatch = false;
-    
-    priceFilters.forEach(filter => {
-        const filterText = filter.textContent.trim();
-        console.log('Checking filter:', filterText, 'against price range:', priceRange);
-        
-        if (filterText === priceRange) {
-            filter.classList.add('active');
-            foundMatch = true;
-            console.log('Match found! Setting', filterText, 'as active');
-            // フィルター状態を更新
-            currentFilters.priceRange = filterText;
-        }
-    });
-    
-    // マッチするフィルターが見つからなかった場合、状態をAllに設定
-    if (!foundMatch) {
-        console.log('No matching filter found, defaulting to All');
-        // フィルター状態を更新
-        currentFilters.priceRange = 'All';
     }
 }
 
@@ -607,15 +526,8 @@ function displaySearchResults(products, page = 1) {
     for (let i = 0; i < displayProducts.length; i++) {
         const product = displayProducts[i];
         
-        // カテゴリータグのHTMLを生成
-        let categoryTagHtml = '';
-        if (product.category) {
-            const categoryClass = product.category.toLowerCase().replace(/\s+/g, '-');
-            categoryTagHtml += `<span class="meta-tag ${categoryClass}">${product.category}</span>`;
-        }
-        if (product.subcategory) {
-            categoryTagHtml += `<span class="meta-tag other">${product.subcategory}</span>`;
-        }
+        // カテゴリータグのHTMLを生成（カテゴリ色対応）
+        const categoryTagHtml = generateCategoryTagHtml(product);
         
         // 商品の状態バッジを生成
         const conditionBadgeClass = product.new ? 'new' : 'used';
@@ -654,7 +566,7 @@ function displaySearchResults(products, page = 1) {
         productCard.setAttribute('data-product-price', product.price);
         productCard.setAttribute('data-product-image', product.image || '');
         
-        // 商品カードの内容を設定 - 配送時間と商品説明を削除
+        // 商品カードの内容を設定 - カテゴリ色対応のメタタグ使用
         productCard.innerHTML = `
             <div class="image-placeholder" style="${imageStyle}">
                 ${!product.image ? imageContent : ''}
