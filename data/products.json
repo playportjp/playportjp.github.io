@@ -1,112 +1,55 @@
 [
   {
     "id": "jp001",
-    "name": "Final Fantasy VII Remake Deluxe Edition",
-    "price": 79.99,
+    "name": "Final Fantasy VII Remake - Used",
+    "price": 39.99,
     "category": "Games",
     "subcategory": "RPG",
     "image": "images/products/ff7-remake.jpg",
-    "description": "Completely rebuilt from the ground up with brand new graphics and gameplay, revisit the world of Final Fantasy VII with this Deluxe Edition.",
+    "description": "Rebuilt from the ground up with brand new graphics and gameplay. Used copy in excellent condition.",
     "features": [
-      "Deluxe Edition includes art book, mini-soundtrack CD, and exclusive SteelBook case",
       "Completely reimagined for modern consoles",
       "Japanese voice acting option included",
-      "Rewritten and expanded story"
+      "Rewritten and expanded story",
+      "Used copy in excellent condition"
     ],
     "stock": 15,
     "rating": 4.8,
-    "new": true,
+    "new": false,
     "limited": false
   },
   {
     "id": "jp002",
-    "name": "Demon Slayer Nezuko Kamado Figure",
-    "price": 149.99,
-    "category": "Figures",
-    "subcategory": "Anime Figures",
-    "image": "images/products/nezuko-figure.jpg",
-    "description": "High-quality PVC figure of Nezuko Kamado from Demon Slayer: Kimetsu no Yaiba. Stands approximately 8 inches tall.",
+    "name": "Dragon Quest XI - Used",
+    "price": 29.99,
+    "category": "Games",
+    "subcategory": "RPG",
+    "image": "images/products/dq11.jpg",
+    "description": "Classic JRPG adventure with modern enhancements. Pre-owned in good condition.",
     "features": [
-      "Officially licensed product",
-      "Highly detailed sculpt",
-      "Comes with display base",
-      "Limited production run"
+      "Over 100 hours of gameplay",
+      "Beautiful anime-style graphics",
+      "Traditional turn-based combat",
+      "Complete with original case"
     ],
     "stock": 8,
-    "rating": 4.9,
+    "rating": 4.7,
     "new": false,
-    "limited": true
+    "limited": false
   },
   {
     "id": "jp003",
-    "name": "Nintendo Switch Animal Crossing Edition",
-    "price": 299.99,
-    "category": "Games",
-    "subcategory": "Consoles",
-    "image": "images/products/switch-ac.jpg",
-    "description": "Special edition Nintendo Switch console featuring Animal Crossing: New Horizons-inspired design. Console only, games sold separately.",
+    "name": "Haruki Murakami - Norwegian Wood - Used",
+    "price": 12.99,
+    "category": "Books",
+    "subcategory": "Literature",
+    "image": "images/products/norwegian-wood.jpg",
+    "description": "Classic Japanese literature by renowned author Haruki Murakami. Used paperback in good condition.",
     "features": [
-      "Custom Animal Crossing Joy-Con controllers",
-      "Uniquely designed dock featuring Tom Nook and Nooklings",
-      "Standard Nintendo Switch specifications",
-      "Region-free for international games"
-    ],
-    "stock": 5,
-    "rating": 4.7,
-    "new": false,
-    "limited": true
-  },
-  {
-    "id": "jp004",
-    "name": "Pokémon Legends: Arceus",
-    "price": 59.99,
-    "category": "Games",
-    "subcategory": "RPG",
-    "image": "images/products/pokemon-arceus.jpg",
-    "description": "Explore the ancient Hisui region in this action-RPG entry in the Pokémon series for Nintendo Switch.",
-    "features": [
-      "Open-world Pokémon adventure",
-      "Set in the ancient past of the Sinnoh region",
-      "New action-oriented battle system",
-      "Complete the first Pokédex"
-    ],
-    "stock": 20,
-    "rating": 4.5,
-    "new": true,
-    "limited": false
-  },
-  {
-    "id": "jp005",
-    "name": "One Piece Collectible Card Game Starter Deck",
-    "price": 19.99,
-    "category": "Collectibles",
-    "subcategory": "Card Games",
-    "image": "images/products/onepiece-cards.jpg",
-    "description": "Start your adventure in the One Piece Card Game with this ready-to-play starter deck featuring Luffy and the Straw Hat Pirates.",
-    "features": [
-      "51-card pre-constructed deck",
-      "Playmat and rulebook included",
-      "5 exclusive cards not found in booster packs",
-      "Compatible with all One Piece CCG expansions"
-    ],
-    "stock": 25,
-    "rating": 4.6,
-    "new": true,
-    "limited": false
-  },
-  {
-    "id": "jp006",
-    "name": "Studio Ghibli My Neighbor Totoro Plush - Large",
-    "price": 49.99,
-    "category": "Collectibles",
-    "subcategory": "Plushies",
-    "image": "images/products/totoro-plush.jpg",
-    "description": "Official Studio Ghibli large Totoro plush. Super soft and huggable, perfect for fans of all ages.",
-    "features": [
-      "20 inches tall",
-      "Official Studio Ghibli merchandise",
-      "Premium soft materials",
-      "Perfect for collectors or children"
+      "English translation",
+      "International bestseller",
+      "296 pages",
+      "Some shelf wear, readable condition"
     ],
     "stock": 12,
     "rating": 4.9,
@@ -114,174 +57,231 @@
     "limited": false
   },
   {
-    "id": "jp007",
-    "name": "Dragon Ball Z: Kakarot - Collector's Edition",
-    "price": 129.99,
-    "category": "Games",
-    "subcategory": "Action",
-    "image": "images/products/dbz-kakarot.jpg",
-    "description": "Relive the story of Goku in this action-RPG Dragon Ball game with exclusive collector's edition content.",
+    "id": "jp004",
+    "name": "Japanese Grammar Guide - New",
+    "price": 24.99,
+    "category": "Books",
+    "subcategory": "Language Learning",
+    "image": "images/products/japanese-grammar.jpg",
+    "description": "Comprehensive guide to Japanese grammar for beginners to intermediate learners. Brand new condition.",
     "features": [
-      "Exclusive 8-inch Goku figurine",
-      "Hardcover art book",
-      "Collectible steel book case",
-      "Season pass included"
+      "500+ pages of detailed explanations",
+      "Practice exercises included",
+      "Audio companion available",
+      "Brand new, sealed condition"
     ],
-    "stock": 3,
-    "rating": 4.4,
-    "new": false,
-    "limited": true
-  },
-  {
-    "id": "jp008",
-    "name": "Attack on Titan 3D Maneuver Gear Replica",
-    "price": 199.99,
-    "category": "Collectibles",
-    "subcategory": "Replicas",
-    "image": "images/products/aot-gear.jpg",
-    "description": "High-quality replica of the 3D Maneuver Gear from Attack on Titan. Perfect for cosplay or display.",
-    "features": [
-      "Full-size replica with adjustable belts",
-      "Metal and high-grade plastic construction",
-      "Detachable blades",
-      "Display stand included"
-    ],
-    "stock": 4,
-    "rating": 4.7,
-    "new": false,
-    "limited": true
-  },
-  {
-    "id": "jp009",
-    "name": "Japanese Traditional Tea Set",
-    "price": 69.99,
-    "category": "Culture",
-    "subcategory": "Household",
-    "image": "images/products/tea-set.jpg",
-    "description": "Authentic Japanese ceramic tea set including teapot, four cups, and bamboo whisk for preparing matcha.",
-    "features": [
-      "Handcrafted in Japan",
-      "Traditional design with cherry blossom motif",
-      "Complete set for Japanese tea ceremony",
-      "Gift box included"
-    ],
-    "stock": 10,
-    "rating": 4.8,
-    "new": false,
-    "limited": false
-  },
-  {
-    "id": "jp010",
-    "name": "Persona 5 Royal - Phantom Thieves Edition",
-    "price": 89.99,
-    "category": "Games",
-    "subcategory": "RPG",
-    "image": "images/products/persona5.jpg",
-    "description": "Definitive edition of Persona 5 with new content, characters, and this special Phantom Thieves collector's edition.",
-    "features": [
-      "Joker mask with display stand",
-      "Official soundtrack",
-      "Limited edition art book",
-      "Collector's box"
-    ],
-    "stock": 6,
-    "rating": 4.9,
-    "new": false,
-    "limited": true
-  },
-  {
-    "id": "jp011",
-    "name": "Evangelion Unit-01 Model Kit",
-    "price": 64.99,
-    "category": "Models",
-    "subcategory": "Anime Models",
-    "image": "images/products/eva-model.jpg",
-    "description": "High-grade model kit of Evangelion Unit-01 from Neon Genesis Evangelion. Highly articulated with multiple accessories.",
-    "features": [
-      "Over 30 points of articulation",
-      "Multiple interchangeable hands",
-      "LED light-up features (batteries not included)",
-      "Progressive knife and rifle included"
-    ],
-    "stock": 9,
+    "stock": 20,
     "rating": 4.6,
     "new": true,
     "limited": false
   },
   {
-    "id": "jp012",
-    "name": "Japanese Modern Cookbook",
-    "price": 29.99,
-    "category": "Culture",
-    "subcategory": "Books",
-    "image": "images/products/cookbook.jpg",
-    "description": "Comprehensive cookbook featuring modern Japanese cuisine with easy-to-follow recipes adapted for international kitchens.",
+    "id": "jp005",
+    "name": "Pokémon Plush Collection Set - New",
+    "price": 49.99,
+    "category": "Toys",
+    "subcategory": "Plushies",
+    "image": "images/products/pokemon-plush.jpg",
+    "description": "Official Pokémon plush toy set featuring Pikachu, Eevee, and friends. Brand new with tags.",
     "features": [
-      "100+ authentic recipes",
-      "Full-color photography",
-      "Ingredient substitution guide",
-      "Techniques section for beginners"
+      "Set of 6 plush toys",
+      "Official Pokémon Company merchandise",
+      "Super soft materials",
+      "New with original tags"
     ],
-    "stock": 18,
+    "stock": 15,
+    "rating": 4.8,
+    "new": true,
+    "limited": false
+  },
+  {
+    "id": "jp006",
+    "name": "Studio Ghibli Action Figures - New",
+    "price": 89.99,
+    "category": "Toys",
+    "subcategory": "Action Figures",
+    "image": "images/products/ghibli-figures.jpg",
+    "description": "Collectible action figures from various Studio Ghibli films. New in original packaging.",
+    "features": [
+      "Set includes Totoro, No-Face, and Calcifer",
+      "Highly detailed sculpts",
+      "Display stands included",
+      "New in sealed packaging"
+    ],
+    "stock": 8,
+    "rating": 4.9,
+    "new": true,
+    "limited": true
+  },
+  {
+    "id": "jp007",
+    "name": "Your Name (Kimi no Na wa) - DVD - Used",
+    "price": 19.99,
+    "category": "DVDs",
+    "subcategory": "Anime",
+    "image": "images/products/your-name-dvd.jpg",
+    "description": "Acclaimed anime film by Makoto Shinkai. Used DVD in good condition with original case.",
+    "features": [
+      "Japanese audio with English subtitles",
+      "Special features included",
+      "Original artwork cover",
+      "Disc in excellent condition"
+    ],
+    "stock": 6,
+    "rating": 4.8,
+    "new": false,
+    "limited": false
+  },
+  {
+    "id": "jp008",
+    "name": "Spirited Away - Special Edition DVD - New",
+    "price": 34.99,
+    "category": "DVDs",
+    "subcategory": "Anime",
+    "image": "images/products/spirited-away-dvd.jpg",
+    "description": "Studio Ghibli masterpiece in special edition packaging. Brand new and sealed.",
+    "features": [
+      "Japanese and English audio options",
+      "Director's commentary",
+      "Behind-the-scenes documentaries",
+      "New and sealed"
+    ],
+    "stock": 12,
+    "rating": 4.9,
+    "new": true,
+    "limited": false
+  },
+  {
+    "id": "jp009",
+    "name": "Gundam Perfect Grade Model Kit - New",
+    "price": 249.99,
+    "category": "Hobby",
+    "subcategory": "Model Kits",
+    "image": "images/products/gundam-pg.jpg",
+    "description": "Perfect Grade 1/60 scale RX-78-2 Gundam model kit. New in sealed box.",
+    "features": [
+      "Over 600 parts for incredible detail",
+      "Full inner frame articulation",
+      "LED light-up system included",
+      "New in original packaging"
+    ],
+    "stock": 4,
+    "rating": 4.9,
+    "new": true,
+    "limited": true
+  },
+  {
+    "id": "jp010",
+    "name": "Japanese Calligraphy Set - New",
+    "price": 79.99,
+    "category": "Hobby",
+    "subcategory": "Art Supplies",
+    "image": "images/products/calligraphy-set.jpg",
+    "description": "Traditional Japanese calligraphy set with brushes, ink, and practice paper. New condition.",
+    "features": [
+      "Authentic Japanese brushes",
+      "Sumi ink included",
+      "Practice guide book",
+      "Complete beginner set"
+    ],
+    "stock": 10,
+    "rating": 4.7,
+    "new": true,
+    "limited": false
+  },
+  {
+    "id": "jp011",
+    "name": "J-Pop Hits Compilation CD - Used",
+    "price": 14.99,
+    "category": "Music",
+    "subcategory": "J-Pop",
+    "image": "images/products/jpop-compilation.jpg",
+    "description": "Popular J-Pop hits from the 2010s. Used CD in good condition with original case.",
+    "features": [
+      "20 popular J-Pop tracks",
+      "Artists include AKB48, Perfume, ONE OK ROCK",
+      "Original CD case included",
+      "Minor scratches, plays perfectly"
+    ],
+    "stock": 7,
     "rating": 4.5,
+    "new": false,
+    "limited": false
+  },
+  {
+    "id": "jp012",
+    "name": "Studio Ghibli Music Collection - New",
+    "price": 39.99,
+    "category": "Music",
+    "subcategory": "Soundtrack",
+    "image": "images/products/ghibli-music.jpg",
+    "description": "Complete collection of Studio Ghibli film soundtracks. New and sealed 3-CD set.",
+    "features": [
+      "Music from all major Ghibli films",
+      "Composed by Joe Hisaishi",
+      "3-CD set with 60+ tracks",
+      "New and sealed packaging"
+    ],
+    "stock": 15,
+    "rating": 4.9,
     "new": true,
     "limited": false
   },
   {
     "id": "jp013",
-    "name": "Gundam Perfect Grade RX-78-2",
-    "price": 249.99,
-    "category": "Models",
-    "subcategory": "Gunpla",
-    "image": "images/products/gundam-pg.jpg",
-    "description": "Perfect Grade 1/60 scale model kit of the classic RX-78-2 Gundam. The ultimate expression of Gunpla engineering.",
+    "name": "Manga Collection - Attack on Titan Vol 1-10 - Used",
+    "price": 79.99,
+    "category": "Books",
+    "subcategory": "Manga",
+    "image": "images/products/aot-manga.jpg",
+    "description": "Complete set of Attack on Titan manga volumes 1-10. Used but in readable condition.",
     "features": [
-      "Incredible detail with over 600 parts",
-      "Full inner frame with exceptional articulation",
-      "LED light-up system (batteries included)",
-      "Opening cockpit with pilot figure"
+      "English translation",
+      "Volumes 1-10 complete set",
+      "Some wear on covers",
+      "All pages intact and readable"
+    ],
+    "stock": 5,
+    "rating": 4.6,
+    "new": false,
+    "limited": false
+  },
+  {
+    "id": "jp014",
+    "name": "Nintendo Switch Zelda Edition - Used",
+    "price": 279.99,
+    "category": "Games",
+    "subcategory": "Consoles",
+    "image": "images/products/switch-zelda.jpg",
+    "description": "Special edition Nintendo Switch with Zelda-themed design. Used but fully functional.",
+    "features": [
+      "Custom Zelda Joy-Con controllers",
+      "Special edition dock design",
+      "Tested and fully functional",
+      "Shows minor wear from use"
     ],
     "stock": 3,
-    "rating": 4.9,
+    "rating": 4.7,
     "new": false,
     "limited": true
   },
   {
-    "id": "jp014",
-    "name": "Pokémon TCG Japanese Booster Box",
-    "price": 89.99,
-    "category": "Collectibles",
-    "subcategory": "Card Games",
-    "image": "images/products/pokemon-box.jpg",
-    "description": "Japanese edition Pokémon Trading Card Game booster box. Contains 30 packs with exclusive cards not yet available internationally.",
-    "features": [
-      "30 booster packs per box",
-      "Japanese-exclusive art variants",
-      "Higher pull rates for rare cards",
-      "Latest set from Japan"
-    ],
-    "stock": 7,
-    "rating": 4.7,
-    "new": true,
-    "limited": true
-  },
-  {
     "id": "jp015",
-    "name": "Street Fighter 6 Arcade Stick",
-    "price": 179.99,
-    "category": "Games",
-    "subcategory": "Accessories",
-    "image": "images/products/sf-stick.jpg",
-    "description": "Professional-grade arcade stick for Street Fighter 6 and other fighting games. Features authentic Japanese arcade parts.",
+    "name": "One Piece DVD Box Set - Used",
+    "price": 89.99,
+    "category": "DVDs",
+    "subcategory": "Anime",
+    "image": "images/products/onepiece-dvd.jpg",
+    "description": "One Piece anime episodes 1-50 DVD collection. Used set with all discs included.",
     "features": [
-      "Sanwa joystick and buttons",
-      "PlayStation, PC, and Switch compatible",
-      "Turbo and macro programming",
-      "Special Street Fighter 6 artwork"
+      "Episodes 1-50 complete",
+      "Japanese audio with subtitles",
+      "All discs included and working",
+      "Box shows some shelf wear"
     ],
-    "stock": 8,
-    "rating": 4.8,
-    "new": true,
+    "stock": 4,
+    "rating": 4.5,
+    "new": false,
     "limited": false
   }
 ]
