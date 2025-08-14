@@ -78,12 +78,11 @@ function generateCategoryTagHtml(product) {
     
     if (product.category) {
         const categoryClass = product.category.toLowerCase();
-        const conditionClass = product.new ? 'new' : 'used';
         
-        // カテゴリ×状態のクラスを適用
-        categoryTagHtml += `<span class="meta-tag ${categoryClass} ${conditionClass}">${product.category}</span>`;
+        // カテゴリのみのクラスを適用（状態は別のアイコンで区別）
+        categoryTagHtml += `<span class="meta-tag ${categoryClass}">${product.category}</span>`;
         
-        console.log(`Generated category tag: ${categoryClass} ${conditionClass} for ${product.name}`);
+        console.log(`Generated category tag: ${categoryClass} for ${product.name}`);
     }
     
     if (product.subcategory) {
